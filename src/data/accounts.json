@@ -3,66 +3,349 @@
     "id": "mapfre",
     "name": "MAPFRE",
     "sector": "Insurance",
-    "headquarters": "Madrid, Spain",
-    "overview": "PLACEHOLDER — research pending",
-    "revenue": "PLACEHOLDER — research pending",
-    "employees": "PLACEHOLDER — research pending",
-    "geographicFootprint": "PLACEHOLDER — research pending",
-    "businessUnits": ["PLACEHOLDER — research pending"],
-    "productsServices": ["PLACEHOLDER — research pending"],
-    "strategicPriorities": ["PLACEHOLDER — research pending"],
-    "financialPerformance": "PLACEHOLDER — research pending",
-    "growthPriorities": ["PLACEHOLDER — research pending"],
-    "costRestructuringInitiatives": ["PLACEHOLDER — research pending"],
-    "mnaActivity": ["PLACEHOLDER — research pending"],
+    "headquarters": "Majadahonda (Madrid), Spain",
+    "overview": "Global insurance group, the largest Spanish insurer and a leader in Latin America, with Non-Life, Life and Reinsurance (MAPFRE RE) businesses operating in more than 40 countries. Listed on the IBEX 35.",
+    "revenue": "€34.5bn revenue, €29.1bn premiums (FY2025)",
+    "employees": "c. 30,000 employees; 200,000+ collaborators and providers (FY2025)",
+    "geographicFootprint": "Spain/Iberia, LATAM (Brazil, Mexico, Peru, Colombia and others), North America (MAPFRE Insurance USA, Puerto Rico), EMEA; global reinsurance via MAPFRE RE.",
+    "businessUnits": ["Insurance — Iberia", "Insurance — LATAM", "Insurance — North America", "Insurance — EMEA", "MAPFRE RE (Reinsurance & Global Risks)", "Corporate Technology & Data (Group)", "MAPFRE Open Innovation / Verti / InsureandGo (digital)"],
+    "productsServices": ["Motor", "Health & Accident", "Life & Savings", "Home / P&C", "Commercial & Global Risks", "Reinsurance", "Assistance"],
+    "strategicPriorities": [
+      "Strategic Plan 2024-2026: technology positioned as a strategic asset and one of six pillars (with sales profitability, financial resource management, talent, surety business, LATAM consolidation)",
+      "Profitable growth: ROE >13% and combined ratio 93-94% targets for 2026 (raised at 2026 AGM)",
+      "Digital and operational transformation, standardising multi-country platforms",
+      "Human-centred, ethical and responsible AI (first IBEX 35 company with an AI Manifesto)"
+    ],
+    "financialPerformance": "Record FY2025: net earnings €1.1bn (+19.6%), gross profit >€2.4bn, combined ratio 92.2% (best on record), ROE >13%. Largest dividend ever.",
+    "growthPriorities": ["Growth in Spain auto after margin recovery", "LATAM leadership and regional platform reuse", "Surety business development", "Life & Savings growth (+11.6% premiums FY2025)"],
+    "costRestructuringInitiatives": ["REEF platform: >50% real efficiency and cost improvement claimed via solution reuse; €65m, 3-year rollout to 11 additional countries", "Multi-country platform standardisation in LATAM"],
+    "mnaActivity": ["No major group-level M&A identified in 2025-2026 — UNKNOWN — VALIDATION REQUIRED"],
     "companyEvidence": [
-      {
-        "claim": "PLACEHOLDER — research pending",
-        "source": "PLACEHOLDER — research pending",
-        "url": "",
-        "date": "2025-01-01",
-        "category": "UNKNOWN",
-        "confidence": "Low"
-      }
+      { "claim": "FY2025 revenue €34.5bn (+4%), premiums €29.1bn (+3.6%), net earnings €1.1bn (+19.6%), combined ratio 92.2%", "source": "MAPFRE Integrated Report 2025", "url": "https://www.mapfre.com/media/2026/03/Informe-Consolidado-ENU.pdf", "date": "2026-03", "category": "FACT", "confidence": "High" },
+      { "claim": "c. 30,000 employees, 4,488 offices, 200,000+ collaborators and providers", "source": "MAPFRE Integrated Report 2025", "url": "https://www.mapfre.com/media/2026/03/Informe-Consolidado-ENU.pdf", "date": "2026-03", "category": "FACT", "confidence": "High" },
+      { "claim": "2026 AGM: ROE >13% and combined ratio 93-94% targets for the last year of the 2024-2026 Strategic Plan; accelerated deployment of REEF platform and growth of the Artificial Intelligence Centre highlighted", "source": "MAPFRE AGM 2026 press release", "url": "https://www.mapfre.com/en/communicate/corporate-communicate/annual-general-meeting-2026/", "date": "2026-03-13", "category": "FACT", "confidence": "High" },
+      { "claim": "Technology is a strategic asset and one of six pillars of the 2024-2026 plan", "source": "Chairman's report to 2025 AGM", "url": "https://www.mapfre.com/media/shareholders/2025/2025-agm-chairman-report-caratula.pdf", "date": "2025-03", "category": "FACT", "confidence": "High" }
     ],
     "initiatives": [
       {
-        "id": "mapfre-initiative-1",
-        "name": "PLACEHOLDER — research pending",
-        "area": "AI",
-        "businessObjective": "PLACEHOLDER — research pending",
+        "id": "mapfre-reef",
+        "name": "REEF technology platform (global core platform ecosystem)",
+        "area": "Application modernization / Cloud",
+        "businessObjective": "Standardise the insurance core across countries; faster product development and implementation with >50% efficiency and cost improvement through reuse. 3-year plan, €65m, 11 additional countries.",
         "evidence": [
-          {
-            "claim": "PLACEHOLDER — research pending",
-            "source": "PLACEHOLDER — research pending",
-            "url": "",
-            "date": "2025-01-01",
-            "category": "UNKNOWN",
-            "confidence": "Low"
-          }
+          { "claim": "REEF first phase implemented with some products in four countries; cloud-based, 'much faster developments', >50% efficiency/cost improvement; approved 3-year rollout to 11 more countries with €65m investment", "source": "Chairman's report to 2025 AGM", "url": "https://www.mapfre.com/media/shareholders/2025/2025-agm-chairman-report-caratula.pdf", "date": "2025-03", "category": "FACT", "confidence": "High" },
+          { "claim": "REEF 'fully or partially operational in several Latin American countries and in strategic areas in Spain'", "source": "MAPFRE AGM 2026 press release", "url": "https://www.mapfre.com/en/communicate/corporate-communicate/annual-general-meeting-2026/", "date": "2026-03-13", "category": "FACT", "confidence": "High" },
+          { "claim": "REEF infrastructure team works on automation, observability, CI/CD automation, configuration management (internship posting)", "source": "MAPFRE Jobs", "url": "https://jobs.mapfre.com/job/Madrid-Beca-en-Infraestructura-Reef-MD/1398772733/", "date": "2026-08", "category": "FACT", "confidence": "Medium" }
         ],
-        "cognitionRelevance": "PLACEHOLDER — research pending"
+        "cognitionRelevance": "A multi-year, multi-country platform rollout is a large volume of migration, configuration, testing and integration engineering. AI software engineering agents could accelerate country deployments, migrations from legacy cores and regression testing. HYPOTHESIS — VALIDATION REQUIRED."
+      },
+      {
+        "id": "mapfre-ai-centre",
+        "name": "Artificial Intelligence Centre & AI Manifesto (90+ AI use cases)",
+        "area": "AI / Generative AI",
+        "businessObjective": "Extract value for customer and business from AI: efficiency, business generation, risk mitigation; governed by the AI Manifesto for human-centred, ethical, responsible AI.",
+        "evidence": [
+          { "claim": "First IBEX 35 company with its own AI Manifesto; AI is 'a lever of efficiency, business, and risk mitigation'", "source": "MAPFRE Insights", "url": "https://www.mapfre.com/en/insights/innovation/mapfres-artificial-intelligence-manifesto/", "date": "2025-03-26", "category": "FACT", "confidence": "High" },
+          { "claim": "90+ AI use cases, 70% related to core products; MAPFRE Copilot built on Microsoft Copilot; six GenAI cases in development, 60+ under study (2024)", "source": "Computing.es interview with Vanessa Escrivá", "url": "https://www.computing.es/entrevistas/vanessa-escriva-cio-global-de-mapfre-tenemos-mas-de-90-casos-de-uso-de-ia-el-70-relacionados-con-nuestros-productos-core/", "date": "2024-04-02", "category": "FACT", "confidence": "Medium" },
+          { "claim": "Escrivá: MAPFRE has discarded some AI for information-security or model-bias reasons; defends a hybrid AI model", "source": "Cinco Días interview", "url": "https://cincodias.elpais.com/companias/2026-08-24/escriva-mapfre-hemos-descartado-ia-por-seguridad-de-la-informacion-o-sesgos-del-modelo-pero-prefiero-no-dar-ejemplos.html", "date": "2026-08-24", "category": "FACT", "confidence": "High" }
+        ],
+        "cognitionRelevance": "A mature, governed AI programme with strong security criteria — Cognition must lead with enterprise security/deployment posture (VPC / dedicated deployment). Engineering-side AI (agents that write and maintain code) is a natural next wave after employee copilots. SALES HYPOTHESIS."
+      },
+      {
+        "id": "mapfre-legacy-modernization",
+        "name": "Legacy core modernisation (e.g., MAPFRE Insurance USA AS/400 → Guidewire/Duck Creek)",
+        "area": "Legacy modernization",
+        "businessObjective": "Retire decades-old mainframe/AS400 policy admin systems that are costly to maintain given skill shortages.",
+        "evidence": [
+          { "claim": "MAPFRE Insurance (USA) migrated AS/400 and mainframe applications to Guidewire/Duck Creek in two phases (2020, 2022) with CGI; skill shortages made legacy maintenance costly", "source": "CGI case study", "url": "https://www.cgi.com/en/case-study/insurance/transforming-mapfre-usa-modern-core-insurance-platform", "date": "2025-10-14", "category": "FACT", "confidence": "High" }
+        ],
+        "cognitionRelevance": "Demonstrates that legacy skill scarcity is a recognised pain in the group. Other regions likely still carry legacy estates (HYPOTHESIS) where AI agents can document, refactor and migrate code."
       }
     ],
     "useCases": [
-      {
-        "id": "mapfre-use-case-1",
-        "name": "PLACEHOLDER — research pending",
-        "whyAnything": "PLACEHOLDER — research pending",
-        "whyNow": "PLACEHOLDER — research pending",
-        "whyCognition": "PLACEHOLDER — research pending",
-        "businessOutcome": "PLACEHOLDER — research pending",
-        "opportunityId": "mapfre-opportunity-1"
-      }
+      { "id": "mapfre-uc-1", "name": "Accelerate REEF country rollouts (migration, configuration, test automation)", "whyAnything": "11-country, 3-year REEF rollout with a finite engineering team", "whyNow": "Plan approved with €65m budget; strategic plan ends 2026", "whyCognition": "Agents execute repetitive migration/testing tasks end-to-end", "businessOutcome": "Faster time-to-country, lower cost per deployment", "opportunityId": "mapfre-opp-reef" },
+      { "id": "mapfre-uc-2", "name": "Legacy documentation & modernisation in remaining country cores", "whyAnything": "Legacy skill shortage acknowledged (USA case)", "whyNow": "REEF replaces legacy progressively; knowledge must be extracted before retirements", "whyCognition": "Agents read and document legacy code at scale", "businessOutcome": "Reduced key-person risk, faster migration" },
+      { "id": "mapfre-uc-3", "name": "Developer productivity for the Technology & Data area (beyond MAPFRE Copilot)", "whyAnything": "Employee copilots deployed; engineering agents are the next step", "whyNow": "AI Centre growing; hybrid model defended by CTDO", "whyCognition": "Devin + Windsurf cover both autonomous tasks and IDE assistance", "businessOutcome": "More capacity for the 90+ AI use cases and core product roadmap" }
     ],
     "whitespace": [
+      { "area": "Corporate Technology & Data (Group)", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "REEF engineering, platform/DevOps team", "potentialOpportunity": "Group-level pilot on REEF deployments" },
+      { "area": "MAPFRE Iberia IT", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Application development teams in Spain", "potentialOpportunity": "Regional pilot with CIO Iberia" },
+      { "area": "MAPFRE Insurance USA", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Post-Guidewire application maintenance", "potentialOpportunity": "Maintenance/testing automation" },
+      { "area": "MAPFRE RE", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Reinsurance systems", "potentialOpportunity": "UNKNOWN — VALIDATION REQUIRED" }
+    ]
+  },
+  {
+    "id": "caixabank",
+    "name": "CaixaBank",
+    "sector": "Banking",
+    "headquarters": "Valencia (registered) / Barcelona & Madrid, Spain",
+    "overview": "Largest retail bank in Spain by domestic assets, with ~20m customers, presence in Portugal (BPI) and a technology subsidiary, CaixaBank Tech, that builds the group's software.",
+    "revenue": "Gross income €16.27bn; attributable profit €5.89bn (FY2025)",
+    "employees": "47,120 employees (Dec 2025); CaixaBank Tech >1,600 (target 2,000 by ~2028)",
+    "geographicFootprint": "Spain (4,552 branches), Portugal (BPI), international representative offices.",
+    "businessUnits": ["Retail Banking (Spain)", "Business Banking / CIB", "BPI (Portugal)", "CaixaBank Payments & Consumer", "imagin (digital bank)", "CaixaBank Tech (technology subsidiary)", "VidaCaixa (insurance)"],
+    "productsServices": ["Retail & private banking", "Payments & consumer finance", "Insurance & pensions", "Asset management", "Corporate & investment banking"],
+    "strategicPriorities": [
+      "Strategic Plan 2025-2027: accelerate business growth, drive business transformation and investment, benchmark in sustainability",
+      ">€5bn technology investment over 2025-2027",
+      "Enhance commercial and service capabilities through generative AI; upgrade channels and infrastructure for resilience",
+      "Sustain ROTE >15%, loan growth ~4% CAGR"
+    ],
+    "financialPerformance": "FY2025 attributable profit €5,891m (+1.8%), gross income €16,270m (+2.5%), cost-to-income 39.4%, ROTE 17.5%.",
+    "growthPriorities": ["Loans to companies and households (+4% CAGR target)", "Digital sales via app and channels", "Payments & consumer finance"],
+    "costRestructuringInitiatives": ["Efficiency via GenAI in commercial and service processes (Strategic Plan)"],
+    "mnaActivity": ["No significant M&A identified 2025-2026 — UNKNOWN — VALIDATION REQUIRED"],
+    "companyEvidence": [
+      { "claim": "2025-2027 Strategic Plan: >€5bn technology investment; GenAI to enhance commercial and service capabilities; ROTE >15%", "source": "CaixaBank press release", "url": "https://www.caixabank.com/StaticFiles/pdfs/241119_OIR_NP_PlanEstrategico_en.pdf", "date": "2024-11-19", "category": "FACT", "confidence": "High" },
+      { "claim": "FY2025: attributable profit €5,891m, gross income €16,270m, employees 47,120, branches 4,552", "source": "CaixaBank 2025 Financial Report", "url": "https://www.caixabank.com/StaticFiles/pdfs/260130_OIR_Informe_Financiero_2025_en.pdf", "date": "2026-01-30", "category": "FACT", "confidence": "High" },
+      { "claim": "CaixaBank Tech to hire 500 developers in Q1 2025, exceeding 1,600 employees, targeting 2,000 within three years; new Seville hub growing from 40 to 200", "source": "CaixaBank news", "url": "https://www.caixabank.com/es/actualidad/noticias/caixabank-tech-contratara-500-desarrolladores-en-el-primer-trimestre-de-2025-y-superara-los-1-600-empleados", "date": "2025-01", "category": "FACT", "confidence": "High" }
+    ],
+    "initiatives": [
       {
-        "area": "PLACEHOLDER — research pending",
-        "currentRelationship": "PLACEHOLDER — research pending",
-        "existingUseCases": "PLACEHOLDER — research pending",
-        "untappedAreas": "PLACEHOLDER — research pending",
-        "potentialOpportunity": "PLACEHOLDER — research pending"
+        "id": "cabk-tech-scale",
+        "name": "CaixaBank Tech scale-up (500 developers in Q1 2025; 2,000 by ~2028)",
+        "area": "Software engineering / Developer productivity",
+        "businessObjective": "Internalise software development capacity to deliver the >€5bn technology plan; build talent hubs in Barcelona, Madrid, Seville.",
+        "evidence": [
+          { "claim": "500 developer hires in Q1 2025; >1,600 employees; target 2,000 in three years; backend/frontend/AI profiles", "source": "CaixaBank news", "url": "https://www.caixabank.com/es/actualidad/noticias/caixabank-tech-contratara-500-desarrolladores-en-el-primer-trimestre-de-2025-y-superara-los-1-600-empleados", "date": "2025-01", "category": "FACT", "confidence": "High" },
+          { "claim": "CaixaBank Tech squads adopting AI-assisted development tools (GitHub Copilot, agents)", "source": "LinkedIn profile of a CaixaBank Tech squad lead", "url": "https://www.linkedin.com/in/pablo-miranda-t", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Low" }
+        ],
+        "cognitionRelevance": "Hiring 500 developers signals demand for engineering capacity that outstrips supply. AI software engineering agents are a capacity lever complementary to hiring. Copilot already in use → Cognition must position autonomous agents (Devin) as the next step, not a replacement for IDE assistants. SALES HYPOTHESIS."
+      },
+      {
+        "id": "cabk-agents-platform",
+        "name": "Cognitive Platform based on AI Agents (DataNow evolution, agent frameworks)",
+        "area": "Agentic AI",
+        "businessObjective": "Develop intelligent agents to operate complex business processes; scale GenAI to production.",
+        "evidence": [
+          { "claim": "CaixaBank Tech presented 'Transforming banking processes with agent frameworks': 2025 focus on building an agent-based Cognitive Platform, NLP2SQL and RAG solutions in production", "source": "CaixaBank Tech at AI Congress 2025 (Eurecat)", "url": "https://cdn.eurecat.org/AICongress2025/11.CaixaBankTech.pdf", "date": "2025", "category": "FACT", "confidence": "Medium" },
+          { "claim": "Salesforce agreement including Agentforce AI agents and Data Cloud", "source": "CaixaBank news", "url": "https://www.caixabank.com/en/headlines/news/caixabank-and-salesforce-collaborate-to-personalise-customer-experience-in-banking-services-through-ai", "date": "2025", "category": "FACT", "confidence": "High" }
+        ],
+        "cognitionRelevance": "The bank is already building agents for business processes; the engineering organisation itself is a process that agents can operate (build, test, maintain). Strong conceptual fit; competition from in-house build mentality. SALES HYPOTHESIS."
+      },
+      {
+        "id": "cabk-cloud",
+        "name": "Cloud & emerging technologies (CTO Office: Cloud landing zones → Emerging Technologies)",
+        "area": "Cloud",
+        "businessObjective": "Resilient, secure, agile architecture for banking; hybrid/multi-cloud (Azure, GCP mentioned in agent framework evaluation).",
+        "evidence": [
+          { "claim": "CTO Office has a Director of Emerging Technologies (since 2025) previously CTO Cloud (landing zones, 2020-2025)", "source": "LinkedIn", "url": "https://www.linkedin.com/in/ra%C3%BAl-s%C3%A1nchez-27077b3b3", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Low" }
+        ],
+        "cognitionRelevance": "Cloud migration of banking workloads creates large, repeatable refactoring/testing workloads suited to agents. HYPOTHESIS."
       }
+    ],
+    "useCases": [
+      { "id": "cabk-uc-1", "name": "Engineering capacity multiplier for CaixaBank Tech squads", "whyAnything": "Aggressive hiring shows demand > supply", "whyNow": "€5bn plan 2025-2027; hiring ramp in progress", "whyCognition": "Agents complete tickets end-to-end, not only autocomplete", "businessOutcome": "Deliver more of the roadmap per squad", "opportunityId": "cabk-opp-tech-capacity" },
+      { "id": "cabk-uc-2", "name": "Test automation and regression for core banking releases", "whyAnything": "Regulated releases need heavy testing", "whyNow": "Channel and infrastructure upgrades in plan", "whyCognition": "Agents write and maintain test suites", "businessOutcome": "Faster, safer releases" },
+      { "id": "cabk-uc-3", "name": "Cloud migration refactoring", "whyAnything": "Hybrid cloud strategy in CTO Office", "whyNow": "Infrastructure upgrade for resilience in plan", "whyCognition": "Agents perform repetitive refactors across services", "businessOutcome": "Lower migration cost and time" }
+    ],
+    "whitespace": [
+      { "area": "CaixaBank Tech", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "GitHub Copilot in some squads (low-confidence)", "untappedAreas": "Autonomous agents for backlog execution", "potentialOpportunity": "Squad pilot" },
+      { "area": "CTO Office (Architecture / Emerging Tech)", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "Agent frameworks evaluation", "untappedAreas": "Engineering agents as an emerging-tech track", "potentialOpportunity": "Emerging Technologies evaluation" },
+      { "area": "CaixaBank Payments & Consumer", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Payments application teams", "potentialOpportunity": "BU-level pilot" },
+      { "area": "BPI (Portugal)", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Portuguese IT", "potentialOpportunity": "UNKNOWN — VALIDATION REQUIRED" }
+    ]
+  },
+  {
+    "id": "bankinter",
+    "name": "Bankinter",
+    "sector": "Banking",
+    "headquarters": "Madrid, Spain",
+    "overview": "Spanish bank focused on affluent retail, private banking, corporates and consumer finance, operating in Spain, Portugal, Ireland (Avant Money) and Luxembourg. Known for technology agility and an explicit CEO-led 'AI First' strategy.",
+    "revenue": "Net profit €1,090m (FY2025, +14.4%)",
+    "employees": "c. 6,700 (2025, third-party estimate — verify in Annual Report)",
+    "geographicFootprint": "Spain, Portugal, Ireland (Avant Money), Luxembourg.",
+    "businessUnits": ["Retail & Private Banking", "Corporate Banking", "Bankinter Consumer Finance", "Bankinter Investment", "Bankinter Portugal", "Avant Money (Ireland)", "EVO Banco (digital)"],
+    "productsServices": ["Accounts, mortgages, lending", "Private banking & alternative investment", "Corporate banking", "Consumer finance", "Digital banking (EVO)"],
+    "strategicPriorities": [
+      "'IA First' programme led by CEO Gloria Ortiz: efficient, governed adoption of generative AI aligned to business goals",
+      "New AI governance model with a Chief Artificial Intelligence Transformation Officer (CAITO)",
+      "Diversified growth across geographies and higher value-added products",
+      "Employee productivity via organisation-wide generative AI (Microsoft 365 Copilot, AI agents)"
+    ],
+    "financialPerformance": "Record FY2025 profit €1,090m (+14.4%); growth in loan book and customer funds; strong alternative investment franchise (>€5.2bn committed capital).",
+    "growthPriorities": ["Bankinter Investment alternative assets", "International (Portugal, Ireland)", "Higher value-added products"],
+    "costRestructuringInitiatives": ["GenAI for process efficiency and employee productivity ('IA First')"],
+    "mnaActivity": ["No M&A identified 2025-2026 — UNKNOWN — VALIDATION REQUIRED"],
+    "companyEvidence": [
+      { "claim": "Record 2025 profit €1,090m (+14.4%); GenAI 'playing an increasingly important role in improving process efficiency, employee productivity'; 'IA First' programme headed by CEO", "source": "Bankinter press release", "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-posts-a-record-profit-of-1090-million-euros-in-2025-14-4-driven-by-growth-in-its-business-with-customers", "date": "2026-01", "category": "FACT", "confidence": "High" },
+      { "claim": "Approx. 6,688 employees in 2025 (third-party workforce data)", "source": "Revelio Labs", "url": "https://www.reveliolabs.com/companies/bankinter/employees", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
+    ],
+    "initiatives": [
+      {
+        "id": "bkt-ia-first",
+        "name": "'IA First' strategic programme and CAITO role",
+        "area": "Generative AI / Agentic AI",
+        "businessObjective": "Maximise return on AI investment: select and execute high-impact projects (customer impact, operational efficiency) and build AI culture for employee productivity, under strict regulatory compliance.",
+        "evidence": [
+          { "claim": "Bankinter launches 'IA First', led directly by CEO Gloria Ortiz; creates CAITO role; dual focus on high-impact projects and employee AI culture", "source": "Bankinter press release", "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-lanza-ia-first--un-programa-estrategico-para-acelerar-la-implantacion-de-la-ia-generativa-en-la-entidad", "date": "2024-11", "category": "FACT", "confidence": "High" },
+          { "claim": "First Spanish bank to deploy Microsoft 365 Copilot to all central-services employees and Copilot in Dynamics 365 Sales for the whole sales network; 'numerous AI agents' in use", "source": "Bankinter press release", "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-se-convierte-en-el-primer-banco-espanol-en-implantar-la-ia-generativa-avanzada-de-microsoft-para-toda-su-plantilla", "date": "2026-04", "category": "FACT", "confidence": "High" }
+        ],
+        "cognitionRelevance": "CEO sponsorship + a single accountable AI executive (CAITO) = clear executive entry point and fast decision path. Engineering-agent adoption fits 'IA First' as the next productivity frontier after Copilot. SALES HYPOTHESIS: technology delivery capacity is a constraint on IA First project throughput."
+      },
+      {
+        "id": "bkt-tech-transformation",
+        "name": "Technology & Transformation (CIO/CDO organisation)",
+        "area": "Digital transformation / Software engineering",
+        "businessObjective": "Deliver digital assets and efficient technology to support growth.",
+        "evidence": [
+          { "claim": "CDO (Director de Transformación Digital) in role since 2021; former CIO moved to Transformation & AI role Nov 2024/Jan 2025 — successor CIO UNKNOWN", "source": "LinkedIn profiles", "url": "https://www.linkedin.com/in/rub%C3%A9n-villanueva-0222b38", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Low" }
+        ],
+        "cognitionRelevance": "Leadership change in technology creates a window for new tooling decisions. Identify the current CIO. UNKNOWN — VALIDATION REQUIRED."
+      }
+    ],
+    "useCases": [
+      { "id": "bkt-uc-1", "name": "'IA First' for engineering: autonomous agents on the development backlog", "whyAnything": "CEO mandate to adopt GenAI for productivity", "whyNow": "Copilot rollout completed Apr 2026; next wave is agents", "whyCognition": "Devin executes tasks end-to-end within the bank's controls", "businessOutcome": "Higher IA First project throughput", "opportunityId": "bkt-opp-ia-first-eng" },
+      { "id": "bkt-uc-2", "name": "Regulatory change delivery (testing, documentation)", "whyAnything": "Banking regulation demands frequent controlled change", "whyNow": "Continuous", "whyCognition": "Agents generate tests and documentation", "businessOutcome": "Lower compliance delivery cost" },
+      { "id": "bkt-uc-3", "name": "EVO Banco / Avant Money digital product velocity", "whyAnything": "Digital challengers compete on release speed", "whyNow": "International growth priority", "whyCognition": "Agents increase small-team capacity", "businessOutcome": "Faster feature delivery" }
+    ],
+    "whitespace": [
+      { "area": "Transformation & AI (CAITO)", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "Microsoft Copilot, AI agents (business)", "untappedAreas": "Engineering agents", "potentialOpportunity": "Executive-entry pilot under IA First" },
+      { "area": "Technology (CIO)", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "UNKNOWN", "untappedAreas": "Development teams", "potentialOpportunity": "Squad pilot" },
+      { "area": "EVO Banco", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Digital bank engineering", "potentialOpportunity": "Small-team pilot" },
+      { "area": "Bankinter Portugal / Avant Money", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Local IT (Portugal CIO identified)", "potentialOpportunity": "UNKNOWN — VALIDATION REQUIRED" }
+    ]
+  },
+  {
+    "id": "amadeus",
+    "name": "Amadeus",
+    "sector": "Travel technology",
+    "headquarters": "Madrid, Spain",
+    "overview": "Global travel technology provider (distribution, airline IT, hospitality, airports, payments). One of Europe's largest software engineering organisations, with a global engineering community of more than 10,000 people across 50+ sites, in the middle of a full migration to the public cloud (Microsoft Azure).",
+    "revenue": "€6,517m (FY2025, +6.1%; +8.5% cc)",
+    "employees": "UNKNOWN — VALIDATION REQUIRED (engineering community >10,000 per CTO bio; verify total headcount in 2025 Annual Report)",
+    "geographicFootprint": "Global; major sites in Madrid, Nice (Sophia Antipolis), Bangalore, London, Erding, Bogotá, Boston and others; customers in 190+ countries.",
+    "businessUnits": ["Air Distribution", "Air IT Solutions (Altéa, Nevio, Navitaire)", "Hospitality", "Payments (Outpayce)", "Airport IT", "Corporate Technology & Engineering (CTO)"],
+    "productsServices": ["GDS / distribution", "Airline PSS (Altéa, Navitaire, Nevio)", "Hospitality platforms (ACRS, Demand360, Agency360)", "Airport & border solutions", "Travel payments"],
+    "strategicPriorities": [
+      "Cloud migration (biggest IT programme; >50% of applications migrated by Feb 2025; multi-cloud with Microsoft and Google)",
+      "Open Platform and Nevio (next-gen airline retailing) — major R&D investment (>€1.4bn, >20% of revenue)",
+      "Scaling AI and Agentic AI across products and operations (first batch of six AI agents)",
+      "GenAI for internal engineering: GitHub Copilot deployed, GenAI for test generation and operations"
+    ],
+    "financialPerformance": "FY2025 revenue €6,517m (+6.1%), adjusted EBIT €1,894m (+10.2% cc), profit €1,336m, FCF €1,302m; 2026 outlook high-single-digit revenue growth.",
+    "growthPriorities": ["Nevio adoption (Lufthansa Group, Finnair)", "Navitaire Stratos", "Hospitality (Marriott, Accor)", "NDC and payments"],
+    "costRestructuringInitiatives": ["Cloud migration for efficiency (e.g., Cobalt 100 ARM VMs cut response times 8%)", "c.20% of R&D dedicated to cloud migration and Microsoft/Google partnerships"],
+    "mnaActivity": ["Acquisitions in recent years (e.g., Vision-Box 2024) — verify current activity — UNKNOWN — VALIDATION REQUIRED"],
+    "companyEvidence": [
+      { "claim": "FY2025 revenue €6,517m (+6.1%), adjusted EBIT €1,893.8m, profit €1,335.6m, R&D >€1.4bn (>20% of revenue), €1.3bn buyback", "source": "Amadeus FY2025 results press release", "url": "https://amadeus.com/content/dam/amadeus/corporate/documents/en/investors/2025/financial-results/quarterly-results/q4-2025/2025-financial-results-pr-en.pdf", "date": "2026-02", "category": "FACT", "confidence": "High" },
+      { "claim": "R&D split: c.50% portfolio & AI capabilities, c.30% customer implementations, c.20% cloud migration and Microsoft/Google partnerships and internal IT", "source": "Amadeus FY2025 results presentation", "url": "https://amadeus.com/content/dam/amadeus/corporate/documents/en/investors/2025/financial-results/quarterly-results/q4-2025/2025-amadeus-results-presentation.pdf", "date": "2026-02", "category": "FACT", "confidence": "High" },
+      { "claim": "CTO Sylvain Roy responsible for a global engineering community of more than 10,000 people across 50+ sites; scaling AI and Agentic AI across products and operations; also oversees CISO and internal IT", "source": "Amadeus leadership page", "url": "https://amadeus.com/en/about/leadership/sylvain-roy", "date": "2026", "category": "FACT", "confidence": "High" }
+    ],
+    "initiatives": [
+      {
+        "id": "ama-cloud",
+        "name": "Move to the Cloud (Microsoft Azure, multi-cloud)",
+        "area": "Cloud / Application modernization",
+        "businessObjective": "Resilience, scalability, performance and efficiency for billions of transactions; change operating model so developers are more empowered.",
+        "evidence": [
+          { "claim": "'The move to the cloud is the biggest IT program in the organization'; every application is in the cloud or being migrated; 'a number of developers all over the world are working on it'", "source": "PhocusWire Q&A with Sylvain Roy", "url": "https://www.phocuswire.com/sylvain-roy-cto-amadeus", "date": "2024-09-24", "category": "FACT", "confidence": "High" },
+          { "claim": "More than 50% of applications migrated to public cloud; renewed Microsoft partnership", "source": "Amadeus press release", "url": "https://amadeus.com/en/newsroom/press-releases/amadeus-accelerates-strategic-partnership-microsoft", "date": "2025-02-10", "category": "FACT", "confidence": "High" }
+        ],
+        "cognitionRelevance": "The remaining <50% of applications are the hardest (legacy, high-criticality). AI agents can execute repetitive migration refactors, config changes and test generation across thousands of services, freeing developers. SALES HYPOTHESIS: migration engineering effort is on the critical path of the programme."
+      },
+      {
+        "id": "ama-genai-eng",
+        "name": "GenAI for engineering (GitHub Copilot, GenAI test generation, internal LLM)",
+        "area": "Developer productivity / Generative AI",
+        "businessObjective": "Generate code and better code; generate tests; improve operations troubleshooting; better access to internal knowledge.",
+        "evidence": [
+          { "claim": "GitHub Copilot deployed for developers; Office Copilot for the organisation; own LLM for internal knowledge; GenAI used to generate tests and for operations", "source": "PhocusWire Q&A with Sylvain Roy", "url": "https://www.phocuswire.com/sylvain-roy-cto-amadeus", "date": "2024-09-24", "category": "FACT", "confidence": "High" },
+          { "claim": "GenAI-specialised engineers and 'Generative AI Engineer' roles exist at Amadeus", "source": "LinkedIn profiles", "url": "https://www.linkedin.com/in/c%C3%B4me-demolli%C3%A8re", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Low" }
+        ],
+        "cognitionRelevance": "Copilot is table stakes here; Cognition's differentiation is autonomous, end-to-end task execution (Devin) at 10,000-engineer scale, plus Windsurf as an IDE alternative. Expect a sophisticated buyer that will benchmark. SALES HYPOTHESIS."
+      },
+      {
+        "id": "ama-agentic",
+        "name": "Agentic AI across products (six initial AI agents, Amadeus Advisor)",
+        "area": "Agentic AI",
+        "businessObjective": "New operating models and efficiency gains for travel customers; agents as assistants first.",
+        "evidence": [
+          { "claim": "Amadeus and Microsoft report on Agentic AI in travel; first batch of six AI agents, Amadeus Advisor live in Agency360", "source": "Amadeus blog (Wolfgang Krips)", "url": "https://amadeus.com/en/blog/articles/how-do-you-transform-the-travel-industry-with-ai-agents", "date": "2025-07-17", "category": "FACT", "confidence": "High" }
+        ],
+        "cognitionRelevance": "Product-side agent roadmap increases engineering demand (more to build) while the org already believes in agents — a cultural fit for engineering agents. HYPOTHESIS."
+      }
+    ],
+    "useCases": [
+      { "id": "ama-uc-1", "name": "Cloud migration acceleration for the remaining application estate", "whyAnything": "Biggest IT programme, developers globally consumed by it", "whyNow": ">50% done; remaining apps are hardest; c.20% of R&D tied up", "whyCognition": "Agents perform repetitive migration work and tests autonomously", "businessOutcome": "Free R&D for Nevio/AI portfolio; finish migration sooner", "opportunityId": "ama-opp-cloud" },
+      { "id": "ama-uc-2", "name": "Autonomous test generation and maintenance at scale", "whyAnything": "Already using GenAI for tests", "whyNow": "Nevio and Stratos implementations ramping", "whyCognition": "Agents own test suites end-to-end", "businessOutcome": "Quality at higher release velocity" },
+      { "id": "ama-uc-3", "name": "Windsurf / Devin as developer platform for 10,000 engineers", "whyAnything": "Copilot deployed; benchmark against agentic alternatives", "whyNow": "Contract cycles and AI budget growth", "whyCognition": "IDE + autonomous agent from one vendor", "businessOutcome": "Productivity uplift across engineering" }
+    ],
+    "whitespace": [
+      { "area": "CTO / Platform Engineering", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "GitHub Copilot, GenAI tests", "untappedAreas": "Autonomous agents for migration", "potentialOpportunity": "Cloud migration pilot" },
+      { "area": "Air IT (Nevio / Navitaire)", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Customer implementation engineering (c.30% of R&D)", "potentialOpportunity": "Implementation acceleration" },
+      { "area": "Hospitality", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "ACRS implementations (Marriott, Accor)", "potentialOpportunity": "UNKNOWN — VALIDATION REQUIRED" },
+      { "area": "Internal IT / CISO (under CTO)", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Security review of agent tooling", "potentialOpportunity": "Security enablement (gatekeeper)" }
+    ]
+  },
+  {
+    "id": "acciona",
+    "name": "ACCIONA",
+    "sector": "Infrastructure, Energy, Water",
+    "headquarters": "Alcobendas (Madrid), Spain",
+    "overview": "Global group in sustainable infrastructure: ACCIONA Energía (renewables, listed), Infrastructure (construction, concessions, water), Nordex (wind turbines, consolidated), real estate and other businesses. Operates in 60+ countries.",
+    "revenue": "€20,236m (FY2025, +5.5%)",
+    "employees": "68,502 (FY2025, +3.76%) across 60+ countries",
+    "geographicFootprint": "Spain, Australia, Brazil, Chile, Mexico, USA, Canada, Middle East, Europe — 60+ countries.",
+    "businessUnits": ["ACCIONA Energía", "Infrastructure — Construction", "Infrastructure — Concessions", "Infrastructure — Water", "Nordex", "Real Estate", "Other (Bestinver, Mobility)"],
+    "productsServices": ["Renewable generation (wind, solar, hydro, storage)", "Construction & civil works", "Water treatment & desalination", "Concessions/PPP", "Wind turbines (Nordex)"],
+    "strategicPriorities": [
+      "Deliver strategic and financial targets (EBITDA €3.2bn FY2025 above guidance) with asset rotation",
+      "Digital transformation via AI: MIRAI innovation programme (Infrastructure Division), Digital Hub (Data & AI, IoT, robotics)",
+      "€120m EIB loan for R&D+I and digitalisation (Sept 2025)",
+      "Sustainability leadership and EU-taxonomy aligned capex"
+    ],
+    "financialPerformance": "FY2025 revenue €20,236m (+5.5%), EBITDA €3,211m (+30.8%, incl. €614m asset rotation), attributable net profit €803m (+90%). ACCIONA Energía outlook revised to Negative by Fitch.",
+    "growthPriorities": ["Nordex order intake (>10 GW)", "Water and Concessions", "Renewables with asset rotation model"],
+    "costRestructuringInitiatives": ["Asset rotation (hydro/wind sales)", "Process automation and task digitalisation via MIRAI"],
+    "mnaActivity": ["Asset rotation: sale of 626 MW hydro (Spain), 440 MW wind (Spain), 136 MW (Peru), 50 MW (Costa Rica) in 2025"],
+    "companyEvidence": [
+      { "claim": "FY2025 revenues €20,236m (+5.5%), EBITDA €3,211m, attributable net profit €803m (+90.4%)", "source": "ACCIONA FY2025 Results", "url": "https://www.acciona.com/content/dam/acciona-global/documentos/cnmv/2026/fy-2025-results.pdf", "date": "2026-02", "category": "FACT", "confidence": "High" },
+      { "claim": "68,502 employees across more than 60 countries and 170 nationalities", "source": "ACCIONA Integrated Report 2025", "url": "https://www.acciona.com/content/dam/acciona-global/documentos/informes/2025-acciona-integrated-report.pdf", "date": "2026", "category": "FACT", "confidence": "High" },
+      { "claim": "EIB and ACCIONA sign €120m loan to invest in R&D+I and advance digitalisation strategy", "source": "ACCIONA news", "url": "https://www.acciona.com/updates/news/bei-acciona-sign-loan-invest-technological-innovation-digitalization", "date": "2025-09-29", "category": "FACT", "confidence": "High" }
+    ],
+    "initiatives": [
+      {
+        "id": "ana-mirai",
+        "name": "MIRAI innovation programme (AI, automation, digitalisation) — Infrastructure Division",
+        "area": "AI / Automation",
+        "businessObjective": "Co-finance business-unit projects that automate processes and digitalise tasks with real, measurable operational impact; first edition prioritises document management.",
+        "evidence": [
+          { "claim": "MIRAI launched 2025 as gateway for business areas to develop AI/automation solutions across Infrastructure, Construction, Water and Concessions; co-financing model", "source": "ACCIONA IMNOVATION", "url": "https://imnovation.acciona.com/en/acciona-lanza-mirai-su-nuevo-programa-de-innovacion-para-impulsar-la-transformacion-digital-mediante-inteligencia-artificial/", "date": "2025-04-10", "category": "FACT", "confidence": "High" }
+        ],
+        "cognitionRelevance": "A funded internal programme that co-finances AI projects is a potential budget vehicle for a Cognition pilot in the Digital Hub / IT function. SALES HYPOTHESIS: internal solution development capacity is the bottleneck for MIRAI projects."
+      },
+      {
+        "id": "ana-digital-hub",
+        "name": "Digital Hub — in-house digital solution development (Data & AI, IoT, Robotics)",
+        "area": "Digital transformation / Software engineering",
+        "businessObjective": "Develop in-house digital solutions that answer business needs and generate competitive advantage.",
+        "evidence": [
+          { "claim": "Digital Hub created to develop in-house digital solutions; core technologies Data & AI, IoT, immersive, robotics; ACCIONA ranked 7th Spanish company in EU R&D Scoreboard 2025", "source": "ACCIONA website", "url": "https://www.acciona.com/our-purpose/innovation", "date": "2025", "category": "FACT", "confidence": "High" }
+        ],
+        "cognitionRelevance": "An in-house software team building bespoke solutions benefits directly from engineering agents (build faster, maintain more). HYPOTHESIS."
+      },
+      {
+        "id": "ana-energia-ai",
+        "name": "ACCIONA Energía Data & AI strategy (CDO, Head of AI & Data Science)",
+        "area": "AI / Data",
+        "businessObjective": "Data-driven decisions, innovation and operational efficiency in renewables; strategy for developing, adopting and scaling AI solutions.",
+        "evidence": [
+          { "claim": "ACCIONA Energía has a CDO / Head of Data & AI responsible for AI strategy and digital transformation, and a Head of AI & Data Science", "source": "LinkedIn profiles", "url": "https://www.linkedin.com/in/marta-serrano-pardo-94b2b612", "date": "2026-07", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
+        ],
+        "cognitionRelevance": "Energía is a separately listed company with its own data/AI leadership — a second, independent entry point. HYPOTHESIS."
+      }
+    ],
+    "useCases": [
+      { "id": "ana-uc-1", "name": "Accelerate MIRAI/Digital Hub solution delivery with engineering agents", "whyAnything": "Funded AI/automation programme with in-house build", "whyNow": "MIRAI first edition 2025-2026; €120m EIB digitalisation loan", "whyCognition": "Agents build and maintain bespoke solutions faster", "businessOutcome": "More MIRAI projects delivered per year", "opportunityId": "ana-opp-digital-hub" },
+      { "id": "ana-uc-2", "name": "Application maintenance for corporate systems (CIO)", "whyAnything": "Large heterogeneous group with many corporate applications", "whyNow": "Digitalisation strategy funded", "whyCognition": "Agents handle maintenance backlog", "businessOutcome": "Lower run cost, more capacity for change" },
+      { "id": "ana-uc-3", "name": "ACCIONA Energía data/AI product engineering", "whyAnything": "AI strategy owned by CDO", "whyNow": "Pressure on Energía margins (EBITDA -€118m operations)", "whyCognition": "Agents accelerate data pipeline and AI app development", "businessOutcome": "Faster efficiency gains in operations" }
+    ],
+    "whitespace": [
+      { "area": "Corporate IT (Group CIO)", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Corporate applications", "potentialOpportunity": "Maintenance automation pilot" },
+      { "area": "Infrastructure & Construction IT", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "MIRAI projects", "untappedAreas": "Digital solution development", "potentialOpportunity": "MIRAI-funded pilot" },
+      { "area": "ACCIONA Energía Data & AI", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "AI/data engineering", "potentialOpportunity": "Independent Energía opportunity" },
+      { "area": "Nordex", "currentRelationship": "No contact — UNKNOWN", "existingUseCases": "None known", "untappedAreas": "Turbine software/IT (Germany)", "potentialOpportunity": "UNKNOWN — VALIDATION REQUIRED" }
     ]
   }
 ]

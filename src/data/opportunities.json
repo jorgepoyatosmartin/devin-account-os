@@ -1,68 +1,300 @@
 [
   {
-    "id": "mapfre-opportunity-1",
+    "id": "mapfre-opp-reef",
     "accountId": "mapfre",
-    "name": "PLACEHOLDER — research pending",
-    "businessUnit": "PLACEHOLDER — research pending",
-    "initiativeId": "mapfre-initiative-1",
-    "useCase": "PLACEHOLDER — research pending",
+    "name": "REEF multi-country rollout — engineering acceleration",
+    "businessUnit": "Group Technology (REEF platform) / Iberia",
+    "initiativeId": "mapfre-reef",
+    "useCase": "AI software engineering agents to accelerate REEF solution adaptation, migration and testing across 11 countries",
     "potentialValue": "TBD — VALIDATION REQUIRED",
     "stage": "Identified",
-    "stakeholderIds": ["mapfre-stakeholder-1"],
-    "championId": "",
-    "economicBuyerId": "",
-    "competition": "PLACEHOLDER — research pending",
+    "stakeholderIds": ["mapfre-escriva", "mapfre-delicado", "mapfre-bernal"],
+    "economicBuyerId": "mapfre-escriva",
+    "competition": "Microsoft (GitHub Copilot / MAPFRE Copilot on Azure OpenAI); in-house AI Centre; SI partners (CGI in USA). Status of any coding-agent tooling: UNKNOWN.",
     "meddpicc": {
-      "metrics": "PLACEHOLDER — research pending",
-      "economicBuyer": "PLACEHOLDER — research pending",
-      "decisionCriteria": "PLACEHOLDER — research pending",
-      "decisionProcess": "PLACEHOLDER — research pending",
-      "paperProcess": "PLACEHOLDER — research pending",
-      "identifyPain": "PLACEHOLDER — research pending",
-      "champion": "PLACEHOLDER — research pending",
-      "competition": "PLACEHOLDER — research pending"
+      "metrics": "TBD — VALIDATION REQUIRED. Hypothesis: time-to-deploy REEF per country; % reuse achieved vs. 50% efficiency target; legacy migration cost.",
+      "economicBuyer": "Vanessa Escrivá (Group CTDO) — HYPOTHESIS, not confirmed.",
+      "decisionCriteria": "UNKNOWN. Likely: information security, model bias controls, Azure compatibility (public statements).",
+      "decisionProcess": "UNKNOWN — VALIDATION REQUIRED",
+      "paperProcess": "UNKNOWN — VALIDATION REQUIRED",
+      "identifyPain": "Delivering REEF to 11 more countries plus 90+ AI use cases with finite engineering capacity (HYPOTHESIS).",
+      "champion": "None identified. Candidates: Malu Delicado (CIO Iberia), J.L. Bernal (Transformation).",
+      "competition": "Microsoft Copilot ecosystem; internal build."
     },
-    "nextAction": "PLACEHOLDER — research pending",
+    "nextAction": "Secure intro to Vanessa Escrivá's organisation via Transformation team; request 30-min discovery on REEF rollout engineering model.",
     "evidence": [
-      {
-        "claim": "PLACEHOLDER — research pending",
-        "source": "PLACEHOLDER — research pending",
-        "url": "",
-        "date": "2025-01-01",
-        "category": "UNKNOWN",
-        "confidence": "Low"
-      }
+      { "claim": "€65m REEF investment, rollout to 11 additional countries over 3 years", "source": "MAPFRE Chairman's report 2025 AGM", "url": "https://www.mapfre.com/media/shareholders/2025/2025-agm-chairman-report-caratula.pdf", "date": "2025-03", "category": "FACT", "confidence": "High" }
     ],
     "confidence": "Low",
     "threeWhys": {
       "whyAnything": {
-        "situation": "PLACEHOLDER — research pending",
-        "problem": "PLACEHOLDER — research pending",
-        "implication": "PLACEHOLDER — research pending"
+        "situation": "MAPFRE is rolling out the REEF cloud platform ecosystem to 11 more countries (€65m, 3 years) while running 90+ AI use cases and legacy modernisation (e.g. USA AS/400 migration).",
+        "problem": "Each country deployment requires adaptation, integration and testing work by scarce engineering teams; legacy skills are scarce (documented in USA). HYPOTHESIS.",
+        "implication": "Rollout slips delay the >50% efficiency gains promised to shareholders and the 2024-2026 plan's technology pillar. HYPOTHESIS."
       },
       "whyNow": {
-        "trigger": "PLACEHOLDER — research pending",
-        "timing": "PLACEHOLDER — research pending",
-        "urgency": "PLACEHOLDER — research pending"
+        "trigger": "Strategic plan 2024-2026 ends this year; REEF rollout is mid-programme; CTDO promoted to Executive Committee (2026).",
+        "timing": "Budget cycle for the next strategic plan (2027-2029) is likely being prepared in H2 2026. HYPOTHESIS.",
+        "urgency": "Public commitments on REEF efficiency and AI targets create executive pressure to show delivery. HYPOTHESIS."
       },
       "whyCognition": {
-        "customerPain": "PLACEHOLDER — research pending",
-        "cognitionCapability": "PLACEHOLDER — research pending",
-        "businessOutcome": "PLACEHOLDER — research pending"
+        "customerPain": "Not enough engineering capacity to adapt, migrate and test REEF solutions and legacy code fast enough.",
+        "cognitionCapability": "Devin executes scoped engineering tasks end-to-end (migrations, test generation, integration adaptation) in a controlled, auditable environment; enterprise deployment options for information-security requirements.",
+        "businessOutcome": "Faster per-country REEF deployment and lower migration cost; measurable throughput per engineer. TARGET METRIC TBD."
       },
       "validation": {
-        "situation": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" },
-        "problem": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" },
-        "implication": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" },
-        "whyNow": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" },
-        "whyCognition": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" }
+        "situation": { "status": "Confirmed", "evidence": "Chairman's report 2025: €65m, 11 countries, 3 years; Computing.es 2024: 90+ AI use cases." },
+        "problem": { "status": "Hypothesis", "evidence": "Inferred from CGI USA case study (legacy skill scarcity). No MAPFRE statement on capacity constraints." },
+        "implication": { "status": "Hypothesis", "evidence": "No evidence of rollout slippage." },
+        "whyNow": { "status": "Partially validated", "evidence": "Plan end-date and CTDO promotion are facts; budget-cycle timing is inference." },
+        "whyCognition": { "status": "Hypothesis", "evidence": "No conversation yet." }
       },
       "discoveryQuestions": {
-        "situation": ["What is happening today?"],
-        "problem": ["Where does this create friction?"],
-        "implication": ["What happens if this remains unresolved?"],
-        "whyNow": ["What makes this urgent now?"],
-        "whyCognition": ["What would a successful capability unlock?"]
+        "situation": ["How is the REEF rollout organised by country — central team, regional teams, partners?", "How many engineers are dedicated to REEF adaptation and legacy migration today?"],
+        "problem": ["Where does a country deployment take the most engineering time?", "Which legacy systems still block reuse of REEF solutions?"],
+        "implication": ["What happens to the plan's efficiency target if a country slips by two quarters?", "How is engineering throughput measured and reported to the Executive Committee?"],
+        "whyNow": ["What must be delivered before the current strategic plan closes?", "When are 2027 technology budgets decided?"],
+        "whyCognition": ["What did you learn from Copilot adoption — where does it stop helping?", "What security criteria led you to discard AI tools, and how would an agent need to comply?"]
+      }
+    }
+  },
+  {
+    "id": "cabk-opp-tech-capacity",
+    "accountId": "caixabank",
+    "name": "CaixaBank Tech — engineering capacity for the €5bn plan",
+    "businessUnit": "CaixaBank Tech",
+    "initiativeId": "cabk-tech-scale",
+    "useCase": "Devin as engineering-capacity multiplier for CaixaBank Tech: backlog delivery, test automation, legacy modernisation, cloud migration tasks",
+    "potentialValue": "TBD — VALIDATION REQUIRED",
+    "stage": "Identified",
+    "stakeholderIds": ["cabk-vicens", "cabk-sanchez", "cabk-corominas"],
+    "economicBuyerId": "cabk-vicens",
+    "competition": "Internal AI-agent platform (CaixaBank Tech cognitive platform); Salesforce Agentforce (business side); GitHub Copilot (status UNKNOWN); large SI partners.",
+    "meddpicc": {
+      "metrics": "TBD — VALIDATION REQUIRED. Hypothesis: hiring gap vs. 2,000 target; delivery throughput; cost per story point.",
+      "economicBuyer": "Mariona Vicens (Head of Digital Transformation & Advanced Analytics, Director of CaixaBank Tech) — HYPOTHESIS.",
+      "decisionCriteria": "UNKNOWN. Likely: banking regulation (EBA/DORA), data residency, integration with internal platforms.",
+      "decisionProcess": "UNKNOWN — VALIDATION REQUIRED",
+      "paperProcess": "UNKNOWN — VALIDATION REQUIRED",
+      "identifyPain": "Hiring 500+ developers per year cannot scale fast enough for a >€5bn technology programme (HYPOTHESIS).",
+      "champion": "None. Candidate: Raúl Sánchez (Emerging Technologies, CTO Office).",
+      "competition": "Build-internal agents; Copilot."
+    },
+    "nextAction": "Engage Raúl Sánchez (Emerging Technologies) with an agentic software engineering briefing tailored to regulated banking.",
+    "evidence": [
+      { "claim": ">€5bn technology investment in 2025-2027 plan", "source": "CaixaBank Investor Day", "url": "https://www.caixabank.com/deployedfiles/caixabank/Estaticos/PDFs/Inversores_institucionales/241119_InvestorDay_en.pdf", "date": "2024-11-19", "category": "FACT", "confidence": "High" },
+      { "claim": "CaixaBank Tech to hire 500 developers in Q1 2025, exceed 1,600 staff, target 2,000 in 3 years", "source": "CaixaBank news", "date": "2025-01", "category": "FACT", "confidence": "High" }
+    ],
+    "confidence": "Low",
+    "threeWhys": {
+      "whyAnything": {
+        "situation": "CaixaBank is investing >€5bn in technology (2025-2027) and scaling CaixaBank Tech from ~1,100 to 2,000 engineers.",
+        "problem": "Aggressive hiring is slow and expensive; the plan's GenAI and infrastructure workload outpaces the capacity ramp. HYPOTHESIS.",
+        "implication": "Strategic plan deliverables (GenAI commercial capabilities, channel upgrades) slip or cost more; dependency on external SIs grows. HYPOTHESIS."
+      },
+      "whyNow": {
+        "trigger": "Year 2 of the 2025-2027 plan; hiring ramp under way; CaixaBank Tech already building an agent-based cognitive platform.",
+        "timing": "2027 is the plan end-date — capacity decisions made now determine delivery.",
+        "urgency": "Public €5bn commitment and ROTE >15% target scrutinised by investors. HYPOTHESIS."
+      },
+      "whyCognition": {
+        "customerPain": "Cannot hire fast enough to deliver the plan's engineering workload.",
+        "cognitionCapability": "Devin adds executable engineering capacity (tickets to merged PRs) inside the bank's own repositories and controls; complements internal agent platform focused on business use cases.",
+        "businessOutcome": "Higher delivery throughput per engineer; lower reliance on external SI capacity. TARGET METRIC TBD."
+      },
+      "validation": {
+        "situation": { "status": "Confirmed", "evidence": "Investor Day 2024; CaixaBank Tech hiring announcement Jan 2025." },
+        "problem": { "status": "Hypothesis", "evidence": "No CaixaBank statement that capacity is a constraint." },
+        "implication": { "status": "Hypothesis", "evidence": "None." },
+        "whyNow": { "status": "Partially validated", "evidence": "Plan dates are facts; urgency is inferred." },
+        "whyCognition": { "status": "Hypothesis", "evidence": "No conversation yet." }
+      },
+      "discoveryQuestions": {
+        "situation": ["How is CaixaBank Tech's backlog split between GenAI, channels and infrastructure?", "How many external partners supplement internal engineering?"],
+        "problem": ["Is the 2,000-engineer target on track? What is the bottleneck?", "Which parts of the estate are hardest to staff (mainframe, legacy Java, data)?"],
+        "implication": ["Which plan deliverables are most exposed to engineering capacity?", "What does a quarter of slippage cost?"],
+        "whyNow": ["What are the 2026 and 2027 milestones for the GenAI programme?", "When are partner contracts renewed?"],
+        "whyCognition": ["How does your internal agent platform address software engineering itself?", "What controls would an autonomous engineering agent need to pass (DORA, model risk, code provenance)?"]
+      }
+    }
+  },
+  {
+    "id": "bkt-opp-ia-first-eng",
+    "accountId": "bankinter",
+    "name": "IA First — AI for technology delivery",
+    "businessUnit": "Transformation & AI (IA First programme) / Technology",
+    "initiativeId": "bkt-ia-first",
+    "useCase": "Extend IA First from Copilot productivity to autonomous software engineering: faster delivery of the bank's AI project portfolio and legacy maintenance",
+    "potentialValue": "TBD — VALIDATION REQUIRED",
+    "stage": "Identified",
+    "stakeholderIds": ["bkt-duran", "bkt-ortiz", "bkt-villanueva", "bkt-cio-unknown"],
+    "championId": "bkt-duran",
+    "economicBuyerId": "bkt-ortiz",
+    "competition": "Microsoft (365 Copilot, Dynamics Copilot, likely GitHub Copilot — UNKNOWN); internal AI team.",
+    "meddpicc": {
+      "metrics": "TBD — VALIDATION REQUIRED. Hypothesis: number of AI projects delivered per year; cost-to-income; developer productivity KPIs used for Copilot business case.",
+      "economicBuyer": "Gloria Ortiz (CEO) sponsors IA First; realistic EB likely CAITO or CIO — VALIDATION REQUIRED.",
+      "decisionCriteria": "UNKNOWN. Public emphasis on governance, compliance and measurable ROI.",
+      "decisionProcess": "UNKNOWN — VALIDATION REQUIRED",
+      "paperProcess": "UNKNOWN — VALIDATION REQUIRED",
+      "identifyPain": "IA First generates a large project portfolio; technology delivery capacity limits how fast AI value reaches production (HYPOTHESIS).",
+      "champion": "José Miguel Durán (CAITO, ex-CIO) — candidate, not yet engaged.",
+      "competition": "Microsoft-centric strategy; build in-house."
+    },
+    "nextAction": "Direct outreach to J.M. Durán referencing IA First + Copilot rollout; propose a 'from Copilot to autonomous engineering' session.",
+    "evidence": [
+      { "claim": "IA First programme led by CEO; CAITO role created", "source": "Bankinter press release", "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-lanza-ia-first--un-programa-estrategico-para-acelerar-la-implantacion-de-la-ia-generativa-en-la-entidad", "date": "2024-11", "category": "FACT", "confidence": "High" }
+    ],
+    "confidence": "Medium",
+    "threeWhys": {
+      "whyAnything": {
+        "situation": "Bankinter runs a CEO-led GenAI programme (IA First) with a dedicated Chief AI Transformation Officer and Microsoft 365 Copilot for all employees.",
+        "problem": "AI project demand from business units exceeds the delivery capacity of a ~6,700-employee bank's technology teams; Copilot improves individual productivity but not end-to-end delivery. HYPOTHESIS.",
+        "implication": "IA First ROI is capped by engineering throughput; high-impact projects queue. HYPOTHESIS."
+      },
+      "whyNow": {
+        "trigger": "Copilot organisation-wide deployment completed (Apr 2026) — natural next step in AI maturity.",
+        "timing": "CAITO in role ~2 years; needs visible programme results.",
+        "urgency": "CEO personally accountable for IA First outcomes; record profits give investment room. HYPOTHESIS."
+      },
+      "whyCognition": {
+        "customerPain": "AI ambitions bottlenecked by technology delivery capacity.",
+        "cognitionCapability": "Devin delivers complete engineering tasks autonomously with human review — the step beyond Copilot assistance; deployable within bank controls.",
+        "businessOutcome": "More IA First projects shipped per quarter; measurable productivity delta vs. Copilot baseline. TARGET METRIC TBD."
+      },
+      "validation": {
+        "situation": { "status": "Confirmed", "evidence": "Bankinter press releases 2024-2026." },
+        "problem": { "status": "Hypothesis", "evidence": "No public statement on delivery bottlenecks." },
+        "implication": { "status": "Hypothesis", "evidence": "None." },
+        "whyNow": { "status": "Partially validated", "evidence": "Copilot rollout and CAITO tenure are facts; urgency inferred." },
+        "whyCognition": { "status": "Hypothesis", "evidence": "No conversation yet." }
+      },
+      "discoveryQuestions": {
+        "situation": ["How many IA First projects are in flight, and who builds them?", "Is GitHub Copilot deployed for developers, and how is impact measured?"],
+        "problem": ["Where do AI projects wait longest — data, engineering, risk approval?", "How much technology capacity is consumed by legacy maintenance?"],
+        "implication": ["What is the business cost of a delayed IA First use case?", "How does the CEO track IA First progress?"],
+        "whyNow": ["What are the IA First milestones for the next 12 months?", "When is the 2027 technology budget set?"],
+        "whyCognition": ["What would make an autonomous engineering agent acceptable to risk and compliance?", "Which measurable outcome would justify a pilot?"]
+      }
+    }
+  },
+  {
+    "id": "ama-opp-cloud",
+    "accountId": "amadeus",
+    "name": "Cloud migration & GenAI engineering at scale",
+    "businessUnit": "Technology (CTO organisation)",
+    "initiativeId": "ama-cloud",
+    "useCase": "Devin for the remaining public-cloud migration workload and customer implementation backlog, freeing developers for Nevio/agentic product roadmap",
+    "potentialValue": "TBD — VALIDATION REQUIRED",
+    "stage": "Identified",
+    "stakeholderIds": ["ama-roy", "ama-mendez", "ama-krips"],
+    "economicBuyerId": "ama-roy",
+    "competition": "GitHub Copilot (deployed); Microsoft Azure AI ecosystem; internal LLM and GenAI test generation; large SI partners.",
+    "meddpicc": {
+      "metrics": "TBD — VALIDATION REQUIRED. Hypothesis: % applications migrated; R&D share on implementations (30%) vs. portfolio; developer hours on migration.",
+      "economicBuyer": "Sylvain Roy (CTO) — HYPOTHESIS.",
+      "decisionCriteria": "UNKNOWN. Likely: Azure integration, security (CISO under CTO), measurable productivity vs. Copilot.",
+      "decisionProcess": "UNKNOWN — VALIDATION REQUIRED",
+      "paperProcess": "UNKNOWN — VALIDATION REQUIRED",
+      "identifyPain": "Biggest IT programme (cloud) plus 30% of R&D on customer implementations consume developer capacity needed for AI/Nevio roadmap (HYPOTHESIS).",
+      "champion": "None identified.",
+      "competition": "Copilot; internal GenAI tooling."
+    },
+    "nextAction": "Identify the cloud-migration programme lead under Sylvain Roy; approach with migration-specific agent use cases and Copilot-complement positioning.",
+    "evidence": [
+      { "claim": ">50% of applications migrated to public cloud; renewed Microsoft partnership", "source": "Amadeus/Microsoft press release", "date": "2025-02", "category": "FACT", "confidence": "High" },
+      { "claim": "R&D >€1.4bn (>20% revenue): ~50% portfolio/AI, ~30% customer implementations, ~20% cloud/partnerships/internal IT", "source": "Amadeus FY2025 results", "date": "2026-02", "category": "FACT", "confidence": "High" }
+    ],
+    "confidence": "Low",
+    "threeWhys": {
+      "whyAnything": {
+        "situation": "Amadeus spends >€1.4bn on R&D with 10,000+ engineers; >50% of applications migrated to cloud; Copilot, internal LLM and GenAI test generation already deployed.",
+        "problem": "Migration and customer implementations (~50% of R&D) tie up developers; Copilot-level assistance does not remove the long tail of migration/implementation tasks. HYPOTHESIS.",
+        "implication": "Slower delivery of Nevio and agentic AI products in a competitive travel-tech market. HYPOTHESIS."
+      },
+      "whyNow": {
+        "trigger": "Second half of the cloud programme (remaining <50%) is typically the hardest; agentic AI is a stated CTO priority.",
+        "timing": "FY2026 R&D allocation already set; FY2027 planning in H2 2026. HYPOTHESIS.",
+        "urgency": "Competitive pressure in agentic travel; migration cost overrun risk. HYPOTHESIS."
+      },
+      "whyCognition": {
+        "customerPain": "Engineering capacity locked in migration and implementations.",
+        "cognitionCapability": "Devin executes repeatable migration and implementation tasks autonomously (refactors, dependency upgrades, config, test generation) at scale across many repos.",
+        "businessOutcome": "Faster migration completion and re-allocation of developers to product/AI roadmap. TARGET METRIC TBD."
+      },
+      "validation": {
+        "situation": { "status": "Confirmed", "evidence": "FY2025 results; PhocusWire CTO interview; Microsoft press release." },
+        "problem": { "status": "Hypothesis", "evidence": "Inferred from R&D allocation; CTO has not stated capacity constraint." },
+        "implication": { "status": "Hypothesis", "evidence": "None." },
+        "whyNow": { "status": "Hypothesis", "evidence": "Timing inferred." },
+        "whyCognition": { "status": "Hypothesis", "evidence": "No conversation yet." }
+      },
+      "discoveryQuestions": {
+        "situation": ["What remains in the cloud programme and how is it staffed?", "How is Copilot impact measured across 10,000 engineers?"],
+        "problem": ["Which migration tasks are most repetitive and slow?", "How much implementation work is customer-specific configuration vs. new features?"],
+        "implication": ["What product roadmap items are waiting on engineering capacity?", "What is the cost of a 6-month migration delay?"],
+        "whyNow": ["When does the cloud programme need to complete?", "When are FY2027 R&D allocations decided?"],
+        "whyCognition": ["Where does Copilot stop being useful for your teams?", "What would an autonomous agent need to satisfy the CISO?"]
+      }
+    }
+  },
+  {
+    "id": "ana-opp-digital-hub",
+    "accountId": "acciona",
+    "name": "Digital Hub / MIRAI — AI-accelerated in-house software delivery",
+    "businessUnit": "Digital Transformation (Digital Hub) / Infrastructure & Construction",
+    "initiativeId": "ana-digital-hub",
+    "useCase": "Devin to multiply the Digital Hub's in-house development capacity for MIRAI-funded AI/automation projects across business units",
+    "potentialValue": "TBD — VALIDATION REQUIRED",
+    "stage": "Identified",
+    "stakeholderIds": ["ana-rivero", "ana-carballo", "ana-serrano"],
+    "economicBuyerId": "ana-rivero",
+    "competition": "In-house Digital Hub; consultancies/SIs; Microsoft/Google AI tooling (status UNKNOWN).",
+    "meddpicc": {
+      "metrics": "TBD — VALIDATION REQUIRED. Hypothesis: MIRAI projects delivered per edition; Digital Hub delivery lead time.",
+      "economicBuyer": "Raúl Rivero (CIO) — HYPOTHESIS; MIRAI co-financing suggests BU budgets also involved.",
+      "decisionCriteria": "UNKNOWN — VALIDATION REQUIRED",
+      "decisionProcess": "UNKNOWN. MIRAI selects projects per edition with co-financing.",
+      "paperProcess": "UNKNOWN — VALIDATION REQUIRED",
+      "identifyPain": "Demand for digital/AI projects (MIRAI, 68k employees, 60+ countries) exceeds in-house Digital Hub delivery capacity (HYPOTHESIS).",
+      "champion": "Candidate: J.M. Carballo (new CIO Infrastructure & Construction).",
+      "competition": "Internal build; SIs."
+    },
+    "nextAction": "Approach José Manuel Carballo (new-in-role divisional CIO) with a MIRAI-aligned pilot proposal for document/automation projects.",
+    "evidence": [
+      { "claim": "MIRAI programme launched 2025 for AI, automation and digitalisation projects; co-financing model", "source": "ACCIONA IMNOVATION", "date": "2025", "category": "FACT", "confidence": "High" },
+      { "claim": "€120m EIB loan for R&D, innovation and digitalisation", "source": "ACCIONA news", "date": "2025", "category": "FACT", "confidence": "High" }
+    ],
+    "confidence": "Low",
+    "threeWhys": {
+      "whyAnything": {
+        "situation": "ACCIONA (68,502 employees, 60+ countries) funds AI/automation projects via MIRAI and builds solutions in-house through its Digital Hub, with €120m EIB financing for digitalisation.",
+        "problem": "Business units generate more digitalisation demand than the Digital Hub and IT can deliver; co-financing forces prioritisation. HYPOTHESIS.",
+        "implication": "Efficiency and safety gains in construction/water/energy delayed; digital projects outsourced at higher cost. HYPOTHESIS."
+      },
+      "whyNow": {
+        "trigger": "MIRAI second edition and new divisional CIO (Sep 2025); record FY2025 results.",
+        "timing": "New-in-role executives typically set agendas within 12 months. HYPOTHESIS.",
+        "urgency": "Public digitalisation commitments tied to EIB financing. HYPOTHESIS."
+      },
+      "whyCognition": {
+        "customerPain": "In-house development capacity limits digital project throughput.",
+        "cognitionCapability": "Devin acts as additional engineering capacity for the Digital Hub — building and maintaining internal tools, integrations and automation.",
+        "businessOutcome": "More MIRAI projects delivered per edition at lower cost. TARGET METRIC TBD."
+      },
+      "validation": {
+        "situation": { "status": "Confirmed", "evidence": "ACCIONA FY2025 results, IMNOVATION, EIB press release." },
+        "problem": { "status": "Hypothesis", "evidence": "None." },
+        "implication": { "status": "Hypothesis", "evidence": "None." },
+        "whyNow": { "status": "Hypothesis", "evidence": "New CIO appointment is fact (LinkedIn, medium confidence); urgency inferred." },
+        "whyCognition": { "status": "Hypothesis", "evidence": "No conversation yet." }
+      },
+      "discoveryQuestions": {
+        "situation": ["How large is the Digital Hub and how is work split between in-house and partners?", "How many MIRAI projects were selected vs. proposed?"],
+        "problem": ["What limits the number of MIRAI projects per edition?", "Which technologies are hardest to staff?"],
+        "implication": ["What business value is left on the table by unfunded projects?", "How do BUs react when digital projects are delayed?"],
+        "whyNow": ["What are the priorities for the new Infrastructure & Construction CIO?", "How is the EIB loan deployed over time?"],
+        "whyCognition": ["Have you evaluated AI coding tools? What was the result?", "What governance would an autonomous engineering agent need at ACCIONA?"]
       }
     }
   }

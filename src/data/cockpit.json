@@ -1,14 +1,62 @@
 [
   {
-    "id": "mapfre-action-1",
+    "id": "act-bkt-duran",
     "priority": 1,
+    "accountId": "bankinter",
+    "opportunityId": "bkt-opp-ia-first-eng",
+    "stakeholderId": "bkt-duran",
+    "signal": "Copilot deployed to all employees (Apr 2026) — IA First moving to scale",
+    "whyThisMatters": "Strongest Why Now in the portfolio: CEO-sponsored AI programme, a named AI transformation executive who was previously CIO, and a fresh public milestone to anchor outreach.",
+    "recommendedAction": "Send a direct LinkedIn/email message to José Miguel Durán proposing a 30-min session on the step beyond Copilot: autonomous software engineering under bank controls.",
+    "suggestedMessage": "José Miguel, enhorabuena por el despliegue de Copilot en todo Bankinter dentro de IA First. Trabajo con bancos que están dando el siguiente paso: agentes que ejecutan tareas de ingeniería completas (no solo asisten) dentro de sus controles. ¿Tendría sentido una sesión de 30 minutos para contrastar cómo encajaría con la cartera de proyectos de IA First?",
+    "expectedOutcome": "Discovery meeting booked; validate Problem (delivery bottleneck) and identify current CIO."
+  },
+  {
+    "id": "act-cabk-sanchez",
+    "priority": 2,
+    "accountId": "caixabank",
+    "opportunityId": "cabk-opp-tech-capacity",
+    "stakeholderId": "cabk-sanchez",
+    "signal": "CaixaBank Tech building agent-based cognitive platform; hiring 500 devs/quarter target",
+    "whyThisMatters": "Technical evaluator role explicitly chartered for emerging technologies; entry point that avoids competing with the internal business-agent platform.",
+    "recommendedAction": "Request a technical briefing with the CTO Office Emerging Technologies team; bring a regulated-banking deployment architecture.",
+    "suggestedMessage": "Raúl, he seguido el trabajo de CaixaBank Tech en plataformas cognitivas y agentes. Cognition se centra en un dominio complementario: agentes de ingeniería de software que entregan tareas completas en vuestros repositorios y bajo vuestros controles. ¿Os interesaría una sesión técnica de evaluación?",
+    "expectedOutcome": "Technical evaluator engaged; learn decision criteria (DORA, model risk, code provenance)."
+  },
+  {
+    "id": "act-mapfre-security",
+    "priority": 3,
     "accountId": "mapfre",
-    "opportunityId": "mapfre-opportunity-1",
-    "stakeholderId": "mapfre-stakeholder-1",
-    "signal": "PLACEHOLDER — research pending",
-    "whyThisMatters": "PLACEHOLDER — research pending",
-    "recommendedAction": "PLACEHOLDER — research pending",
-    "suggestedMessage": "PLACEHOLDER — research pending",
-    "expectedOutcome": "PLACEHOLDER — research pending"
+    "opportunityId": "mapfre-opp-reef",
+    "stakeholderId": "mapfre-bernal",
+    "signal": "CTDO publicly states AI tools discarded for security/bias; REEF rollout mid-programme",
+    "whyThisMatters": "Group buyer has published her rejection criteria — prepare to pass them before any outreach; Transformation director is a lower-friction entry point.",
+    "recommendedAction": "Prepare a one-page security & deployment brief (data isolation, audit trail, model governance) and request an intro conversation with J.L. Bernal on REEF/legacy modernisation.",
+    "suggestedMessage": "José Luis, tu experiencia liderando la modernización en MAPFRE USA y ahora en Transformación de Grupo encaja con lo que vemos en aseguradoras: la capacidad de ingeniería limita el ritmo de despliegue de plataformas como REEF. ¿Podemos compartir 30 minutos sobre cómo agentes de ingeniería autónomos están acelerando migraciones bajo criterios estrictos de seguridad?",
+    "expectedOutcome": "Intro meeting; validate Problem (engineering capacity for REEF rollout)."
+  },
+  {
+    "id": "act-ama-cloud-lead",
+    "priority": 4,
+    "accountId": "amadeus",
+    "opportunityId": "ama-opp-cloud",
+    "stakeholderId": "ama-roy",
+    "signal": "FY2025: ~50% of €1.4bn R&D on implementations and migration",
+    "whyThisMatters": "Quantified capacity hypothesis, but no champion and no identified programme lead — stakeholder mapping is the gap.",
+    "recommendedAction": "Map the cloud-migration programme leadership under Sylvain Roy (LinkedIn, conference talks) and identify a technical entry point before executive outreach.",
+    "suggestedMessage": "(Internal task — no external message until programme lead is identified.)",
+    "expectedOutcome": "Two named engineering leaders added to the stakeholder map."
+  },
+  {
+    "id": "act-ana-carballo",
+    "priority": 5,
+    "accountId": "acciona",
+    "opportunityId": "ana-opp-digital-hub",
+    "stakeholderId": "ana-carballo",
+    "signal": "New divisional CIO (Sep 2025) in the division running MIRAI",
+    "whyThisMatters": "New-in-role executive window; MIRAI gives a funding mechanism for a pilot.",
+    "recommendedAction": "Outreach with a MIRAI-aligned pilot idea (automation/document-processing tooling built by engineering agents).",
+    "suggestedMessage": "José Manuel, enhorabuena por el nuevo rol como CIO de Infraestructuras. Con MIRAI financiando proyectos de IA y automatización por unidad de negocio, la capacidad de desarrollo suele ser el cuello de botella. ¿Te interesaría ver cómo agentes de ingeniería autónomos multiplican la capacidad del Digital Hub?",
+    "expectedOutcome": "First meeting; validate Digital Hub capacity constraint."
   }
 ]
