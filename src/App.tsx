@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link, NavLink, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, NavLink, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { Account, Evidence, MeetingNote, Opportunity, Stakeholder, ValidationStatus } from './types';
 import { accountById, dataset as sourceDataset, opportunitiesForAccount, signalsForAccount, stakeholderById, stakeholdersForAccount } from './data';
 import { isFullyQualified, threeWhysStatus, validationKeys } from './lib/threeWhys';
@@ -127,9 +127,9 @@ function OpportunitiesPage({ dataset }: { dataset: typeof sourceDataset }) {
 }
 
 function OpportunityDetail({ dataset, setOverride, meetingNotes, saveMeetingNote }: { dataset: typeof sourceDataset; setOverride: (id: string, path: string, value: unknown) => void; meetingNotes: MeetingNote[]; saveMeetingNote: (note: MeetingNote) => void }) {
-  const { id = '' } = useParams(); const raw = dataset.opportunities.find((item) => item.id === id); const [tab, setTab] = useState(() => { const h = decodeURIComponent(location.hash.replace('#', '')); return tabs.includes(h) ? h : 'Overview'; });
+  const { id = '' } = useParams(); const raw = dataset.opportunities.find((item) => item.id === id); const [params, setParams] = useSearchParams(); const requested = params.get('tab') || ''; const tab = tabs.includes(requested) ? requested : 'Overview';
   if (!raw) return <NotFound />; const op = raw; const account = dataset.accounts.find((item) => item.id === op.accountId)!; const people = op.stakeholderIds.map((sid) => dataset.stakeholders.find((item) => item.id === sid)).filter(Boolean) as Stakeholder[];
-  const selectTab = (next: string) => { setTab(next); window.history.replaceState({}, '', `${window.location.pathname}#${next}`); };
+  const selectTab = (next: string) => setParams({ tab: next }, { replace: true });
   return <><PageHeader eyebrow={`OPPORTUNITY / ${op.stage.toUpperCase()}`} title={op.name} subtitle={`${account.name} · ${op.businessUnit} · ${op.useCase}`} action={<Link className="button secondary" to="/opportunities">← Pipeline</Link>} /><div className="op-header-strip"><Badge>{op.stage}</Badge><Traffic op={op} /><Inconsistent op={op} /><span className="confidence">Confidence: {op.confidence}</span></div><div className="tab-bar opportunity-tabs">{tabs.map((item) => <button className={tab === item ? 'selected' : ''} onClick={() => selectTab(item)} key={item}>{item}</button>)}</div>
     {tab === 'Overview' && <OpportunityOverview op={op} people={people} setOverride={setOverride} dataset={dataset} />}
     {tab === '3 WHYS' && <ThreeWhysPanel op={op} setOverride={setOverride} />}
