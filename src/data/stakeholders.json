@@ -1,0 +1,38 @@
+[
+  {
+    "id": "mapfre-stakeholder-1",
+    "accountId": "mapfre",
+    "name": "PLACEHOLDER — research pending",
+    "title": "PLACEHOLDER — research pending",
+    "functionArea": "CIO",
+    "responsibilities": "PLACEHOLDER — research pending",
+    "strategicPriorities": "PLACEHOLDER — research pending",
+    "technologyPriorities": "PLACEHOLDER — research pending",
+    "relevantInitiatives": ["PLACEHOLDER — research pending"],
+    "publicStatements": [
+      {
+        "claim": "PLACEHOLDER — research pending",
+        "source": "PLACEHOLDER — research pending",
+        "url": "",
+        "date": "2025-01-01",
+        "category": "UNKNOWN",
+        "confidence": "Low"
+      }
+    ],
+    "recentActivity": "PLACEHOLDER — research pending",
+    "potentialPain": "PLACEHOLDER — research pending",
+    "cognitionRelevance": "PLACEHOLDER — research pending",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "PLACEHOLDER — research pending",
+        "source": "PLACEHOLDER — research pending",
+        "url": "",
+        "date": "2025-01-01",
+        "category": "UNKNOWN",
+        "confidence": "Low"
+      }
+    ]
+  }
+]

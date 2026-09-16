@@ -1,0 +1,69 @@
+[
+  {
+    "id": "mapfre-opportunity-1",
+    "accountId": "mapfre",
+    "name": "PLACEHOLDER — research pending",
+    "businessUnit": "PLACEHOLDER — research pending",
+    "initiativeId": "mapfre-initiative-1",
+    "useCase": "PLACEHOLDER — research pending",
+    "potentialValue": "TBD — VALIDATION REQUIRED",
+    "stage": "Identified",
+    "stakeholderIds": ["mapfre-stakeholder-1"],
+    "championId": "",
+    "economicBuyerId": "",
+    "competition": "PLACEHOLDER — research pending",
+    "meddpicc": {
+      "metrics": "PLACEHOLDER — research pending",
+      "economicBuyer": "PLACEHOLDER — research pending",
+      "decisionCriteria": "PLACEHOLDER — research pending",
+      "decisionProcess": "PLACEHOLDER — research pending",
+      "paperProcess": "PLACEHOLDER — research pending",
+      "identifyPain": "PLACEHOLDER — research pending",
+      "champion": "PLACEHOLDER — research pending",
+      "competition": "PLACEHOLDER — research pending"
+    },
+    "nextAction": "PLACEHOLDER — research pending",
+    "evidence": [
+      {
+        "claim": "PLACEHOLDER — research pending",
+        "source": "PLACEHOLDER — research pending",
+        "url": "",
+        "date": "2025-01-01",
+        "category": "UNKNOWN",
+        "confidence": "Low"
+      }
+    ],
+    "confidence": "Low",
+    "threeWhys": {
+      "whyAnything": {
+        "situation": "PLACEHOLDER — research pending",
+        "problem": "PLACEHOLDER — research pending",
+        "implication": "PLACEHOLDER — research pending"
+      },
+      "whyNow": {
+        "trigger": "PLACEHOLDER — research pending",
+        "timing": "PLACEHOLDER — research pending",
+        "urgency": "PLACEHOLDER — research pending"
+      },
+      "whyCognition": {
+        "customerPain": "PLACEHOLDER — research pending",
+        "cognitionCapability": "PLACEHOLDER — research pending",
+        "businessOutcome": "PLACEHOLDER — research pending"
+      },
+      "validation": {
+        "situation": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" },
+        "problem": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" },
+        "implication": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" },
+        "whyNow": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" },
+        "whyCognition": { "status": "Hypothesis", "evidence": "PLACEHOLDER — research pending" }
+      },
+      "discoveryQuestions": {
+        "situation": ["What is happening today?"],
+        "problem": ["Where does this create friction?"],
+        "implication": ["What happens if this remains unresolved?"],
+        "whyNow": ["What makes this urgent now?"],
+        "whyCognition": ["What would a successful capability unlock?"]
+      }
+    }
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "mapfre-action-1",
+    "priority": 1,
+    "accountId": "mapfre",
+    "opportunityId": "mapfre-opportunity-1",
+    "stakeholderId": "mapfre-stakeholder-1",
+    "signal": "PLACEHOLDER — research pending",
+    "whyThisMatters": "PLACEHOLDER — research pending",
+    "recommendedAction": "PLACEHOLDER — research pending",
+    "suggestedMessage": "PLACEHOLDER — research pending",
+    "expectedOutcome": "PLACEHOLDER — research pending"
+  }
+]

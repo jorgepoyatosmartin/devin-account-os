@@ -1,0 +1,68 @@
+[
+  {
+    "id": "mapfre",
+    "name": "MAPFRE",
+    "sector": "Insurance",
+    "headquarters": "Madrid, Spain",
+    "overview": "PLACEHOLDER — research pending",
+    "revenue": "PLACEHOLDER — research pending",
+    "employees": "PLACEHOLDER — research pending",
+    "geographicFootprint": "PLACEHOLDER — research pending",
+    "businessUnits": ["PLACEHOLDER — research pending"],
+    "productsServices": ["PLACEHOLDER — research pending"],
+    "strategicPriorities": ["PLACEHOLDER — research pending"],
+    "financialPerformance": "PLACEHOLDER — research pending",
+    "growthPriorities": ["PLACEHOLDER — research pending"],
+    "costRestructuringInitiatives": ["PLACEHOLDER — research pending"],
+    "mnaActivity": ["PLACEHOLDER — research pending"],
+    "companyEvidence": [
+      {
+        "claim": "PLACEHOLDER — research pending",
+        "source": "PLACEHOLDER — research pending",
+        "url": "",
+        "date": "2025-01-01",
+        "category": "UNKNOWN",
+        "confidence": "Low"
+      }
+    ],
+    "initiatives": [
+      {
+        "id": "mapfre-initiative-1",
+        "name": "PLACEHOLDER — research pending",
+        "area": "AI",
+        "businessObjective": "PLACEHOLDER — research pending",
+        "evidence": [
+          {
+            "claim": "PLACEHOLDER — research pending",
+            "source": "PLACEHOLDER — research pending",
+            "url": "",
+            "date": "2025-01-01",
+            "category": "UNKNOWN",
+            "confidence": "Low"
+          }
+        ],
+        "cognitionRelevance": "PLACEHOLDER — research pending"
+      }
+    ],
+    "useCases": [
+      {
+        "id": "mapfre-use-case-1",
+        "name": "PLACEHOLDER — research pending",
+        "whyAnything": "PLACEHOLDER — research pending",
+        "whyNow": "PLACEHOLDER — research pending",
+        "whyCognition": "PLACEHOLDER — research pending",
+        "businessOutcome": "PLACEHOLDER — research pending",
+        "opportunityId": "mapfre-opportunity-1"
+      }
+    ],
+    "whitespace": [
+      {
+        "area": "PLACEHOLDER — research pending",
+        "currentRelationship": "PLACEHOLDER — research pending",
+        "existingUseCases": "PLACEHOLDER — research pending",
+        "untappedAreas": "PLACEHOLDER — research pending",
+        "potentialOpportunity": "PLACEHOLDER — research pending"
+      }
+    ]
+  }
+]
