@@ -1,6 +1,6 @@
 // Headless bot playthrough to validate balance: no dead ends, reasonable duration.
 import { COMPANIES, PARTNERS } from '../src/game/data';
-import { capacity, engage, hire, investPartner, newGame, oppFor, prospect, research, respondDemand, runStage, tick, hasRole } from '../src/game/engine';
+import { capacity, engage, hire, investPartner, oppFor, prospect, research, respondDemand, runStage, hasRole } from '../src/game/engine';
 import type { GameState } from '../src/game/types';
 
 export function step(s: GameState): boolean {

@@ -146,13 +146,10 @@ function makeOpportunity(s: GameState, c: CompanyDef, source: Opportunity['sourc
 }
 function assignOwners(s: GameState) {
   const aes = s.employees.filter(e => e.role === 'ae');
-  for (const o of s.opportunities) {
-    if (o.ownerId && !aes.some(a => a.id === o.ownerId)) o.ownerId = null;
-    if (!o.ownerId) {
-      const free = aes.find(a => s.opportunities.filter(x => x.ownerId === a.id).length < 2);
-      if (free) o.ownerId = free.id;
-    }
-  }
+  const waiting = (o: Opportunity) => o.stage === 'Negotiation' || o.stage === 'Closing';
+  const ranked = [...s.opportunities].sort((a, b) => Number(waiting(a)) - Number(waiting(b)) || b.value - a.value);
+  for (const o of s.opportunities) o.ownerId = null;
+  ranked.slice(0, aes.length * 2).forEach((o, i) => { o.ownerId = aes[Math.floor(i / 2)].id; });
 }
 
 // ---------- Player actions ----------
@@ -468,6 +465,14 @@ export function tick(s: GameState, quiet = false) {
     s.lastSalaryDay = s.day;
     const burn = monthlyBurn(s);
     if (burn > 0) { s.cash -= burn; if (!quiet) log(s, `Payroll: −€${fmtK(burn)}.`, 'money'); }
+    if (s.cash < -burn && s.employees.length) {
+      const gone = s.employees.pop()!;
+      s.reputation = Math.max(0, s.reputation - 3);
+      log(s, `Missed payroll: ${gone.name} (${ROLES[gone.role].name}) left the company. −3 reputation.`, 'bad');
+      s.focusMax = 10 + count(s, 'sdr') + count(s, 'ae') * 2;
+      s.focus = Math.min(s.focus, s.focusMax);
+      assignOwners(s);
+    }
   }
   // quarter reset
   if (s.day % 90 === 0) s.quarterClosed = 0;
@@ -517,6 +522,7 @@ export function tick(s: GameState, quiet = false) {
   // AE automation: owned deals progress by themselves (not negotiation / closing)
   const aes = count(s, 'ae');
   if (aes > 0) {
+    assignOwners(s);
     s.aeTimer++;
     if (s.aeTimer >= 5) {
       s.aeTimer = 0;
@@ -560,7 +566,7 @@ export function applyOffline(s: GameState, nowMs: number) {
 export interface Recommendation { color: 'blue' | 'yellow' | 'green' | 'red'; text: string; target?: { tab: string; id?: string } }
 export function recommendations(s: GameState): Recommendation[] {
   const r: Recommendation[] = [];
-  if (s.cash < monthlyBurn(s) * 2 && monthlyBurn(s) > 0) r.push({ color: 'red', text: `Cash is tight (€${fmtK(s.cash)}). Close a deal soon or payroll will hurt.`, target: { tab: 'pipeline' } });
+  if (s.cash < monthlyBurn(s) * 2 && monthlyBurn(s) > 0) r.push({ color: 'red', text: `Cash is tight (€${fmtK(s.cash)}). Below −€${fmtK(monthlyBurn(s))} at payroll, your last hire walks.`, target: { tab: 'pipeline' } });
   // deals ready to close / negotiate
   for (const o of s.opportunities) {
     const c = company(o.companyId);
@@ -576,7 +582,7 @@ export function recommendations(s: GameState): Recommendation[] {
     if (!hasRole(s, 'ae') && s.cash > 40000) r.push({ color: 'yellow', text: 'Hire an Enterprise AE — required by most enterprise accounts', target: { tab: 'team' } });
     else if (!hasRole(s, 'se') && s.cash > 35000) r.push({ color: 'yellow', text: 'Hire a Sales Engineer — technical meetings are weak without one', target: { tab: 'team' } });
     else if (!hasRole(s, 'sdr') && s.cash > 25000) r.push({ color: 'yellow', text: 'Hire an SDR to automate prospecting', target: { tab: 'team' } });
-    if (!s.partners.some(p => p.active) && s.cash > 60000) r.push({ color: 'yellow', text: 'Activate a partner — some accounts only buy through partners', target: { tab: 'partners' } });
+    if (!s.partners.some(p => p.active) && s.cash > 60000 && PARTNERS.some(p => s.reputation >= p.repReq && s.cash >= p.cost)) r.push({ color: 'yellow', text: 'Activate a partner — some accounts only buy through partners', target: { tab: 'partners' } });
   }
   if (s.opportunities.length < capacity(s)) {
     const avail = COMPANIES.filter(c => s.accounts[c.id].status === 'available' && !oppFor(s, c.id) && s.day >= s.accounts[c.id].cooldownUntil).sort((a, b) => b.acv - a.acv);
