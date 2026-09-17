@@ -127,7 +127,7 @@ export function suggestAction(view: Pick<PgRecord, 'status' | 'salesPlay' | 'bus
   if ((path === 'Champion introduction' || path === 'Internal introduction') && via) return `[SALES HYPOTHESIS] Ask ${via.name} for an introduction to ${stakeholder.name} (${view.salesPlay})`;
   if (path === 'Executive introduction' && via) return `[SALES HYPOTHESIS] Ask ${via.name} (EB) to sponsor a meeting with ${stakeholder.name}`;
   if (path === 'Existing opportunity' && opportunity) return `[SALES HYPOTHESIS] Invite ${stakeholder.name} to the next working session on ${opportunity.name}`;
-  if (path === 'Existing customer relationship') return `[SALES HYPOTHESIS] Schedule discovery with ${stakeholder.name} to validate ${view.businessPain || stakeholder.potentialPain || VALIDATION}`;
+  if (path === 'Existing customer relationship') return `[SALES HYPOTHESIS] Schedule discovery with ${stakeholder.name} to validate ${known(view.businessPain) ? view.businessPain : known(stakeholder.potentialPain) ? stakeholder.potentialPain : 'the potential pain (still UNKNOWN)'}`;
   const reference = initiative?.name || signals.sort((a, b) => b.date.localeCompare(a.date))[0]?.signal || 'the account priority';
   return `[SALES HYPOTHESIS] Send personalized LinkedIn message to ${stakeholder.name} referencing ${reference}`;
 }
