@@ -1,0 +1,40 @@
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import type { Dataset } from '../types';
+import { missingPowerRoles, singleThreaded } from '../lib/coverage';
+import { weakWhys } from '../lib/threeWhys';
+import { Badge } from './ui';
+
+type Result = { type: string; label: string; detail?: string; href: string };
+const examples = ['what should I do today', 'which stakeholders am I missing in bankinter', 'why anything validated but why now weak', 'prepare me for my meeting with CTO of bankinter'];
+
+export default function CommandBar({ dataset, onClose }: { dataset: Dataset; onClose: () => void }) {
+  const [query, setQuery] = useState(''); const navigate = useNavigate();
+  useEffect(() => { const handle = (event: KeyboardEvent) => { if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); onClose(); } if (event.key === 'Escape') onClose(); }; window.addEventListener('keydown', handle); return () => window.removeEventListener('keydown', handle); }, [onClose]);
+  const accountFor = (text: string) => {
+    const normalized = text.toLowerCase();
+    return dataset.accounts.find((account) =>
+      normalized.includes(account.name.toLowerCase()) ||
+      normalized.includes(account.id.toLowerCase()) ||
+      (account.id === 'caixabank' && normalized.includes('caixa')),
+    );
+  };
+  const results = useMemo<Result[]>(() => {
+    const text = query.trim().toLowerCase(); if (!text) return [];
+    const account = accountFor(text); const list: Result[] = [];
+    if (text.includes('what should i do today')) dataset.cockpitActions.slice().sort((a, b) => a.priority - b.priority).forEach((action) => list.push({ type: 'ACTION', label: action.recommendedAction, detail: action.signal, href: action.opportunityId ? `/opportunities/${action.opportunityId}` : '/' }));
+    else if (text.includes('find pipeline opportunities')) dataset.opportunities.filter((op) => !account || op.accountId === account.id).forEach((op) => list.push({ type: 'OPPORTUNITY', label: op.name, detail: op.stage, href: `/opportunities/${op.id}` }));
+    else if (text.includes('strongest strategic initiatives')) (account ? account.initiatives : dataset.accounts.flatMap((item) => item.initiatives)).slice().sort((a, b) => b.evidence.filter((e) => e.category === 'FACT').length - a.evidence.filter((e) => e.category === 'FACT').length).forEach((item) => list.push({ type: 'INITIATIVE', label: item.name, detail: `${item.evidence.filter((e) => e.category === 'FACT').length} FACT evidence`, href: `/accounts/${account?.id || dataset.accounts.find((a) => a.initiatives.some((i) => i.id === item.id))?.id || ''}` }));
+    else if (text.includes('which stakeholders am i missing')) { const people = dataset.stakeholders.filter((item) => !account || item.accountId === account.id); missingPowerRoles(people).forEach((role) => list.push({ type: 'MISSING ROLE', label: role, detail: account ? `${account.name} · ${singleThreaded(account.id, people) ? 'single-threaded' : 'coverage present'}` : '', href: `/power-charts${account ? `?account=${account.id}` : ''}` })); }
+    else if (text.includes('why anything validated but why now weak')) dataset.opportunities.filter((op) => weakWhys(op).whyAnything === 'strong' && weakWhys(op).whyNow === 'weak').forEach((op) => list.push({ type: '3 WHYS', label: op.name, detail: 'Why Anything strong · Why Now weak', href: `/opportunities/${op.id}?tab=3%20WHYS` }));
+    else if (text.includes('why anything and why now strong but why cognition weak')) dataset.opportunities.filter((op) => { const weak = weakWhys(op); return weak.whyAnything === 'strong' && weak.whyNow === 'strong' && weak.whyCognition === 'weak'; }).forEach((op) => list.push({ type: '3 WHYS', label: op.name, detail: 'Why Cognition weak', href: `/opportunities/${op.id}?tab=3%20WHYS` }));
+    else if (text.includes('prepare me for my meeting')) { const role = ['cto', 'cio', 'ceo', 'cdo'].find((item) => text.includes(item)); const person = dataset.stakeholders.find((item) => (!account || item.accountId === account.id) && (!role || item.title.toLowerCase().includes(role))); if (person) list.push({ type: 'STAKEHOLDER', label: person.name, detail: `${person.title} · Meeting Prep`, href: `/stakeholders/${person.id}` }); }
+    else if (text.includes('which devin use cases')) (account ? account.useCases : dataset.accounts.flatMap((item) => item.useCases)).slice().sort((a, b) => (a.relevance || 'NOT RELEVANT').localeCompare(b.relevance || 'NOT RELEVANT')).forEach((item) => list.push({ type: 'USE CASE', label: item.name, detail: item.relevance || 'UNKNOWN', href: '/use-cases' }));
+    else if (text.includes('where am i single-threaded')) dataset.accounts.filter((item) => singleThreaded(item.id, dataset.stakeholders)).forEach((item) => list.push({ type: 'ACCOUNT', label: item.name, detail: 'single-threaded coverage', href: `/accounts/${item.id}` }));
+    else if (text.includes('weakest 3 whys')) dataset.opportunities.slice().sort((a, b) => [a.threeWhys.validation.situation, a.threeWhys.validation.problem, a.threeWhys.validation.implication, a.threeWhys.validation.whyNow, a.threeWhys.validation.whyCognition].filter((row) => !['Confirmed', 'Validated'].includes(row.status)).length - [b.threeWhys.validation.situation, b.threeWhys.validation.problem, b.threeWhys.validation.implication, b.threeWhys.validation.whyNow, b.threeWhys.validation.whyCognition].filter((row) => !['Confirmed', 'Validated'].includes(row.status)).length).forEach((op) => list.push({ type: '3 WHYS', label: op.name, detail: 'validation gaps', href: `/opportunities/${op.id}?tab=3%20WHYS` }));
+    else dataset.accounts.flatMap((accountItem) => [{ type: 'ACCOUNT', label: accountItem.name, detail: accountItem.overview, href: `/accounts/${accountItem.id}` }, ...accountItem.initiatives.map((item) => ({ type: 'INITIATIVE', label: item.name, detail: accountItem.name, href: `/accounts/${accountItem.id}` }))]).concat(dataset.stakeholders.map((item) => ({ type: 'STAKEHOLDER', label: item.name, detail: item.title, href: `/stakeholders/${item.id}` })), dataset.opportunities.map((item) => ({ type: 'OPPORTUNITY', label: item.name, detail: item.stage, href: `/opportunities/${item.id}` }))).filter((item) => `${item.label} ${item.detail}`.toLowerCase().includes(text)).slice(0, 12).forEach((item) => list.push(item));
+    return list.slice(0, 12);
+  }, [dataset, query]);
+  const open = (href: string) => { onClose(); navigate(href); };
+  return <div className="command-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><div className="command-dialog"><div className="command-head"><span>⌘K COMMAND BAR</span><Badge>Rule-based over local data</Badge><button onClick={onClose}>ESC</button></div><input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && results[0]) open(results[0].href); }} placeholder="Ask about accounts, pipeline, coverage…" />{!query && <div className="command-examples"><small>Try an example</small>{examples.map((item) => <button onClick={() => setQuery(item)} key={item}>{item}</button>)}</div>}<div className="command-results">{results.map((result) => <button className="command-result" key={`${result.type}-${result.label}`} onClick={() => open(result.href)}><Badge>{result.type}</Badge><span><strong>{result.label}</strong><small>{result.detail}</small></span><b>↵</b></button>)}{query && !results.length && <div className="muted command-empty">No matching local intelligence.</div>}</div></div></div>;
+}

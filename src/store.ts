@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
-import type { Dataset, MeetingNote } from './types';
+import type { Dataset, MeetingNote, Task } from './types';
 
 export type OverrideMap = Record<string, unknown>;
 const OVERRIDES_KEY = 'cognition-pipeline-overrides';
 const NOTES_KEY = 'cognition-pipeline-meeting-notes';
+const TASKS_KEY = 'cognition-pipeline-tasks';
 
 const load = <T,>(key: string, fallback: T): T => {
   try {
@@ -44,6 +45,7 @@ export function mergeDataset(dataset: Dataset, overrides: OverrideMap): Dataset 
 export function useOverrides() {
   const [overrides, setOverrides] = useState<OverrideMap>(() => load(OVERRIDES_KEY, {}));
   const [meetingNotes, setMeetingNotes] = useState<MeetingNote[]>(() => load(NOTES_KEY, []));
+  const [tasks, setTasks] = useState<Task[]>(() => load(TASKS_KEY, []));
   const setOverride = useCallback((entityId: string, path: string, value: unknown) => {
     setOverrides((current) => {
       const next = { ...current, [overrideKey(entityId, path)]: value };
@@ -61,8 +63,35 @@ export function useOverrides() {
   const reset = useCallback(() => {
     localStorage.removeItem(OVERRIDES_KEY);
     localStorage.removeItem(NOTES_KEY);
+    localStorage.removeItem(TASKS_KEY);
     setOverrides({});
     setMeetingNotes([]);
+    setTasks([]);
   }, []);
-  return { overrides, setOverride, meetingNotes, saveMeetingNote, reset };
+  const persistTasks = useCallback((next: Task[]) => {
+    localStorage.setItem(TASKS_KEY, JSON.stringify(next));
+    setTasks(next);
+  }, []);
+  const addTask = useCallback((task: Task) => {
+    setTasks((current) => {
+      const next = [task, ...current];
+      localStorage.setItem(TASKS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+  const toggleTask = useCallback((id: string) => {
+    setTasks((current) => {
+      const next = current.map((task) => task.id === id ? { ...task, status: (task.status === 'Done' ? 'Open' : 'Done') as Task['status'] } : task);
+      localStorage.setItem(TASKS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+  const deleteTask = useCallback((id: string) => {
+    setTasks((current) => {
+      const next = current.filter((task) => task.id !== id);
+      localStorage.setItem(TASKS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+  return { overrides, setOverride, meetingNotes, saveMeetingNote, tasks, addTask, toggleTask, deleteTask, reset };
 }
