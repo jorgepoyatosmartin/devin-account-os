@@ -195,7 +195,7 @@ b { font-weight: 600; }
 .big-nums div { display: flex; flex-direction: column; }
 .big-nums span { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
 .big-nums b { font-size: 26px; }
-.gains { text-align: left; display: inline-block; margin: 8px auto 18px; }
+.gains { text-align: left; display: table; margin: 8px auto 18px; }
 .gains li { padding: 3px 0; color: #cbd5e1; }
 .gains li.hl { color: #ffd75e; font-weight: 600; }
 .goal { background: var(--card2); padding: 10px; border-radius: 10px; margin: 14px 0; }
