@@ -191,6 +191,7 @@ export interface Stakeholder {
   recommendedNextAction?: string;
   useCaseIds?: string[];
   // Original Excel columns (ACCIONA import) — preserved verbatim
+  territoryPlan?: { role: string; title: string; reportsTo: string | null; source: string };
   excel?: { person: string; title: string; level: string; businessUnit: string; salesPlay: string; action: string; whyHighTarget: string };
 }
 

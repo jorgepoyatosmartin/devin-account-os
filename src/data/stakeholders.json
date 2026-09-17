@@ -52,7 +52,7 @@
     "id": "mapfre-escriva",
     "accountId": "mapfre",
     "name": "Vanessa Escrivá García",
-    "title": "Global CIO (Territory Plan) · Group Chief Technology and Data Officer per MAPFRE 2026 announcement (PUBLIC RESEARCH)",
+    "title": "Global CIO · public: Group Chief Technology and Data Officer per MAPFRE 2026 announcement",
     "functionArea": "CIO / CTO / AI-Data leadership",
     "responsibilities": "Group technology and data, including AI strategy and the AI Manifesto governance.",
     "strategicPriorities": "Value from AI for customer and business; hybrid AI model; information security and bias controls.",
@@ -94,9 +94,9 @@
         "confidence": "High"
       },
       {
-        "claim": "Listed as Global CIO in the MAPFRE Territory Plan",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "Vanessa Escrivá — Global CIO",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
@@ -112,7 +112,13 @@
     "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
     "useCaseIds": [
       "mapfre-uc-1"
-    ]
+    ],
+    "territoryPlan": {
+      "role": "-",
+      "title": "Global CIO",
+      "reportsTo": null,
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "mapfre-delicado",
@@ -140,6 +146,13 @@
         "date": "2026-08",
         "category": "SOURCE-BASED INTERPRETATION",
         "confidence": "Medium"
+      },
+      {
+        "claim": "Grouped under \"Countries CIOs\" box of the Territory Plan power chart (interpretation — not named in the deck)",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
       }
     ],
     "powerRole": "Unknown",
@@ -151,13 +164,14 @@
     "dataOrigin": "PUBLIC RESEARCH",
     "lastUpdated": "2026-09-17",
     "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
-    "useCaseIds": []
+    "useCaseIds": [],
+    "reportsTo": "mapfre-countries-cios"
   },
   {
     "id": "mapfre-bernal",
     "accountId": "mapfre",
     "name": "José Luis Bernal Zúñiga",
-    "title": "Transformation Director (Territory Plan) · Transformation Expert Director, MAPFRE Group (PUBLIC RESEARCH)",
+    "title": "Transformation Director · public: Transformation Expert Director, MAPFRE Group",
     "functionArea": "Digital / Innovation",
     "responsibilities": "Aligning transformation initiatives with global strategy; AI and digital innovation in insurance.",
     "strategicPriorities": "AI-driven operational efficiency and transformation.",
@@ -181,23 +195,30 @@
         "confidence": "Medium"
       },
       {
-        "claim": "Designated Champion in the MAPFRE Territory Plan",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "José Luís Bernal — Transformation Director — Champion",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
     ],
     "powerRole": "Champion",
     "roleIsHypothesis": false,
-    "level": "Director",
+    "level": "Senior Leadership",
     "businessUnit": "Digital / Innovation",
     "influence": "Unknown",
     "championPotential": "High",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
     "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
-    "useCaseIds": []
+    "useCaseIds": [],
+    "reportsTo": "mapfre-escriva",
+    "territoryPlan": {
+      "role": "CHAMPION",
+      "title": "Transformation Director",
+      "reportsTo": "Vanessa Escrivá",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "cabk-gortazar",
@@ -715,7 +736,7 @@
     "id": "ana-rivero",
     "accountId": "acciona",
     "name": "Raúl Rivero",
-    "title": "CIO, ACCIONA",
+    "title": "CIO · public: CIO, ACCIONA",
     "functionArea": "CIO",
     "responsibilities": "Group IT function within the Digital Transformation area; architectures, governance, methodologies, organisation.",
     "strategicPriorities": "Aligning business and technology strategy; digital transformation.",
@@ -738,27 +759,43 @@
         "date": "2026-07",
         "category": "SOURCE-BASED INTERPRETATION",
         "confidence": "Medium"
+      },
+      {
+        "claim": "Raúl Rivero — CIO — C Level — Global (PG target #7)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
       }
     ],
     "powerRole": "Economic Buyer",
     "roleIsHypothesis": true,
-    "level": "Senior Leadership",
-    "businessUnit": "CIO",
+    "level": "Executive Committee",
+    "businessUnit": "Global",
     "influence": "Unknown",
     "championPotential": "Unknown",
-    "dataOrigin": "PUBLIC RESEARCH",
+    "dataOrigin": "ORIGINAL EXCEL DATA",
     "lastUpdated": "2026-09-17",
     "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
     "useCaseIds": [
       "ana-uc-1",
       "ana-uc-2"
-    ]
+    ],
+    "excel": {
+      "person": "Raúl Rivero",
+      "title": "CIO",
+      "level": "C Level",
+      "businessUnit": "Global",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    }
   },
   {
     "id": "ana-carballo",
     "accountId": "acciona",
     "name": "José Manuel Carballo Fernández",
-    "title": "CIO, ACCIONA Infrastructure & Construction",
+    "title": "ACCIONA Infrastructure & Construction · public: CIO, ACCIONA Infrastructure & Construction",
     "functionArea": "CIO (business unit)",
     "responsibilities": "Technology for the Infrastructure & Construction division (home of the MIRAI programme).",
     "strategicPriorities": "UNKNOWN — VALIDATION REQUIRED",
@@ -780,20 +817,36 @@
         "date": "2026-07",
         "category": "SOURCE-BASED INTERPRETATION",
         "confidence": "Medium"
+      },
+      {
+        "claim": "José Manuel Carballo — ACCIONA Infrastructure & Construction — C Level — Infraestructura (PG target #5)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
       }
     ],
     "powerRole": "Champion",
     "roleIsHypothesis": true,
-    "level": "Senior Leadership",
-    "businessUnit": "CIO (business unit)",
+    "level": "Executive Committee",
+    "businessUnit": "Infraestructura",
     "influence": "Unknown",
     "championPotential": "Unknown",
-    "dataOrigin": "PUBLIC RESEARCH",
+    "dataOrigin": "ORIGINAL EXCEL DATA",
     "lastUpdated": "2026-09-17",
     "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
     "useCaseIds": [
       "ana-uc-1"
-    ]
+    ],
+    "excel": {
+      "person": "José Manuel Carballo",
+      "title": "ACCIONA Infrastructure & Construction",
+      "level": "C Level",
+      "businessUnit": "Infraestructura",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    }
   },
   {
     "id": "ana-serrano",
@@ -854,23 +907,30 @@
     "buyingRole": "Economic Buyer",
     "sources": [
       {
-        "claim": "Santiago Wiznez — CTTO; role in plan: Economic Buyer",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "Santiago Wiznez — CTTO — Economic Buyer",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
     ],
     "powerRole": "Economic Buyer",
     "roleIsHypothesis": false,
-    "level": "Executive Committee",
+    "level": "Senior Leadership",
     "businessUnit": "Technology",
     "influence": "Unknown",
     "championPotential": "Unknown",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
-    "recommendedNextAction": "Confirm details against the uploaded territory plan",
-    "useCaseIds": []
+    "recommendedNextAction": "Confirm current title and agenda via the Coach (Íñigo Lacave / Mario Encinar) before outreach",
+    "useCaseIds": [],
+    "reportsTo": "mapfre-escriva",
+    "territoryPlan": {
+      "role": "EB",
+      "title": "CTTO",
+      "reportsTo": "Vanessa Escrivá",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "mapfre-ledesma",
@@ -890,23 +950,30 @@
     "buyingRole": "Security",
     "sources": [
       {
-        "claim": "José Antonio Ledesma — CISO; role in plan: Security",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "José Antonio Ledesma — CISO",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
     ],
     "powerRole": "Security",
-    "roleIsHypothesis": false,
+    "roleIsHypothesis": true,
     "level": "Senior Leadership",
     "businessUnit": "Security",
     "influence": "Unknown",
     "championPotential": "Unknown",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
-    "recommendedNextAction": "Confirm details against the uploaded territory plan",
-    "useCaseIds": []
+    "recommendedNextAction": "Confirm current title and agenda via the Coach (Íñigo Lacave / Mario Encinar) before outreach",
+    "useCaseIds": [],
+    "reportsTo": "mapfre-escriva",
+    "territoryPlan": {
+      "role": "-",
+      "title": "CISO",
+      "reportsTo": "Vanessa Escrivá",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "mapfre-solanas",
@@ -926,9 +993,9 @@
     "buyingRole": "Influencer",
     "sources": [
       {
-        "claim": "Maribel Solanas — CDO; role in plan: Influencer",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "Maribel Solanas — CDO",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
@@ -941,8 +1008,15 @@
     "championPotential": "Unknown",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
-    "recommendedNextAction": "Confirm details against the uploaded territory plan",
-    "useCaseIds": []
+    "recommendedNextAction": "Confirm current title and agenda via the Coach (Íñigo Lacave / Mario Encinar) before outreach",
+    "useCaseIds": [],
+    "reportsTo": "mapfre-escriva",
+    "territoryPlan": {
+      "role": "-",
+      "title": "CDO",
+      "reportsTo": "Vanessa Escrivá",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "mapfre-jimenez",
@@ -962,9 +1036,9 @@
     "buyingRole": "Influencer",
     "sources": [
       {
-        "claim": "Leire Jiménez — Chief Innovation Officer; role in plan: Influencer",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "Leire Jiménez — Chief Innovation Officer",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
@@ -977,8 +1051,15 @@
     "championPotential": "Unknown",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
-    "recommendedNextAction": "Confirm details against the uploaded territory plan",
-    "useCaseIds": []
+    "recommendedNextAction": "Confirm current title and agenda via the Coach (Íñigo Lacave / Mario Encinar) before outreach",
+    "useCaseIds": [],
+    "reportsTo": "mapfre-escriva",
+    "territoryPlan": {
+      "role": "-",
+      "title": "Chief Innovation Officer",
+      "reportsTo": "Vanessa Escrivá",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "mapfre-lacave",
@@ -998,9 +1079,9 @@
     "buyingRole": "Coach",
     "sources": [
       {
-        "claim": "Íñigo Lacave — Technology & Architecture Director; role in plan: Coach",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "Íñigo Lacave — Technology & Architecture Director — Coach",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
@@ -1013,11 +1094,18 @@
     "championPotential": "High",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
-    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "recommendedNextAction": "Confirm current title and agenda via the Coach (Íñigo Lacave / Mario Encinar) before outreach",
     "useCaseIds": [
       "mapfre-uc-1",
       "mapfre-uc-2"
-    ]
+    ],
+    "reportsTo": "mapfre-wiznez",
+    "territoryPlan": {
+      "role": "COACH",
+      "title": "TECHNOLOGY & ARCHITECTURE DIRECTOR",
+      "reportsTo": "Santiago Wiznez",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "mapfre-javanovic",
@@ -1037,23 +1125,30 @@
     "buyingRole": "Technical Evaluator",
     "sources": [
       {
-        "claim": "Mat Javanovic — Global Cloud Director; role in plan: Technical Evaluator",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "Mat Javanovic — Global Cloud Director",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
     ],
     "powerRole": "Technical Evaluator",
     "roleIsHypothesis": true,
-    "level": "Director",
+    "level": "Manager",
     "businessUnit": "Global Cloud",
     "influence": "Unknown",
     "championPotential": "Unknown",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
-    "recommendedNextAction": "Confirm details against the uploaded territory plan",
-    "useCaseIds": []
+    "recommendedNextAction": "Confirm current title and agenda via the Coach (Íñigo Lacave / Mario Encinar) before outreach",
+    "useCaseIds": [],
+    "reportsTo": "mapfre-lacave",
+    "territoryPlan": {
+      "role": "-",
+      "title": "GLOBAL CLOUD DIRECTOR",
+      "reportsTo": "Íñigo Lacave",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "mapfre-marana",
@@ -1073,9 +1168,9 @@
     "buyingRole": "Champion",
     "sources": [
       {
-        "claim": "Javier Maraña — Head of Agentic Architecture & Technological Innovation; role in plan: Champion",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "Javier Maraña — Head of Agentic Architecture & Technological Innovation — Champion",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
@@ -1088,11 +1183,18 @@
     "championPotential": "High",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
-    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "recommendedNextAction": "Confirm current title and agenda via the Coach (Íñigo Lacave / Mario Encinar) before outreach",
     "useCaseIds": [
       "mapfre-uc-1",
       "mapfre-uc-3"
-    ]
+    ],
+    "reportsTo": "mapfre-wiznez",
+    "territoryPlan": {
+      "role": "CHAMPION",
+      "title": "HEAD OF AGENTIC ARCHITECTURE & TECHNOLOGICAL INNOVATION",
+      "reportsTo": "Santiago Wiznez",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "mapfre-andujar",
@@ -1112,9 +1214,9 @@
     "buyingRole": "Technical Champion",
     "sources": [
       {
-        "claim": "Gabriel Andújar — Agent Architecture Manager; role in plan: Technical Champion",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "Gabriel Andújar — Agent Architecture Manager — Technical Champion",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
@@ -1127,10 +1229,17 @@
     "championPotential": "High",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
-    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "recommendedNextAction": "Confirm current title and agenda via the Coach (Íñigo Lacave / Mario Encinar) before outreach",
     "useCaseIds": [
       "mapfre-uc-3"
-    ]
+    ],
+    "reportsTo": "mapfre-marana",
+    "territoryPlan": {
+      "role": "T. CHAMPION",
+      "title": "AGENT ARCHITECTURE MANAGER",
+      "reportsTo": "Javier Maraña",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
   },
   {
     "id": "mapfre-bodas",
@@ -1150,9 +1259,9 @@
     "buyingRole": "Influencer",
     "sources": [
       {
-        "claim": "Diego José Bodas — AI Center Director; role in plan: Influencer",
-        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
-        "date": "2026-09",
+        "claim": "Diego José Bodas — AI Center Director",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
         "category": "FACT",
         "confidence": "High"
       }
@@ -1165,9 +1274,808 @@
     "championPotential": "Unknown",
     "dataOrigin": "TERRITORY PLAN",
     "lastUpdated": "2026-09-17",
-    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "recommendedNextAction": "Confirm current title and agenda via the Coach (Íñigo Lacave / Mario Encinar) before outreach",
     "useCaseIds": [
       "mapfre-uc-3"
-    ]
+    ],
+    "reportsTo": "mapfre-solanas",
+    "territoryPlan": {
+      "role": "-",
+      "title": "AI CENTER DIRECTOR",
+      "reportsTo": "Maribel Solanas",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
+  },
+  {
+    "id": "mapfre-andres-hevia",
+    "accountId": "mapfre",
+    "name": "Andrés Hevia",
+    "title": "IT Architecture",
+    "functionArea": "IT Architecture",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Andrés Hevia — IT Architecture",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Individual Contributor",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "UNKNOWN",
+    "reportsTo": "mapfre-javanovic",
+    "territoryPlan": {
+      "role": "-",
+      "title": "IT ARCHITECTURE",
+      "reportsTo": "Mat Javanovic",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
+  },
+  {
+    "id": "mapfre-gonzalo-cabanillas",
+    "accountId": "mapfre",
+    "name": "Gonzalo Cabanillas",
+    "title": "Senior Software Engineer",
+    "functionArea": "Senior Software Engineer",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Gonzalo Cabanillas — Senior Software Engineer",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Individual Contributor",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "UNKNOWN",
+    "reportsTo": "mapfre-andujar",
+    "territoryPlan": {
+      "role": "-",
+      "title": "SENIOR SOFTWARE ENGINEER",
+      "reportsTo": "Gabriel Andújar",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
+  },
+  {
+    "id": "mapfre-enrique-turillo",
+    "accountId": "mapfre",
+    "name": "Enrique Turillo",
+    "title": "Data and IA Ciber Director",
+    "functionArea": "Data and IA Ciber Director",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Enrique Turillo — Data and IA Ciber Director",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Director",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "UNKNOWN",
+    "reportsTo": "mapfre-ledesma",
+    "territoryPlan": {
+      "role": "-",
+      "title": "DATA AND IA CIBER DIRECTOR",
+      "reportsTo": "José Antonio Ledesma",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
+  },
+  {
+    "id": "mapfre-mario-encinar",
+    "accountId": "mapfre",
+    "name": "Mario Encinar",
+    "title": "AI Lead Expert",
+    "functionArea": "AI Lead Expert",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Engaged",
+    "buyingRole": "Coach",
+    "sources": [
+      {
+        "claim": "Mario Encinar — AI Lead Expert — Coach",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "High",
+    "powerRole": "Coach",
+    "roleIsHypothesis": false,
+    "level": "Manager",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "UNKNOWN",
+    "reportsTo": "mapfre-bodas",
+    "territoryPlan": {
+      "role": "COACH",
+      "title": "AiI LEAD EXPERT",
+      "reportsTo": "Diego José Bodas",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
+  },
+  {
+    "id": "mapfre-jesus-lopez",
+    "accountId": "mapfre",
+    "name": "Jesús López",
+    "title": "HTech Innovation Manager",
+    "functionArea": "HTech Innovation Manager",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Jesús López — HTech Innovation Manager",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Director",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "UNKNOWN",
+    "reportsTo": "mapfre-wiznez",
+    "territoryPlan": {
+      "role": "-",
+      "title": "HTECH INNOVATION MANAGER",
+      "reportsTo": "Santiago Wiznez",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
+  },
+  {
+    "id": "mapfre-countries-cios",
+    "accountId": "mapfre",
+    "name": "Country CIOs (group)",
+    "title": "Country CIOs",
+    "functionArea": "Country CIOs",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Countries — Country CIOs",
+        "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)",
+        "date": "2026-03",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Senior Leadership",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "UNKNOWN",
+    "reportsTo": "mapfre-escriva",
+    "territoryPlan": {
+      "role": "-",
+      "title": "CIO S",
+      "reportsTo": "Vanessa Escrivá",
+      "source": "MAPFRE Territory Plan FY27 — Power Chart slide (map mapfre.pptx, March 2026)"
+    }
+  },
+  {
+    "id": "ana-javier-vizcaino",
+    "accountId": "acciona",
+    "name": "Javier Vizcaino",
+    "title": "Director of Corporate Applications",
+    "functionArea": "Global",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Javier Vizcaino — Director of Corporate Applications — 2nd — Global (PG target #1)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Javier Vizcaino",
+      "title": "Director of Corporate Applications",
+      "level": "2nd",
+      "businessUnit": "Global",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Director",
+    "businessUnit": "Global",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-alfonso-prieto-regidor",
+    "accountId": "acciona",
+    "name": "Alfonso Prieto Regidor",
+    "title": "IT International Coordination Director",
+    "functionArea": "Global",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Alfonso Prieto Regidor — IT International Coordination Director — C Level — Global (PG target #2)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Alfonso Prieto Regidor",
+      "title": "IT International Coordination Director",
+      "level": "C Level",
+      "businessUnit": "Global",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Executive Committee",
+    "businessUnit": "Global",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-jon-gabilondo",
+    "accountId": "acciona",
+    "name": "Jon Gabilondo",
+    "title": "Director Arquitectura TIC",
+    "functionArea": "Global",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Jon Gabilondo — Director Arquitectura TIC — 2nd — Global (PG target #3)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Jon Gabilondo",
+      "title": "Director Arquitectura TIC",
+      "level": "2nd",
+      "businessUnit": "Global",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Director",
+    "businessUnit": "Global",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-fernando-fajardo-gerez",
+    "accountId": "acciona",
+    "name": "Fernando Fajardo Gerez",
+    "title": "Chief Cost and Commercial Officer",
+    "functionArea": "Energía",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Fernando Fajardo Gerez — Chief Cost and Commercial Officer — C Level — Energía (PG target #4)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Fernando Fajardo Gerez",
+      "title": "Chief Cost and Commercial Officer",
+      "level": "C Level",
+      "businessUnit": "Energía",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Executive Committee",
+    "businessUnit": "Energía",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-carlos-manchado-martin",
+    "accountId": "acciona",
+    "name": "Carlos Manchado Martin",
+    "title": "Global CISO | Corporate Cybersecurity Director",
+    "functionArea": "Global",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Carlos Manchado Martin — Global CISO | Corporate Cybersecurity Director — C Level — Global (PG target #6)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Carlos Manchado Martin",
+      "title": "Global CISO | Corporate Cybersecurity Director",
+      "level": "C Level",
+      "businessUnit": "Global",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Executive Committee",
+    "businessUnit": "Global",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-federico-garcia-guillen",
+    "accountId": "acciona",
+    "name": "Federico García Guillén",
+    "title": "Head of Technology, Innovation & AI",
+    "functionArea": "Global",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Federico García Guillén — Head of Technology, Innovation & AI — C Level — Global (PG target #8)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Federico García Guillén",
+      "title": "Head of Technology, Innovation & AI",
+      "level": "C Level",
+      "businessUnit": "Global",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Executive Committee",
+    "businessUnit": "Global",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-frank-zamora",
+    "accountId": "acciona",
+    "name": "Frank Zamora",
+    "title": "CIO Acciona Agua",
+    "functionArea": "Agua",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Frank Zamora — CIO Acciona Agua — C Level — Agua (PG target #9)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Frank Zamora",
+      "title": "CIO Acciona Agua",
+      "level": "C Level",
+      "businessUnit": "Agua",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Executive Committee",
+    "businessUnit": "Agua",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-jose-luis-rosell-de-celis",
+    "accountId": "acciona",
+    "name": "Jose Luis Rosell de Celis",
+    "title": "CIO Acciona Construcción",
+    "functionArea": "Trasportes y Concesiones",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Jose Luis Rosell de Celis — CIO Acciona Construcción — C Level — Trasportes y Concesiones (PG target #10)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Jose Luis Rosell de Celis",
+      "title": "CIO Acciona Construcción",
+      "level": "C Level",
+      "businessUnit": "Trasportes y Concesiones",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Executive Committee",
+    "businessUnit": "Trasportes y Concesiones",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-juan-luis-blasco-salvador",
+    "accountId": "acciona",
+    "name": "Juan Luis Blasco Salvador",
+    "title": "Director de Operaciones TIC",
+    "functionArea": "Global",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Juan Luis Blasco Salvador — Director de Operaciones TIC — 2nd — Global (PG target #11)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Juan Luis Blasco Salvador",
+      "title": "Director de Operaciones TIC",
+      "level": "2nd",
+      "businessUnit": "Global",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Director",
+    "businessUnit": "Global",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-ivan-lazaro",
+    "accountId": "acciona",
+    "name": "Ivan Lázaro",
+    "title": "Director ICT Infrastructures",
+    "functionArea": "Infraestructura",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Ivan Lázaro — Director ICT Infrastructures — 2nd — Infraestructura (PG target #12)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Ivan Lázaro",
+      "title": "Director ICT Infrastructures",
+      "level": "2nd",
+      "businessUnit": "Infraestructura",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Director",
+    "businessUnit": "Infraestructura",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-noa-blanco-fernandez",
+    "accountId": "acciona",
+    "name": "Noa Blanco Fernández",
+    "title": "Head of Cybersecurity Engineering",
+    "functionArea": "Global",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Noa Blanco Fernández — Head of Cybersecurity Engineering — 2nd — Global (PG target #13)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Noa Blanco Fernández",
+      "title": "Head of Cybersecurity Engineering",
+      "level": "2nd",
+      "businessUnit": "Global",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Director",
+    "businessUnit": "Global",
+    "lastUpdated": "2026-09-17"
+  },
+  {
+    "id": "ana-manuel-farinas-iglesias",
+    "accountId": "acciona",
+    "name": "Manuel Fariñas Iglesias",
+    "title": "Director de Tecnología e I+D+i",
+    "functionArea": "Agua",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Unknown",
+    "sources": [
+      {
+        "claim": "Manuel Fariñas Iglesias — Director de Tecnología e I+D+i — 2nd — Agua (PG target #14)",
+        "source": "Acciona.xlsx — sheet \"PG\", PG TARGET table",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "useCaseIds": [],
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "recommendedNextAction": "Fill Sales Play / Action / Why High Target in the PG sheet, then plan first touch",
+    "excel": {
+      "person": "Manuel Fariñas Iglesias",
+      "title": "Director de Tecnología e I+D+i",
+      "level": "2nd",
+      "businessUnit": "Agua",
+      "salesPlay": "UNKNOWN",
+      "action": "UNKNOWN",
+      "whyHighTarget": "UNKNOWN"
+    },
+    "dataOrigin": "ORIGINAL EXCEL DATA",
+    "level": "Director",
+    "businessUnit": "Agua",
+    "lastUpdated": "2026-09-17"
   }
 ]
