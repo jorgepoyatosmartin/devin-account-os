@@ -28,12 +28,12 @@
     "priority": 3,
     "accountId": "mapfre",
     "opportunityId": "mapfre-opp-reef",
-    "stakeholderId": "mapfre-bernal",
-    "signal": "CTDO publicly states AI tools discarded for security/bias; REEF rollout mid-programme",
-    "whyThisMatters": "Group buyer has published her rejection criteria — prepare to pass them before any outreach; Transformation director is a lower-friction entry point.",
-    "recommendedAction": "Prepare a one-page security & deployment brief (data isolation, audit trail, model governance) and request an intro conversation with J.L. Bernal on REEF/legacy modernisation.",
-    "suggestedMessage": "José Luis, tu experiencia liderando la modernización en MAPFRE USA y ahora en Transformación de Grupo encaja con lo que vemos en aseguradoras: la capacidad de ingeniería limita el ritmo de despliegue de plataformas como REEF. ¿Podemos compartir 30 minutos sobre cómo agentes de ingeniería autónomos están acelerando migraciones bajo criterios estrictos de seguridad?",
-    "expectedOutcome": "Intro meeting; validate Problem (engineering capacity for REEF rollout)."
+    "stakeholderId": "mapfre-marana",
+    "signal": "Territory Plan names Champion (J. Maraña), Technical Champion (G. Andújar), Coach (Í. Lacave) and EB (S. Wiznez); Global CIO publicly states AI tools discarded for security/bias",
+    "whyThisMatters": "MAPFRE is the only account with named champions and a coach — but the Why Anything (engineering capacity for REEF) is still a hypothesis and the EB has not been engaged. Security criteria are public: prepare to pass them.",
+    "recommendedAction": "Working session with Javier Maraña and Gabriel Andújar to map REEF/agentic backlog to agent-executable tasks; ask Íñigo Lacave (Coach) how Wiznez evaluates tooling; bring a one-page security & deployment brief (data isolation, audit trail, model governance).",
+    "suggestedMessage": "Javier, gracias por el apoyo interno. Propongo una sesión de trabajo de 45 minutos con Gabriel para mapear el backlog de despliegue REEF y de arquitectura agéntica a tareas que un agente de ingeniería pueda ejecutar de forma autónoma, y definir juntos los criterios de seguridad que Santiago y el equipo de José Antonio esperarán ver. ¿Te encaja la semana que viene?",
+    "expectedOutcome": "Validate Problem (engineering capacity for REEF rollout) with the champion; agree the path to the EB; identify Security requirements early."
   },
   {
     "id": "act-ama-cloud-lead",

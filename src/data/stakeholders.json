@@ -8,9 +8,19 @@
     "responsibilities": "Group leadership; owner of the 2024-2026 Strategic Plan.",
     "strategicPriorities": "Profitable growth (ROE >13%, combined ratio 93-94%), digital and operational transformation, LATAM consolidation.",
     "technologyPriorities": "REEF platform deployment; Artificial Intelligence Centre growth; technology as a strategic pillar.",
-    "relevantInitiatives": ["mapfre-reef", "mapfre-ai-centre"],
+    "relevantInitiatives": [
+      "mapfre-reef",
+      "mapfre-ai-centre"
+    ],
     "publicStatements": [
-      { "claim": "REEF cloud technology allows 'much faster developments and implementations' and >50% efficiency and cost improvements; approved €65m 3-year rollout", "source": "Chairman's report to 2025 AGM", "url": "https://www.mapfre.com/media/shareholders/2025/2025-agm-chairman-report-caratula.pdf", "date": "2025-03", "category": "FACT", "confidence": "High" }
+      {
+        "claim": "REEF cloud technology allows 'much faster developments and implementations' and >50% efficiency and cost improvements; approved €65m 3-year rollout",
+        "source": "Chairman's report to 2025 AGM",
+        "url": "https://www.mapfre.com/media/shareholders/2025/2025-agm-chairman-report-caratula.pdf",
+        "date": "2025-03",
+        "category": "FACT",
+        "confidence": "High"
+      }
     ],
     "recentActivity": "2026 AGM: raised 2026 financial targets; highlighted REEF and AI Centre progress (Mar 2026).",
     "potentialPain": "Execution risk on multi-country platform rollout within the plan horizon. HYPOTHESIS.",
@@ -18,30 +28,90 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Unknown",
     "sources": [
-      { "claim": "Chairman and CEO", "source": "MAPFRE AGM 2026 press release", "url": "https://www.mapfre.com/en/communicate/corporate-communicate/annual-general-meeting-2026/", "date": "2026-03-13", "category": "FACT", "confidence": "High" }
-    ]
+      {
+        "claim": "Chairman and CEO",
+        "source": "MAPFRE AGM 2026 press release",
+        "url": "https://www.mapfre.com/en/communicate/corporate-communicate/annual-general-meeting-2026/",
+        "date": "2026-03-13",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Board / CEO",
+    "businessUnit": "CEO",
+    "influence": "High",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": []
   },
   {
     "id": "mapfre-escriva",
     "accountId": "mapfre",
     "name": "Vanessa Escrivá García",
-    "title": "Group Chief Technology and Data Officer; member of the Executive Committee (since 2026); formerly Group CIO (2021)",
+    "title": "Global CIO (Territory Plan) · Group Chief Technology and Data Officer per MAPFRE 2026 announcement (PUBLIC RESEARCH)",
     "functionArea": "CIO / CTO / AI-Data leadership",
     "responsibilities": "Group technology and data, including AI strategy and the AI Manifesto governance.",
     "strategicPriorities": "Value from AI for customer and business; hybrid AI model; information security and bias controls.",
     "technologyPriorities": "90+ AI use cases (70% core products), MAPFRE Copilot on Microsoft, Azure OpenAI; discards AI that fails security/bias criteria.",
-    "relevantInitiatives": ["mapfre-ai-centre", "mapfre-reef"],
+    "relevantInitiatives": [
+      "mapfre-ai-centre",
+      "mapfre-reef"
+    ],
     "publicStatements": [
-      { "claim": "'We have discarded AI for information security or model bias reasons'; defends a hybrid AI model", "source": "Cinco Días", "url": "https://cincodias.elpais.com/companias/2026-08-24/escriva-mapfre-hemos-descartado-ia-por-seguridad-de-la-informacion-o-sesgos-del-modelo-pero-prefiero-no-dar-ejemplos.html", "date": "2026-08-24", "category": "FACT", "confidence": "High" },
-      { "claim": "'More than 90 AI use cases, 70% related to core products'; MAPFRE Copilot concept on Microsoft Copilot", "source": "Computing.es", "url": "https://www.computing.es/entrevistas/vanessa-escriva-cio-global-de-mapfre-tenemos-mas-de-90-casos-de-uso-de-ia-el-70-relacionados-con-nuestros-productos-core/", "date": "2024-04-02", "category": "FACT", "confidence": "Medium" }
+      {
+        "claim": "'We have discarded AI for information security or model bias reasons'; defends a hybrid AI model",
+        "source": "Cinco Días",
+        "url": "https://cincodias.elpais.com/companias/2026-08-24/escriva-mapfre-hemos-descartado-ia-por-seguridad-de-la-informacion-o-sesgos-del-modelo-pero-prefiero-no-dar-ejemplos.html",
+        "date": "2026-08-24",
+        "category": "FACT",
+        "confidence": "High"
+      },
+      {
+        "claim": "'More than 90 AI use cases, 70% related to core products'; MAPFRE Copilot concept on Microsoft Copilot",
+        "source": "Computing.es",
+        "url": "https://www.computing.es/entrevistas/vanessa-escriva-cio-global-de-mapfre-tenemos-mas-de-90-casos-de-uso-de-ia-el-70-relacionados-con-nuestros-productos-core/",
+        "date": "2024-04-02",
+        "category": "FACT",
+        "confidence": "Medium"
+      }
     ],
     "recentActivity": "Promoted to Executive Committee (2026); press interview on AI in insurance (Aug 2026).",
     "potentialPain": "Scaling 90+ AI use cases and REEF rollouts with finite engineering capacity while meeting strict security criteria. HYPOTHESIS.",
     "cognitionRelevance": "Most likely Economic Buyer for a group-level engineering-agent programme; security posture (dedicated deployment, data controls) must lead.",
-    "relationshipStatus": "No contact",
-    "buyingRole": "Economic Buyer",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Influencer",
     "sources": [
-      { "claim": "Group Chief Technology and Data Officer; Executive Committee since 2026; Group CIO since 2021", "source": "MAPFRE executives page", "url": "https://www.mapfre.com/en/executives/vanessa-escriva/", "date": "2026", "category": "FACT", "confidence": "High" }
+      {
+        "claim": "Group Chief Technology and Data Officer; Executive Committee since 2026; Group CIO since 2021",
+        "source": "MAPFRE executives page",
+        "url": "https://www.mapfre.com/en/executives/vanessa-escriva/",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      },
+      {
+        "claim": "Listed as Global CIO in the MAPFRE Territory Plan",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Influencer",
+    "roleIsHypothesis": true,
+    "level": "Executive Committee",
+    "businessUnit": "CIO / CTO / AI-Data leadership",
+    "influence": "High",
+    "championPotential": "Unknown",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "mapfre-uc-1"
     ]
   },
   {
@@ -53,7 +123,9 @@
     "responsibilities": "Technology for MAPFRE Iberia (Spain and Portugal). UNKNOWN — VALIDATION REQUIRED.",
     "strategicPriorities": "UNKNOWN — VALIDATION REQUIRED",
     "technologyPriorities": "REEF deployment in strategic areas in Spain (inferred).",
-    "relevantInitiatives": ["mapfre-reef"],
+    "relevantInitiatives": [
+      "mapfre-reef"
+    ],
     "publicStatements": [],
     "recentActivity": "Active in CIONET IberoAmérica advisory board and Autelsi Women IT Leadership committee (LinkedIn).",
     "potentialPain": "Regional delivery capacity for REEF and Spanish application portfolio. HYPOTHESIS.",
@@ -61,28 +133,71 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Unknown",
     "sources": [
-      { "claim": "CIO Región Iberia en MAPFRE", "source": "LinkedIn", "url": "https://www.linkedin.com/in/maludelicado", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
-    ]
+      {
+        "claim": "CIO Región Iberia en MAPFRE",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/maludelicado",
+        "date": "2026-08",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Senior Leadership",
+    "businessUnit": "CIO (regional)",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": []
   },
   {
     "id": "mapfre-bernal",
     "accountId": "mapfre",
     "name": "José Luis Bernal Zúñiga",
-    "title": "Transformation Expert Director, MAPFRE Group (formerly Chief Digital, Data & Innovation Officer USA)",
+    "title": "Transformation Director (Territory Plan) · Transformation Expert Director, MAPFRE Group (PUBLIC RESEARCH)",
     "functionArea": "Digital / Innovation",
     "responsibilities": "Aligning transformation initiatives with global strategy; AI and digital innovation in insurance.",
     "strategicPriorities": "AI-driven operational efficiency and transformation.",
     "technologyPriorities": "AI and digital innovation.",
-    "relevantInitiatives": ["mapfre-ai-centre"],
+    "relevantInitiatives": [
+      "mapfre-ai-centre"
+    ],
     "publicStatements": [],
     "recentActivity": "Moved from USA CDDIO role to group transformation role (Dec 2025/Jan 2026, LinkedIn).",
     "potentialPain": "UNKNOWN — VALIDATION REQUIRED",
     "cognitionRelevance": "Influencer / door-opener into transformation programme.",
-    "relationshipStatus": "No contact",
-    "buyingRole": "Influencer",
+    "relationshipStatus": "Champion",
+    "buyingRole": "Champion",
     "sources": [
-      { "claim": "Transformation Expert Director at MAPFRE Group; previously Chief Digital, Data & Innovation Officer USA (2022-2025)", "source": "LinkedIn", "url": "https://www.linkedin.com/in/joseluisbernal", "date": "2026-07", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
-    ]
+      {
+        "claim": "Transformation Expert Director at MAPFRE Group; previously Chief Digital, Data & Innovation Officer USA (2022-2025)",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/joseluisbernal",
+        "date": "2026-07",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
+      },
+      {
+        "claim": "Designated Champion in the MAPFRE Territory Plan",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Champion",
+    "roleIsHypothesis": false,
+    "level": "Director",
+    "businessUnit": "Digital / Innovation",
+    "influence": "Unknown",
+    "championPotential": "High",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": []
   },
   {
     "id": "cabk-gortazar",
@@ -93,9 +208,19 @@
     "responsibilities": "Group CEO since 2014; owner of the 2025-2027 Strategic Plan.",
     "strategicPriorities": "Business growth, transformation & investment (>€5bn tech), sustainability; ROTE >15%.",
     "technologyPriorities": "GenAI in commercial and service capabilities; channel and infrastructure upgrades.",
-    "relevantInitiatives": ["cabk-tech-scale", "cabk-agents-platform"],
+    "relevantInitiatives": [
+      "cabk-tech-scale",
+      "cabk-agents-platform"
+    ],
     "publicStatements": [
-      { "claim": "Strategic Plan 2025-27: invest >€5bn in technology; GenAI to enhance commercial and service capabilities", "source": "CaixaBank Investor Day", "url": "https://www.caixabank.com/deployedfiles/caixabank/Estaticos/PDFs/Inversores_institucionales/241119_InvestorDay_en.pdf", "date": "2024-11-19", "category": "FACT", "confidence": "High" }
+      {
+        "claim": "Strategic Plan 2025-27: invest >€5bn in technology; GenAI to enhance commercial and service capabilities",
+        "source": "CaixaBank Investor Day",
+        "url": "https://www.caixabank.com/deployedfiles/caixabank/Estaticos/PDFs/Inversores_institucionales/241119_InvestorDay_en.pdf",
+        "date": "2024-11-19",
+        "category": "FACT",
+        "confidence": "High"
+      }
     ],
     "recentActivity": "FY2025 results Jan 2026.",
     "potentialPain": "Delivering a €5bn technology programme on time. HYPOTHESIS.",
@@ -103,8 +228,25 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Unknown",
     "sources": [
-      { "claim": "CEO of CaixaBank since June 2014", "source": "CaixaBank", "url": "https://www.caixabank.com/en/headlines/author/gonzalo-gortazar-rotaeche", "date": "2026", "category": "FACT", "confidence": "High" }
-    ]
+      {
+        "claim": "CEO of CaixaBank since June 2014",
+        "source": "CaixaBank",
+        "url": "https://www.caixabank.com/en/headlines/author/gonzalo-gortazar-rotaeche",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Board / CEO",
+    "businessUnit": "CEO",
+    "influence": "High",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": []
   },
   {
     "id": "cabk-vicens",
@@ -115,7 +257,10 @@
     "responsibilities": "Digital transformation and advanced analytics for the group; board-level oversight of CaixaBank Tech.",
     "strategicPriorities": "Digital transformation, advanced analytics/AI adoption.",
     "technologyPriorities": "GenAI scaling, cognitive platform, agents (inferred from CaixaBank Tech roadmap).",
-    "relevantInitiatives": ["cabk-agents-platform", "cabk-tech-scale"],
+    "relevantInitiatives": [
+      "cabk-agents-platform",
+      "cabk-tech-scale"
+    ],
     "publicStatements": [],
     "recentActivity": "UNKNOWN — VALIDATION REQUIRED",
     "potentialPain": "Scaling GenAI from pilots to production across the bank; engineering capacity in CaixaBank Tech. HYPOTHESIS.",
@@ -123,7 +268,26 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Economic Buyer",
     "sources": [
-      { "claim": "Head of Digital Transformation and Advanced Analytics; Management Committee since Jan 2023; Director of CaixaBank Tech", "source": "Equilar ExecAtlas", "url": "https://people.equilar.com/bio/person/mariona-cuys-caixabank-sa/51647838", "date": "2026-07", "category": "FACT", "confidence": "Medium" }
+      {
+        "claim": "Head of Digital Transformation and Advanced Analytics; Management Committee since Jan 2023; Director of CaixaBank Tech",
+        "source": "Equilar ExecAtlas",
+        "url": "https://people.equilar.com/bio/person/mariona-cuys-caixabank-sa/51647838",
+        "date": "2026-07",
+        "category": "FACT",
+        "confidence": "Medium"
+      }
+    ],
+    "powerRole": "Economic Buyer",
+    "roleIsHypothesis": true,
+    "level": "Executive Committee",
+    "businessUnit": "Chief Digital Officer / AI-Data leadership",
+    "influence": "High",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "cabk-uc-1"
     ]
   },
   {
@@ -135,7 +299,10 @@
     "responsibilities": "Emerging technologies for a resilient, secure, agile and sustainable banking architecture; previously cloud landing zones.",
     "strategicPriorities": "Architecture resilience and agility.",
     "technologyPriorities": "Emerging tech evaluation; private/public cloud, microservices, APIs.",
-    "relevantInitiatives": ["cabk-cloud", "cabk-agents-platform"],
+    "relevantInitiatives": [
+      "cabk-cloud",
+      "cabk-agents-platform"
+    ],
     "publicStatements": [],
     "recentActivity": "Role change to Emerging Technologies (2025).",
     "potentialPain": "Evaluating and industrialising new engineering technologies safely. HYPOTHESIS.",
@@ -143,7 +310,28 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Technical evaluator",
     "sources": [
-      { "claim": "CTO Emerging Technologies (2025-); CTO Cloud (2020-2025); Head of Architecture Strategy at CaixaBank Tech (2011-2020)", "source": "LinkedIn", "url": "https://www.linkedin.com/in/ra%C3%BAl-s%C3%A1nchez-27077b3b3", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Low" }
+      {
+        "claim": "CTO Emerging Technologies (2025-); CTO Cloud (2020-2025); Head of Architecture Strategy at CaixaBank Tech (2011-2020)",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/ra%C3%BAl-s%C3%A1nchez-27077b3b3",
+        "date": "2026-08",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Low"
+      }
+    ],
+    "powerRole": "Technical Evaluator",
+    "roleIsHypothesis": true,
+    "level": "Director",
+    "businessUnit": "CTO / Cloud / Platform Engineering",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "cabk-uc-1",
+      "cabk-uc-2",
+      "cabk-uc-3"
     ]
   },
   {
@@ -163,8 +351,25 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Unknown",
     "sources": [
-      { "claim": "Chief Information Officer, CaixaBank Payments & Consumer (2024-)", "source": "LinkedIn", "url": "https://www.linkedin.com/in/pcorominas", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
-    ]
+      {
+        "claim": "Chief Information Officer, CaixaBank Payments & Consumer (2024-)",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/pcorominas",
+        "date": "2026-08",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
+      }
+    ],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Senior Leadership",
+    "businessUnit": "CIO (business unit)",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": []
   },
   {
     "id": "bkt-ortiz",
@@ -175,10 +380,26 @@
     "responsibilities": "Bank CEO; personally leads the 'IA First' programme.",
     "strategicPriorities": "Efficient, governed GenAI adoption aligned with business objectives; profitable diversified growth.",
     "technologyPriorities": "GenAI, AI agents, employee productivity (Microsoft 365 Copilot).",
-    "relevantInitiatives": ["bkt-ia-first"],
+    "relevantInitiatives": [
+      "bkt-ia-first"
+    ],
     "publicStatements": [
-      { "claim": "'Leading AI is not about algorithms. It is about vision and people' (LinkedIn reflection)", "source": "LinkedIn post", "url": "https://www.linkedin.com/posts/gloriaortizportero_ia-visión-personas-activity-7415341565503709184-zC9S", "date": "2026-01-09", "category": "FACT", "confidence": "Medium" },
-      { "claim": "'IA First' programme led directly by the CEO", "source": "Bankinter press release", "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-lanza-ia-first--un-programa-estrategico-para-acelerar-la-implantacion-de-la-ia-generativa-en-la-entidad", "date": "2024-11", "category": "FACT", "confidence": "High" }
+      {
+        "claim": "'Leading AI is not about algorithms. It is about vision and people' (LinkedIn reflection)",
+        "source": "LinkedIn post",
+        "url": "https://www.linkedin.com/posts/gloriaortizportero_ia-visión-personas-activity-7415341565503709184-zC9S",
+        "date": "2026-01-09",
+        "category": "FACT",
+        "confidence": "Medium"
+      },
+      {
+        "claim": "'IA First' programme led directly by the CEO",
+        "source": "Bankinter press release",
+        "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-lanza-ia-first--un-programa-estrategico-para-acelerar-la-implantacion-de-la-ia-generativa-en-la-entidad",
+        "date": "2024-11",
+        "category": "FACT",
+        "confidence": "High"
+      }
     ],
     "recentActivity": "Announced Microsoft 365 Copilot deployment for the entire workforce (Apr 2026); record FY2025 results.",
     "potentialPain": "Turning AI adoption into measurable ROI across the bank, including technology delivery. HYPOTHESIS.",
@@ -186,8 +407,25 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Economic Buyer",
     "sources": [
-      { "claim": "Consejera Delegada (CEO) Gloria Ortiz leads IA First", "source": "Bankinter press release", "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-lanza-ia-first--un-programa-estrategico-para-acelerar-la-implantacion-de-la-ia-generativa-en-la-entidad", "date": "2024-11", "category": "FACT", "confidence": "High" }
-    ]
+      {
+        "claim": "Consejera Delegada (CEO) Gloria Ortiz leads IA First",
+        "source": "Bankinter press release",
+        "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-lanza-ia-first--un-programa-estrategico-para-acelerar-la-implantacion-de-la-ia-generativa-en-la-entidad",
+        "date": "2024-11",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Economic Buyer",
+    "roleIsHypothesis": true,
+    "level": "Board / CEO",
+    "businessUnit": "CEO",
+    "influence": "High",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": []
   },
   {
     "id": "bkt-duran",
@@ -198,9 +436,19 @@
     "responsibilities": "Coordinate technology and business strategy for AI adoption at all levels of the organisation; maximise ROI of AI investments; governance and compliance.",
     "strategicPriorities": "High-impact AI projects (customer, efficiency) and AI culture for employee productivity.",
     "technologyPriorities": "GenAI, Microsoft Copilot, AI agents; as former CIO, deep knowledge of Bankinter's technology estate.",
-    "relevantInitiatives": ["bkt-ia-first", "bkt-tech-transformation"],
+    "relevantInitiatives": [
+      "bkt-ia-first",
+      "bkt-tech-transformation"
+    ],
     "publicStatements": [
-      { "claim": "Reposted Bankinter's announcement of being the first Spanish bank to deploy Microsoft advanced GenAI for all staff", "source": "LinkedIn", "url": "https://www.linkedin.com/in/jose-miguel-duran-ruiz-a134661", "date": "2026-04-15", "category": "FACT", "confidence": "Medium" }
+      {
+        "claim": "Reposted Bankinter's announcement of being the first Spanish bank to deploy Microsoft advanced GenAI for all staff",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/jose-miguel-duran-ruiz-a134661",
+        "date": "2026-04-15",
+        "category": "FACT",
+        "confidence": "Medium"
+      }
     ],
     "recentActivity": "Leading IA First; Copilot organisation-wide rollout (Apr 2026).",
     "potentialPain": "Delivering many AI projects quickly with limited technology delivery capacity; proving ROI. HYPOTHESIS.",
@@ -208,8 +456,34 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Champion",
     "sources": [
-      { "claim": "Miguel Durán, then Director of Digital Transformation, assumes the new CAITO role", "source": "Bankinter press release", "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-lanza-ia-first--un-programa-estrategico-para-acelerar-la-implantacion-de-la-ia-generativa-en-la-entidad", "date": "2024-11", "category": "FACT", "confidence": "High" },
-      { "claim": "Director de Transformación e Inteligencia Artificial (Nov 2024-); CIO (Apr 2021-Jan 2025)", "source": "LinkedIn", "url": "https://www.linkedin.com/in/jose-miguel-duran-ruiz-a134661", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
+      {
+        "claim": "Miguel Durán, then Director of Digital Transformation, assumes the new CAITO role",
+        "source": "Bankinter press release",
+        "url": "https://www.bankinter.com/webcorporativa/en/communication-room/news/institutional/bankinter-lanza-ia-first--un-programa-estrategico-para-acelerar-la-implantacion-de-la-ia-generativa-en-la-entidad",
+        "date": "2024-11",
+        "category": "FACT",
+        "confidence": "High"
+      },
+      {
+        "claim": "Director de Transformación e Inteligencia Artificial (Nov 2024-); CIO (Apr 2021-Jan 2025)",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/jose-miguel-duran-ruiz-a134661",
+        "date": "2026-08",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
+      }
+    ],
+    "powerRole": "Champion",
+    "roleIsHypothesis": true,
+    "level": "Senior Leadership",
+    "businessUnit": "AI/Data leadership / Digital transformation",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "bkt-uc-1"
     ]
   },
   {
@@ -221,7 +495,9 @@
     "responsibilities": "Digital transformation, digital assets and solutions development.",
     "strategicPriorities": "Efficient, sustainable growth through digital realities; talent development.",
     "technologyPriorities": "Digital solutions and assets.",
-    "relevantInitiatives": ["bkt-tech-transformation"],
+    "relevantInitiatives": [
+      "bkt-tech-transformation"
+    ],
     "publicStatements": [],
     "recentActivity": "UNKNOWN — VALIDATION REQUIRED",
     "potentialPain": "Digital delivery velocity. HYPOTHESIS.",
@@ -229,7 +505,26 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Influencer",
     "sources": [
-      { "claim": "Director de Transformación Digital (CDO) since Jun 2021", "source": "LinkedIn", "url": "https://www.linkedin.com/in/rub%C3%A9n-villanueva-0222b38", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
+      {
+        "claim": "Director de Transformación Digital (CDO) since Jun 2021",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/rub%C3%A9n-villanueva-0222b38",
+        "date": "2026-08",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
+      }
+    ],
+    "powerRole": "Influencer",
+    "roleIsHypothesis": true,
+    "level": "Senior Leadership",
+    "businessUnit": "Chief Digital Officer",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "bkt-uc-3"
     ]
   },
   {
@@ -241,14 +536,29 @@
     "responsibilities": "Technology & operations. UNKNOWN — VALIDATION REQUIRED",
     "strategicPriorities": "UNKNOWN",
     "technologyPriorities": "UNKNOWN",
-    "relevantInitiatives": ["bkt-tech-transformation"],
+    "relevantInitiatives": [
+      "bkt-tech-transformation"
+    ],
     "publicStatements": [],
     "recentActivity": "UNKNOWN",
     "potentialPain": "UNKNOWN",
     "cognitionRelevance": "Must be identified — will own engineering tooling decisions and security review.",
     "relationshipStatus": "No contact",
     "buyingRole": "Unknown",
-    "sources": []
+    "sources": [],
+    "powerRole": "Unknown",
+    "roleIsHypothesis": false,
+    "level": "Senior Leadership",
+    "businessUnit": "CIO",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "bkt-uc-1",
+      "bkt-uc-2"
+    ]
   },
   {
     "id": "ama-roy",
@@ -259,10 +569,28 @@
     "responsibilities": "Technology strategy; global engineering community >10,000 across 50+ sites; multi-cloud strategy; Open Platform; scaling AI and Agentic AI; oversees CISO and internal IT.",
     "strategicPriorities": "Cloud migration (biggest programme), GenAI internal and in products, operating model change (developer empowerment).",
     "technologyPriorities": "Azure multi-cloud, GitHub Copilot, GenAI for tests and operations, internal LLM.",
-    "relevantInitiatives": ["ama-cloud", "ama-genai-eng", "ama-agentic"],
+    "relevantInitiatives": [
+      "ama-cloud",
+      "ama-genai-eng",
+      "ama-agentic"
+    ],
     "publicStatements": [
-      { "claim": "'We have already deployed GitHub Copilot for our developers… we are also using generative AI for testing, to generate tests for us and for our operations'", "source": "PhocusWire", "url": "https://www.phocuswire.com/sylvain-roy-cto-amadeus", "date": "2024-09-24", "category": "FACT", "confidence": "High" },
-      { "claim": "'The move to the cloud is the biggest IT program in the organization… a number of developers all over the world are working on it'", "source": "PhocusWire", "url": "https://www.phocuswire.com/sylvain-roy-cto-amadeus", "date": "2024-09-24", "category": "FACT", "confidence": "High" }
+      {
+        "claim": "'We have already deployed GitHub Copilot for our developers… we are also using generative AI for testing, to generate tests for us and for our operations'",
+        "source": "PhocusWire",
+        "url": "https://www.phocuswire.com/sylvain-roy-cto-amadeus",
+        "date": "2024-09-24",
+        "category": "FACT",
+        "confidence": "High"
+      },
+      {
+        "claim": "'The move to the cloud is the biggest IT program in the organization… a number of developers all over the world are working on it'",
+        "source": "PhocusWire",
+        "url": "https://www.phocuswire.com/sylvain-roy-cto-amadeus",
+        "date": "2024-09-24",
+        "category": "FACT",
+        "confidence": "High"
+      }
     ],
     "recentActivity": "Renewed Microsoft partnership (Feb 2025); FY2025 results Feb 2026.",
     "potentialPain": "Developer time consumed by migration and implementations vs. Nevio/AI product roadmap. HYPOTHESIS.",
@@ -270,7 +598,28 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Economic Buyer",
     "sources": [
-      { "claim": "CTO since Jan 2023; engineering community >10,000; scaling AI and Agentic AI", "source": "Amadeus leadership page", "url": "https://amadeus.com/en/about/leadership/sylvain-roy", "date": "2026", "category": "FACT", "confidence": "High" }
+      {
+        "claim": "CTO since Jan 2023; engineering community >10,000; scaling AI and Agentic AI",
+        "source": "Amadeus leadership page",
+        "url": "https://amadeus.com/en/about/leadership/sylvain-roy",
+        "date": "2026",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Economic Buyer",
+    "roleIsHypothesis": true,
+    "level": "Executive Committee",
+    "businessUnit": "CTO",
+    "influence": "High",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "ama-uc-1",
+      "ama-uc-2",
+      "ama-uc-3"
     ]
   },
   {
@@ -282,7 +631,9 @@
     "responsibilities": "Internal IT, digital transformation programmes, technology governance and risk.",
     "strategicPriorities": "Digital, AI and technology strategy; governance and risk management.",
     "technologyPriorities": "UNKNOWN — VALIDATION REQUIRED",
-    "relevantInitiatives": ["ama-genai-eng"],
+    "relevantInitiatives": [
+      "ama-genai-eng"
+    ],
     "publicStatements": [],
     "recentActivity": "Global CIO since Jul 2024 (LinkedIn).",
     "potentialPain": "Internal IT modernisation and governance of AI tooling. HYPOTHESIS.",
@@ -290,7 +641,26 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Influencer",
     "sources": [
-      { "claim": "Global CIO at Amadeus (Jul 2024-), Madrid", "source": "LinkedIn", "url": "https://www.linkedin.com/in/beatrizmvg", "date": "2026-08", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
+      {
+        "claim": "Global CIO at Amadeus (Jul 2024-), Madrid",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/beatrizmvg",
+        "date": "2026-08",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
+      }
+    ],
+    "powerRole": "Influencer",
+    "roleIsHypothesis": true,
+    "level": "Senior Leadership",
+    "businessUnit": "CIO",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "ama-uc-1"
     ]
   },
   {
@@ -302,9 +672,18 @@
     "responsibilities": "Corporate strategy; Agentic AI thought leadership.",
     "strategicPriorities": "GenAI as a once-in-a-generation shift; agentic AI operating models.",
     "technologyPriorities": "AI agents across Amadeus portfolio.",
-    "relevantInitiatives": ["ama-agentic"],
+    "relevantInitiatives": [
+      "ama-agentic"
+    ],
     "publicStatements": [
-      { "claim": "'Agentic AI is going to deliver entirely new operating models and significant efficiency gains'", "source": "Amadeus blog", "url": "https://amadeus.com/en/blog/articles/how-do-you-transform-the-travel-industry-with-ai-agents", "date": "2025-07-17", "category": "FACT", "confidence": "High" }
+      {
+        "claim": "'Agentic AI is going to deliver entirely new operating models and significant efficiency gains'",
+        "source": "Amadeus blog",
+        "url": "https://amadeus.com/en/blog/articles/how-do-you-transform-the-travel-industry-with-ai-agents",
+        "date": "2025-07-17",
+        "category": "FACT",
+        "confidence": "High"
+      }
     ],
     "recentActivity": "Published Agentic AI in travel report with Microsoft (Jul 2025).",
     "potentialPain": "Building agents fast enough to keep leadership in agentic travel tech. HYPOTHESIS.",
@@ -312,8 +691,25 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Influencer",
     "sources": [
-      { "claim": "Senior Vice President, Corporate Strategy", "source": "Amadeus blog", "url": "https://amadeus.com/en/blog/articles/how-do-you-transform-the-travel-industry-with-ai-agents", "date": "2025-07-17", "category": "FACT", "confidence": "High" }
-    ]
+      {
+        "claim": "Senior Vice President, Corporate Strategy",
+        "source": "Amadeus blog",
+        "url": "https://amadeus.com/en/blog/articles/how-do-you-transform-the-travel-industry-with-ai-agents",
+        "date": "2025-07-17",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Influencer",
+    "roleIsHypothesis": true,
+    "level": "Senior Leadership",
+    "businessUnit": "Innovation / Strategy",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": []
   },
   {
     "id": "ana-rivero",
@@ -324,7 +720,10 @@
     "responsibilities": "Group IT function within the Digital Transformation area; architectures, governance, methodologies, organisation.",
     "strategicPriorities": "Aligning business and technology strategy; digital transformation.",
     "technologyPriorities": "UNKNOWN — VALIDATION REQUIRED",
-    "relevantInitiatives": ["ana-digital-hub", "ana-mirai"],
+    "relevantInitiatives": [
+      "ana-digital-hub",
+      "ana-mirai"
+    ],
     "publicStatements": [],
     "recentActivity": "CIO since 2018 (LinkedIn).",
     "potentialPain": "Running a heterogeneous global application estate with cost pressure. HYPOTHESIS.",
@@ -332,7 +731,27 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Economic Buyer",
     "sources": [
-      { "claim": "CIO en ACCIONA (Mar 2018-), Madrid", "source": "LinkedIn", "url": "https://www.linkedin.com/in/raul-rivero", "date": "2026-07", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
+      {
+        "claim": "CIO en ACCIONA (Mar 2018-), Madrid",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/raul-rivero",
+        "date": "2026-07",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
+      }
+    ],
+    "powerRole": "Economic Buyer",
+    "roleIsHypothesis": true,
+    "level": "Senior Leadership",
+    "businessUnit": "CIO",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "ana-uc-1",
+      "ana-uc-2"
     ]
   },
   {
@@ -344,7 +763,9 @@
     "responsibilities": "Technology for the Infrastructure & Construction division (home of the MIRAI programme).",
     "strategicPriorities": "UNKNOWN — VALIDATION REQUIRED",
     "technologyPriorities": "UNKNOWN — VALIDATION REQUIRED",
-    "relevantInitiatives": ["ana-mirai"],
+    "relevantInitiatives": [
+      "ana-mirai"
+    ],
     "publicStatements": [],
     "recentActivity": "Appointed divisional CIO Sep 2025 after leading the CIO Office & special projects (LinkedIn).",
     "potentialPain": "Delivering MIRAI/digitalisation projects for construction, water and concessions. HYPOTHESIS.",
@@ -352,7 +773,26 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Champion",
     "sources": [
-      { "claim": "CIO ACCIONA Infrastructure & Construction (2025-); Director CIO Office & Special Projects (2023-2025)", "source": "LinkedIn", "url": "https://www.linkedin.com/in/josemanuelcarballofernandez", "date": "2026-07", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
+      {
+        "claim": "CIO ACCIONA Infrastructure & Construction (2025-); Director CIO Office & Special Projects (2023-2025)",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/josemanuelcarballofernandez",
+        "date": "2026-07",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
+      }
+    ],
+    "powerRole": "Champion",
+    "roleIsHypothesis": true,
+    "level": "Senior Leadership",
+    "businessUnit": "CIO (business unit)",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "ana-uc-1"
     ]
   },
   {
@@ -364,7 +804,9 @@
     "responsibilities": "Data management, data-driven decisions, digital transformation of ACCIONA Energía; AI development, adoption and scaling strategy.",
     "strategicPriorities": "Operational efficiency and innovation through data and AI.",
     "technologyPriorities": "AI solutions at scale.",
-    "relevantInitiatives": ["ana-energia-ai"],
+    "relevantInitiatives": [
+      "ana-energia-ai"
+    ],
     "publicStatements": [],
     "recentActivity": "UNKNOWN — VALIDATION REQUIRED",
     "potentialPain": "Engineering capacity to build and scale AI/data products. HYPOTHESIS.",
@@ -372,7 +814,360 @@
     "relationshipStatus": "No contact",
     "buyingRole": "Influencer",
     "sources": [
-      { "claim": "CDO, Head of Data & AI at ACCIONA Energía; responsible for AI strategy and digital transformation", "source": "LinkedIn", "url": "https://www.linkedin.com/in/marta-serrano-pardo-94b2b612", "date": "2026-07", "category": "SOURCE-BASED INTERPRETATION", "confidence": "Medium" }
+      {
+        "claim": "CDO, Head of Data & AI at ACCIONA Energía; responsible for AI strategy and digital transformation",
+        "source": "LinkedIn",
+        "url": "https://www.linkedin.com/in/marta-serrano-pardo-94b2b612",
+        "date": "2026-07",
+        "category": "SOURCE-BASED INTERPRETATION",
+        "confidence": "Medium"
+      }
+    ],
+    "powerRole": "Influencer",
+    "roleIsHypothesis": true,
+    "level": "Director",
+    "businessUnit": "AI/Data leadership",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "PUBLIC RESEARCH",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Validate role and priorities via warm introduction — HYPOTHESIS — VALIDATION REQUIRED",
+    "useCaseIds": [
+      "ana-uc-3"
+    ]
+  },
+  {
+    "id": "mapfre-wiznez",
+    "accountId": "mapfre",
+    "name": "Santiago Wiznez",
+    "title": "CTTO",
+    "functionArea": "Technology",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN — validate against REEF / agentic architecture agenda",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Economic Buyer",
+    "sources": [
+      {
+        "claim": "Santiago Wiznez — CTTO; role in plan: Economic Buyer",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Economic Buyer",
+    "roleIsHypothesis": false,
+    "level": "Executive Committee",
+    "businessUnit": "Technology",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "useCaseIds": []
+  },
+  {
+    "id": "mapfre-ledesma",
+    "accountId": "mapfre",
+    "name": "José Antonio Ledesma",
+    "title": "CISO",
+    "functionArea": "Security",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN — validate against REEF / agentic architecture agenda",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Security",
+    "sources": [
+      {
+        "claim": "José Antonio Ledesma — CISO; role in plan: Security",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Security",
+    "roleIsHypothesis": false,
+    "level": "Senior Leadership",
+    "businessUnit": "Security",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "useCaseIds": []
+  },
+  {
+    "id": "mapfre-solanas",
+    "accountId": "mapfre",
+    "name": "Maribel Solanas",
+    "title": "CDO",
+    "functionArea": "Data",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN — validate against REEF / agentic architecture agenda",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Influencer",
+    "sources": [
+      {
+        "claim": "Maribel Solanas — CDO; role in plan: Influencer",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Influencer",
+    "roleIsHypothesis": true,
+    "level": "Senior Leadership",
+    "businessUnit": "Data",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "useCaseIds": []
+  },
+  {
+    "id": "mapfre-jimenez",
+    "accountId": "mapfre",
+    "name": "Leire Jiménez",
+    "title": "Chief Innovation Officer",
+    "functionArea": "Innovation",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN — validate against REEF / agentic architecture agenda",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Influencer",
+    "sources": [
+      {
+        "claim": "Leire Jiménez — Chief Innovation Officer; role in plan: Influencer",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Influencer",
+    "roleIsHypothesis": true,
+    "level": "Senior Leadership",
+    "businessUnit": "Innovation",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "useCaseIds": []
+  },
+  {
+    "id": "mapfre-lacave",
+    "accountId": "mapfre",
+    "name": "Íñigo Lacave",
+    "title": "Technology & Architecture Director",
+    "functionArea": "Technology & Architecture",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN — validate against REEF / agentic architecture agenda",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Engaged",
+    "buyingRole": "Coach",
+    "sources": [
+      {
+        "claim": "Íñigo Lacave — Technology & Architecture Director; role in plan: Coach",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Coach",
+    "roleIsHypothesis": false,
+    "level": "Director",
+    "businessUnit": "Technology & Architecture",
+    "influence": "Unknown",
+    "championPotential": "High",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "useCaseIds": [
+      "mapfre-uc-1",
+      "mapfre-uc-2"
+    ]
+  },
+  {
+    "id": "mapfre-javanovic",
+    "accountId": "mapfre",
+    "name": "Mat Javanovic",
+    "title": "Global Cloud Director",
+    "functionArea": "Global Cloud",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN — validate against REEF / agentic architecture agenda",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Technical Evaluator",
+    "sources": [
+      {
+        "claim": "Mat Javanovic — Global Cloud Director; role in plan: Technical Evaluator",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Technical Evaluator",
+    "roleIsHypothesis": true,
+    "level": "Director",
+    "businessUnit": "Global Cloud",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "useCaseIds": []
+  },
+  {
+    "id": "mapfre-marana",
+    "accountId": "mapfre",
+    "name": "Javier Maraña",
+    "title": "Head of Agentic Architecture & Technological Innovation",
+    "functionArea": "Agentic Architecture & Technological Innovation",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN — validate against REEF / agentic architecture agenda",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Champion",
+    "buyingRole": "Champion",
+    "sources": [
+      {
+        "claim": "Javier Maraña — Head of Agentic Architecture & Technological Innovation; role in plan: Champion",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Champion",
+    "roleIsHypothesis": false,
+    "level": "Director",
+    "businessUnit": "Agentic Architecture & Technological Innovation",
+    "influence": "Unknown",
+    "championPotential": "High",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "useCaseIds": [
+      "mapfre-uc-1",
+      "mapfre-uc-3"
+    ]
+  },
+  {
+    "id": "mapfre-andujar",
+    "accountId": "mapfre",
+    "name": "Gabriel Andújar",
+    "title": "Agent Architecture Manager",
+    "functionArea": "Agent Architecture",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN — validate against REEF / agentic architecture agenda",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Champion",
+    "buyingRole": "Technical Champion",
+    "sources": [
+      {
+        "claim": "Gabriel Andújar — Agent Architecture Manager; role in plan: Technical Champion",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Technical Champion",
+    "roleIsHypothesis": false,
+    "level": "Manager",
+    "businessUnit": "Agent Architecture",
+    "influence": "Unknown",
+    "championPotential": "High",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "useCaseIds": [
+      "mapfre-uc-3"
+    ]
+  },
+  {
+    "id": "mapfre-bodas",
+    "accountId": "mapfre",
+    "name": "Diego José Bodas",
+    "title": "AI Center Director",
+    "functionArea": "AI / Data leadership",
+    "responsibilities": "UNKNOWN",
+    "strategicPriorities": "UNKNOWN",
+    "technologyPriorities": "UNKNOWN",
+    "relevantInitiatives": [],
+    "publicStatements": [],
+    "recentActivity": "UNKNOWN",
+    "potentialPain": "UNKNOWN — validate against REEF / agentic architecture agenda",
+    "cognitionRelevance": "UNKNOWN",
+    "relationshipStatus": "Identified",
+    "buyingRole": "Influencer",
+    "sources": [
+      {
+        "claim": "Diego José Bodas — AI Center Director; role in plan: Influencer",
+        "source": "MAPFRE Territory Plan (map mapfre.pptx) — as summarised in user brief",
+        "date": "2026-09",
+        "category": "FACT",
+        "confidence": "High"
+      }
+    ],
+    "powerRole": "Influencer",
+    "roleIsHypothesis": true,
+    "level": "Director",
+    "businessUnit": "AI / Data leadership",
+    "influence": "Unknown",
+    "championPotential": "Unknown",
+    "dataOrigin": "TERRITORY PLAN",
+    "lastUpdated": "2026-09-17",
+    "recommendedNextAction": "Confirm details against the uploaded territory plan",
+    "useCaseIds": [
+      "mapfre-uc-3"
     ]
   }
 ]

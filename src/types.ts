@@ -1,6 +1,38 @@
 export type Category = 'FACT' | 'SOURCE-BASED INTERPRETATION' | 'SALES HYPOTHESIS' | 'UNKNOWN';
 export type Confidence = 'High' | 'Medium' | 'Low';
-export type ValidationStatus = 'Confirmed' | 'Partially validated' | 'Hypothesis' | 'Validated';
+export type ValidationStatus = 'Confirmed' | 'Partially validated' | 'Hypothesis' | 'Validated' | 'Unknown';
+export type PowerRole =
+  | 'Executive Sponsor'
+  | 'Economic Buyer'
+  | 'Champion'
+  | 'Technical Champion'
+  | 'Business Champion'
+  | 'Influencer'
+  | 'Technical Evaluator'
+  | 'Security'
+  | 'Procurement'
+  | 'Legal'
+  | 'Coach'
+  | 'Blocker'
+  | 'Unknown';
+export type Influence = 'High' | 'Medium' | 'Low' | 'Unknown';
+export type Level = 'Board / CEO' | 'Executive Committee' | 'Senior Leadership' | 'Director' | 'Manager' | 'Individual Contributor' | 'Unknown';
+export type DataOrigin = 'TERRITORY PLAN' | 'ORIGINAL EXCEL DATA' | 'PUBLIC RESEARCH' | 'SALES HYPOTHESIS' | 'UNKNOWN';
+export type Relevance = 'HIGH' | 'MEDIUM' | 'LOW / EXPLORATORY' | 'NOT RELEVANT';
+export type DevinCategory =
+  | 'Feature Development'
+  | 'Migrations'
+  | 'Code Quality'
+  | 'Incident Response'
+  | 'Data & Analytics'
+  | 'Automations'
+  | 'Project Management'
+  | 'Integrations'
+  | 'API'
+  | 'Scheduling'
+  | 'Playbooks'
+  | 'MCP'
+  | 'Advanced workflows';
 export type Stage =
   | 'Identified'
   | 'Discovery'
@@ -25,8 +57,12 @@ export interface Initiative {
   name: string;
   area: string; // AI, Generative AI, Agentic AI, Digital transformation, Cloud, ...
   businessObjective: string;
+  currentSituation?: string;
+  potentialProblem?: string; // SALES HYPOTHESIS unless evidence says otherwise
+  potentialImplication?: string;
   evidence: Evidence[];
   cognitionRelevance: string;
+  problemCategory?: Category;
 }
 
 export interface Whitespace {
@@ -45,6 +81,43 @@ export interface UseCase {
   whyCognition: string;
   businessOutcome: string;
   opportunityId?: string;
+  initiativeId?: string;
+  category?: DevinCategory;
+  relevance?: Relevance;
+  businessProblem?: string;
+  targetStakeholderIds?: string[];
+  evidenceSummary?: string;
+}
+
+export interface TechnologyProfile {
+  technologyStrategy: string;
+  cloudStrategy: string;
+  aiStrategy: string;
+  generativeAI: string;
+  agenticAI: string;
+  softwareEngineering: string;
+  developerProductivity: string;
+  digitalTransformation: string;
+  applicationModernization: string;
+  legacyEnvironment: string;
+  data: string;
+  cybersecurity: string;
+}
+
+export interface RelevanceChain {
+  customerStrategy: string;
+  businessProblem: string;
+  potentialCognitionValue: string;
+  category: Category;
+}
+
+export interface CompetitiveIntel {
+  currentTechnology: string;
+  potentialCompetitor: string;
+  evidence: string;
+  category: Category;
+  differentiation: string;
+  discoveryQuestion: string;
 }
 
 export interface Account {
@@ -67,6 +140,10 @@ export interface Account {
   initiatives: Initiative[];
   useCases: UseCase[];
   whitespace: Whitespace[];
+  keyMarkets?: string[];
+  technology?: TechnologyProfile;
+  cognitionRelevanceChain?: RelevanceChain[];
+  competitiveIntel?: CompetitiveIntel[];
 }
 
 export interface Signal {
@@ -99,13 +176,29 @@ export interface Stakeholder {
   potentialPain: string;
   cognitionRelevance: string;
   relationshipStatus: RelationshipStatus;
-  buyingRole: string; // Economic Buyer, Champion, Influencer, Technical evaluator, Blocker, Unknown
+  buyingRole: string; // legacy free text; prefer powerRole
   sources: Evidence[];
+  // Power chart fields (optional for backwards compatibility)
+  powerRole?: PowerRole;
+  roleIsHypothesis?: boolean; // true => show 'HYPOTHESIS — VALIDATION REQUIRED'
+  level?: Level;
+  businessUnit?: string;
+  influence?: Influence;
+  championPotential?: 'High' | 'Medium' | 'Low' | 'Unknown';
+  reportsTo?: string; // stakeholder id, only when sourced
+  dataOrigin?: DataOrigin;
+  lastUpdated?: string;
+  recommendedNextAction?: string;
+  useCaseIds?: string[];
+  // Original Excel columns (ACCIONA import) — preserved verbatim
+  excel?: { person: string; title: string; level: string; businessUnit: string; salesPlay: string; action: string; whyHighTarget: string };
 }
 
 export interface ValidationRow {
   status: ValidationStatus;
   evidence: string;
+  source?: string;
+  lastUpdated?: string;
 }
 
 export interface ThreeWhys {
@@ -196,6 +289,19 @@ export interface MeetingNote {
   whatWasDisproved: string;
   whatRemainsUnknown: string;
   nextAction: string;
+}
+
+export type TaskStatus = 'Open' | 'Done';
+export interface Task {
+  id: string;
+  title: string;
+  accountId: string;
+  opportunityId?: string;
+  stakeholderId?: string;
+  due?: string;
+  status: TaskStatus;
+  createdAt: string;
+  source?: string; // e.g. 'cockpit', 'meeting', 'manual'
 }
 
 export interface Dataset {
