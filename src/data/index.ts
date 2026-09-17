@@ -1,9 +1,10 @@
-import type { Account, CockpitAction, Dataset, Opportunity, Signal, Stakeholder } from '../types';
+import type { Account, CockpitAction, Dataset, Opportunity, PgRecord, Signal, Stakeholder } from '../types';
 import accountsJson from './accounts.json';
 import stakeholdersJson from './stakeholders.json';
 import signalsJson from './signals.json';
 import opportunitiesJson from './opportunities.json';
 import cockpitJson from './cockpit.json';
+import pgJson from './pg.json';
 
 export const dataset: Dataset = {
   accounts: accountsJson as Account[],
@@ -11,6 +12,7 @@ export const dataset: Dataset = {
   signals: signalsJson as Signal[],
   opportunities: opportunitiesJson as Opportunity[],
   cockpitActions: cockpitJson as CockpitAction[],
+  pg: pgJson as PgRecord[],
 };
 
 export const accountById = (id: string) => dataset.accounts.find((item) => item.id === id);

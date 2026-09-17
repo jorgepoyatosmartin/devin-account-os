@@ -305,10 +305,45 @@ export interface Task {
   source?: string; // e.g. 'cockpit', 'meeting', 'manual'
 }
 
+export type PgStatus = 'TARGET' | 'READY' | 'OUTREACH' | 'ENGAGED' | 'MEETING' | 'QUALIFIED' | 'CONVERTED' | 'NURTURE' | 'DISQUALIFIED';
+export type PgPriority = 'HIGH' | 'MEDIUM' | 'LOW';
+export type SalesPlay = 'Developer Productivity' | 'AI Engineering' | 'Legacy Modernization' | 'Cloud Migration' | 'Quality & Regulatory Delivery' | 'Data & AI Product Engineering' | 'UNKNOWN';
+export type AccessRoute = 'Direct outreach' | 'Internal introduction' | 'Champion introduction' | 'Executive introduction' | 'Partner introduction' | 'Event' | 'Existing opportunity' | 'Existing customer relationship';
+
+export interface PgRecord {
+  id: string;
+  accountId: string;
+  stakeholderId: string;
+  initiativeId?: string;
+  useCaseIds: string[];
+  signalIds: string[];
+  salesPlay: SalesPlay;
+  businessPain: string;
+  action: string;
+  whyHighTarget: string;
+  whyMeet: string;
+  howGetMeeting: string;
+  accessRoute: AccessRoute;
+  accessViaStakeholderId?: string;
+  comments: string;
+  message: string;
+  messageLang: 'es' | 'en';
+  messageSentAt?: string;
+  status: PgStatus;
+  priority: PgPriority;
+  priorityIsAuto: boolean;
+  owner: string;
+  opportunityId?: string;
+  origin: DataOrigin;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Dataset {
   accounts: Account[];
   stakeholders: Stakeholder[];
   signals: Signal[];
   opportunities: Opportunity[];
   cockpitActions: CockpitAction[];
+  pg: PgRecord[];
 }
