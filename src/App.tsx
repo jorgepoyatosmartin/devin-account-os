@@ -12,6 +12,7 @@ import PowerChart from './components/PowerChart';
 import InitiativeChain from './components/InitiativeChain';
 import { CrossAccountPage, InitiativesPage, OpportunityActivity, OpportunityNextActions, OpportunityStakeholders, PipelinePage, PowerChartsPage, StakeholderProfilePage, TasksPage, UseCasesPage } from './pages/IntelligencePages';
 import PgPage from './pages/PgPage';
+import { useI18n } from './i18n';
 
 const tabs = ['Overview', '3 WHYS', 'MEDDPICC', 'Stakeholders', 'Activity', 'Next Actions', 'Meeting Prep', 'Post-Meeting Update'];
 const statusOptions: ValidationStatus[] = ['Confirmed', 'Validated', 'Partially validated', 'Hypothesis', 'Unknown'];
@@ -21,14 +22,15 @@ function Badge({ children, tone = '' }: { children: React.ReactNode; tone?: stri
 }
 
 function EvidenceList({ evidence }: { evidence: Evidence[] }) {
-  if (!evidence.length) return <div className="muted">No evidence captured yet.</div>;
+  const { t, tv } = useI18n();
+  if (!evidence.length) return <div className="muted">{t('common.noEvidence')}</div>;
   return <div className="evidence-list">{evidence.map((item, index) => (
     <div className="evidence-row" key={`${item.claim}-${index}`}>
       <div><strong>{item.claim}</strong><div className="muted">{item.source}</div></div>
-      <Badge tone={`category-${item.category}`}>{item.category}</Badge>
-      <span className="confidence">{item.confidence}</span>
+      <Badge tone={`category-${item.category}`}>{tv(item.category)}</Badge>
+      <span className="confidence">{tv(item.confidence)}</span>
       <span>{item.date || '—'}</span>
-      {item.url ? <a href={item.url} target="_blank" rel="noreferrer">Open ↗</a> : <span className="muted">No URL</span>}
+      {item.url ? <a href={item.url} target="_blank" rel="noreferrer">{t('common.open')}</a> : <span className="muted">{t('common.noUrl')}</span>}
     </div>
   ))}</div>;
 }
@@ -46,23 +48,24 @@ function Editable({ value, onChange, multiline = false, placeholder = 'Add note�
 }
 
 function Layout({ children, dataset, reset, exportData, openCommand }: { children: React.ReactNode; dataset: typeof sourceDataset; reset: () => void; exportData: () => void; openCommand: () => void }) {
+  const { lang, setLang, t } = useI18n();
   const groups = [
-    { name: 'WORKSPACE', links: [['/', 'Daily Cockpit', '⌂'], ['/accounts', 'Accounts', '▦'], ['/initiatives', 'Strategic Initiatives', '◇'], ['/power-charts', 'Power Charts', '◎']] },
-    { name: 'INTELLIGENCE', links: [['/stakeholders', 'Stakeholders', '◉'], ['/use-cases', 'Use Cases', '▤'], ['/signals', 'Signals', '◌']] },
-    { name: 'PIPELINE', links: [['/pg', 'PG — Pipeline Generation', '◈'], ['/opportunities', 'Opportunities', '◇'], ['/pipeline', 'Pipeline', '▥'], ['/tasks', 'Next Actions', '✓']] },
-    { name: 'RHYTHM', links: [['/weekly-review', 'Weekly Review', '◷'], ['/cross-account', 'Cross-Account', '⌘']] },
+    { name: t('nav.workspace'), links: [['/', t('nav.cockpit'), '⌂'], ['/accounts', t('nav.accounts'), '▦'], ['/initiatives', t('nav.initiatives'), '◇'], ['/power-charts', t('nav.powerCharts'), '◎']] },
+    { name: t('nav.intelligence'), links: [['/stakeholders', t('nav.stakeholders'), '◉'], ['/use-cases', t('nav.useCases'), '▤'], ['/signals', t('nav.signals'), '◌']] },
+    { name: t('nav.pipeline'), links: [['/pg', t('nav.pg'), '◈'], ['/opportunities', t('nav.opportunities'), '◇'], ['/pipeline', t('nav.pipelinePage'), '▥'], ['/tasks', t('nav.tasks'), '✓']] },
+    { name: t('nav.rhythm'), links: [['/weekly-review', t('nav.weeklyReview'), '◷'], ['/cross-account', t('nav.crossAccount'), '⌘']] },
   ];
   return <div className="app-shell">
     <aside className="sidebar">
-      <div className="brand"><div className="brand-mark">C</div><div><strong>COGNITION</strong><span>PIPELINE OS</span></div></div>
-      <div className="workspace"><span className="status-dot" /> LOCAL WORKSPACE <span className="chevron">⌄</span></div>
-      <button className="command-trigger" onClick={openCommand}><span>⌕</span>Search local intelligence <kbd>Ctrl K</kbd></button>
+      <div className="brand"><div className="brand-mark">C</div><div><strong>COGNITION</strong><span>PIPELINE OS</span></div><div className="lang-switch" title={t('common.language')}><button className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>🇬🇧 EN</button><span>|</span><button className={lang === 'es' ? 'active' : ''} onClick={() => setLang('es')}>🇪🇸 ES</button></div></div>
+      <div className="workspace"><span className="status-dot" /> {t('common.localWorkspace')} <span className="chevron">⌄</span></div>
+      <button className="command-trigger" onClick={openCommand}><span>⌕</span>{t('common.search')} <kbd>Ctrl K</kbd></button>
       <nav>{groups.map((group) => <div className="nav-group" key={group.name}><div className="nav-heading">{group.name}</div>{group.links.map(([to, label, icon]) => <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => isActive ? 'active' : ''}><span className="nav-icon">{icon}</span>{label}</NavLink>)}</div>)}</nav>
       <div className="sidebar-bottom">
-        <div className="data-status"><span className="status-dot" />{dataset.accounts.length} account loaded</div>
-        <button className="sidebar-button" onClick={exportData}>⇩ Export data (JSON)</button>
-        <button className="sidebar-button muted-button" onClick={reset}>↺ Reset local edits</button>
-        <div className="version">v0.2 • Local first</div>
+        <div className="data-status"><span className="status-dot" />{dataset.accounts.length === 1 ? t('common.accountLoaded', { count: dataset.accounts.length }) : t('common.accountLoadedPlural', { count: dataset.accounts.length })}</div>
+        <button className="sidebar-button" onClick={exportData}>⇩ {t('common.export')}</button>
+        <button className="sidebar-button muted-button" onClick={reset}>↺ {t('common.reset')}</button>
+        <div className="version">v0.2 • {t('common.localFirst')}</div>
       </div>
     </aside>
     <main className="main-content">{children}</main>
@@ -74,28 +77,31 @@ function PageHeader({ eyebrow, title, subtitle, action }: { eyebrow: string; tit
 }
 
 function Traffic({ op }: { op: Opportunity }) {
+  const { tv } = useI18n();
   const status = threeWhysStatus(op);
-  return <Badge tone={`traffic-${status.tone}`}>{status.emoji} {status.label}</Badge>;
+  return <Badge tone={`traffic-${status.tone}`}>{status.emoji} {tv(status.label)}</Badge>;
 }
 
 function Inconsistent({ op }: { op: Opportunity }) {
+  const { t } = useI18n();
   return (['Qualified', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'] as string[]).includes(op.stage) && !isFullyQualified(op)
-    ? <Badge tone="warning">Stage inconsistent with 3 Whys validation</Badge> : null;
+    ? <Badge tone="warning">{t('common.stageInconsistent')}</Badge> : null;
 }
 
 function Cockpit({ dataset, addTask, onToast }: { dataset: typeof sourceDataset; addTask: (task: import('./types').Task) => void; onToast: (message: string) => void }) {
+  const { lang, t, tv } = useI18n();
   const navigate = useNavigate();
   const actions = [...dataset.cockpitActions].sort((a, b) => a.priority - b.priority).slice(0, 5);
-  return <><PageHeader eyebrow="DAILY COCKPIT / MONDAY 08:42" title="WHAT SHOULD I DO TODAY?" subtitle="A focused operating view of the accounts and actions that move pipeline forward." />
-    <div className="metric-row"><div className="metric"><span>Open pipeline</span><strong>{dataset.opportunities.length}</strong><small>active opportunities</small></div><div className="metric"><span>Validation health</span><strong>{dataset.opportunities.filter(isFullyQualified).length}<em>/{dataset.opportunities.length}</em></strong><small>fully qualified</small></div><div className="metric"><span>Actions due</span><strong>{actions.length}</strong><small>prioritized for today</small></div><div className="metric"><span>Accounts</span><strong>{dataset.accounts.length}</strong><small>in workspace</small></div></div>
-    <Section eyebrow="PRIORITY QUEUE" title="Today's focus">
+  return <><PageHeader eyebrow="DAILY COCKPIT / MONDAY 08:42" title={t('cockpit.title')} subtitle={t('cockpit.subtitle')} />
+    <div className="metric-row"><div className="metric"><span>{t('cockpit.openPipeline')}</span><strong>{dataset.opportunities.length}</strong><small>{t('cockpit.activeOpportunities')}</small></div><div className="metric"><span>{t('cockpit.validationHealth')}</span><strong>{dataset.opportunities.filter(isFullyQualified).length}<em>/{dataset.opportunities.length}</em></strong><small>{t('cockpit.fullyQualified')}</small></div><div className="metric"><span>{t('cockpit.actionsDue')}</span><strong>{actions.length}</strong><small>{t('cockpit.prioritizedToday')}</small></div><div className="metric"><span>{t('cockpit.accounts')}</span><strong>{dataset.accounts.length}</strong><small>{t('cockpit.inWorkspace')}</small></div></div>
+    <Section eyebrow="PRIORITY QUEUE" title={lang === 'es' ? 'Enfoque de hoy' : "Today's focus"}>
       <div className="action-grid">{actions.map((action) => {
         const account = accountById(action.accountId); const op = action.opportunityId ? dataset.opportunities.find((item) => item.id === action.opportunityId) : undefined;
         const stakeholder = action.stakeholderId ? stakeholderById(action.stakeholderId) : undefined;
-        return <article className="action-card" key={action.id}><div className="card-top"><Badge tone="priority">P{action.priority}</Badge><span className="muted">{account?.name}</span></div><h3>{op?.name || action.signal}</h3><div className="entity-line">{stakeholder?.name || 'Stakeholder pending'} <span>·</span> {action.signal}</div><div className="mini-label">3 WHYS STATUS</div>{op && <Traffic op={op} />}<div className="action-block"><span>WHY THIS MATTERS</span><p>{action.whyThisMatters}</p></div><div className="action-block"><span>RECOMMENDED ACTION</span><p>{action.recommendedAction}</p></div><div className="message-block"><span>SUGGESTED MESSAGE <button onClick={async () => { await navigator.clipboard?.writeText(action.suggestedMessage); onToast('Suggested message copied'); }}>COPY</button></span><code>{action.suggestedMessage}</code></div><div className="action-outcome"><span>EXPECTED OUTCOME</span><strong>{action.expectedOutcome}</strong></div><div className="context-actions">{op && <button onClick={() => navigate(`/opportunities/${op.id}?tab=3%20WHYS`)}>3 Whys</button>}<button onClick={() => navigate(`/power-charts?account=${action.accountId}`)}>Power Chart</button>{stakeholder && <button onClick={() => navigate(`/stakeholders/${stakeholder.id}`)}>Stakeholder</button>}{op && <button onClick={() => navigate(`/opportunities/${op.id}?tab=Meeting%20Prep`)}>Meeting</button>}<button onClick={() => { addTask({ id: `task-${Date.now()}`, title: action.recommendedAction, accountId: action.accountId, opportunityId: action.opportunityId, stakeholderId: action.stakeholderId, status: 'Open', createdAt: new Date().toISOString(), source: 'cockpit' }); onToast('Next action created'); }}>+ Task</button></div></article>;
+        return <article className="action-card" key={action.id}><div className="card-top"><Badge tone="priority">P{action.priority}</Badge><span className="muted">{account?.name}</span></div><h3>{op?.name || action.signal}</h3><div className="entity-line">{stakeholder?.name || t('cockpit.stakeholder')} <span>·</span> {action.signal}</div><div className="mini-label">{t('cockpit.threeWhys').toUpperCase()} STATUS</div>{op && <Traffic op={op} />}<div className="action-block"><span>WHY THIS MATTERS</span><p>{action.whyThisMatters}</p></div><div className="action-block"><span>RECOMMENDED ACTION</span><p>{action.recommendedAction}</p></div><div className="message-block"><span>SUGGESTED MESSAGE <button onClick={async () => { await navigator.clipboard?.writeText(action.suggestedMessage); onToast(t('toast.messageCopied')); }}>{t('cockpit.copy')}</button></span><code>{action.suggestedMessage}</code></div><div className="action-outcome"><span>EXPECTED OUTCOME</span><strong>{action.expectedOutcome}</strong></div><div className="context-actions">{op && <button onClick={() => navigate(`/opportunities/${op.id}?tab=3%20WHYS`)}>{t('cockpit.threeWhys')}</button>}<button onClick={() => navigate(`/power-charts?account=${action.accountId}`)}>{t('cockpit.powerChart')}</button>{stakeholder && <button onClick={() => navigate(`/stakeholders/${stakeholder.id}`)}>{t('cockpit.stakeholder')}</button>}{op && <button onClick={() => navigate(`/opportunities/${op.id}?tab=Meeting%20Prep`)}>{t('cockpit.meeting')}</button>}<button onClick={() => { addTask({ id: `task-${Date.now()}`, title: action.recommendedAction, accountId: action.accountId, opportunityId: action.opportunityId, stakeholderId: action.stakeholderId, status: 'Open', createdAt: new Date().toISOString(), source: 'cockpit' }); onToast(t('toast.actionAdded')); }}>{t('cockpit.task')}</button></div></article>;
       })}</div>
       <div className="weak-whys-panel"><div><span>WEAK WHY NOW</span>{dataset.opportunities.filter((item) => weakWhys(item).whyNow === 'weak').map((item) => <Link key={item.id} to={`/opportunities/${item.id}?tab=3%20WHYS`}>{item.name}</Link>)}</div><div><span>WEAK WHY COGNITION</span>{dataset.opportunities.filter((item) => weakWhys(item).whyCognition === 'weak').map((item) => <Link key={item.id} to={`/opportunities/${item.id}?tab=3%20WHYS`}>{item.name}</Link>)}</div></div>
-      <Section eyebrow="PIPELINE GENERATION" title="PG priorities today"><div className="pg-cockpit-list">{dataset.pg.map((item) => resolvePg(item, dataset)).filter((item) => !['CONVERTED', 'DISQUALIFIED', 'NURTURE'].includes(item.status)).sort((a, b) => ({ HIGH: 0, MEDIUM: 1, LOW: 2 }[a.priority] - { HIGH: 0, MEDIUM: 1, LOW: 2 }[b.priority])).slice(0, 3).map((item) => <Link className="pg-cockpit-row" to={`/pg/${item.id}`} key={item.id}><span><strong>{item.stakeholder.name}</strong><small>{item.account.name} · {item.salesPlay}</small></span><Badge tone="pg-yellow">{item.priority}</Badge></Link>)}</div></Section>
+      <Section eyebrow="PIPELINE GENERATION" title={t('cockpit.pgPriorities')}><div className="pg-cockpit-list">{dataset.pg.map((item) => resolvePg(item, dataset, lang)).filter((item) => !['CONVERTED', 'DISQUALIFIED', 'NURTURE'].includes(item.status)).sort((a, b) => ({ HIGH: 0, MEDIUM: 1, LOW: 2 }[a.priority] - { HIGH: 0, MEDIUM: 1, LOW: 2 }[b.priority])).slice(0, 3).map((item) => <Link className="pg-cockpit-row" to={`/pg/${item.id}`} key={item.id}><span><strong>{item.stakeholder.name}</strong><small>{item.account.name} · {tv(item.salesPlay)}</small></span><Badge tone="pg-yellow">{tv(item.priority)}</Badge></Link>)}</div></Section>
     </Section>
     <Section eyebrow="PIPELINE SNAPSHOT" title="All opportunities">
       <PipelineTable opportunities={dataset.opportunities} dataset={dataset} />
@@ -104,14 +110,17 @@ function Cockpit({ dataset, addTask, onToast }: { dataset: typeof sourceDataset;
 }
 
 function PipelineTable({ opportunities, dataset }: { opportunities: Opportunity[]; dataset: typeof sourceDataset }) {
-  return <div className="table-wrap"><table><thead><tr><th>Account</th><th>Opportunity</th><th>Stage</th><th>Potential value</th><th>3 Whys</th><th>Confidence</th><th>Next action</th></tr></thead><tbody>{opportunities.map((op) => <tr key={op.id}><td><Link to={`/accounts/${op.accountId}`}>{accountById(op.accountId)?.name}</Link></td><td><Link to={`/opportunities/${op.id}`}>{op.name}</Link></td><td><Badge>{op.stage}</Badge><Inconsistent op={op} /></td><td>{op.potentialValue}</td><td><Traffic op={op} /></td><td>{op.confidence}</td><td>{op.nextAction}</td></tr>)}</tbody></table></div>;
+  const { t, tv } = useI18n();
+  return <div className="table-wrap"><table><thead><tr><th>{t('pg.table.account')}</th><th>{t('pg.table.person')}</th><th>{t('pg.table.status')}</th><th>{t('pipeline.value')}</th><th>3 WHYS</th><th>{tv('Confidence')}</th><th>{t('pg.table.action')}</th></tr></thead><tbody>{opportunities.map((op) => <tr key={op.id}><td><Link to={`/accounts/${op.accountId}`}>{accountById(op.accountId)?.name}</Link></td><td><Link to={`/opportunities/${op.id}`}>{op.name}</Link></td><td><Badge>{tv(op.stage)}</Badge><Inconsistent op={op} /></td><td>{op.potentialValue}</td><td><Traffic op={op} /></td><td>{tv(op.confidence)}</td><td>{op.nextAction}</td></tr>)}</tbody></table></div>;
 }
 
 function AccountsPage({ dataset }: { dataset: typeof sourceDataset }) {
-  return <><PageHeader eyebrow="ACCOUNTS / PORTFOLIO" title="Accounts" subtitle="Account intelligence, strategic priorities, and whitespace." /><div className="account-grid">{dataset.accounts.map((account) => <Link className="account-card" to={`/accounts/${account.id}`} key={account.id}><div className="account-avatar">{account.name.slice(0, 1)}</div><div><div className="eyebrow">{account.sector}</div><h2>{account.name}</h2><p>{account.overview}</p><div className="card-stats"><span>{opportunitiesForAccount(account.id).length} opportunities</span><span>{stakeholdersForAccount(account.id).length} stakeholders</span><span>{signalsForAccount(account.id).length} signals</span></div></div><span className="arrow">→</span></Link>)}</div></>;
+  const { t } = useI18n();
+  return <><PageHeader eyebrow="ACCOUNTS / PORTFOLIO" title={t('accounts.title')} subtitle={t('accounts.subtitle')} /><div className="account-grid">{dataset.accounts.map((account) => <Link className="account-card" to={`/accounts/${account.id}`} key={account.id}><div className="account-avatar">{account.name.slice(0, 1)}</div><div><div className="eyebrow">{account.sector}</div><h2>{account.name}</h2><p>{account.overview}</p><div className="card-stats"><span>{opportunitiesForAccount(account.id).length} {t('accounts.opportunities').toLowerCase()}</span><span>{stakeholdersForAccount(account.id).length} {t('nav.stakeholders').toLowerCase()}</span><span>{signalsForAccount(account.id).length} {t('nav.signals').toLowerCase()}</span></div></div><span className="arrow">→</span></Link>)}</div></>;
 }
 
 function AccountDetail({ dataset, setOverride }: { dataset: typeof sourceDataset; setOverride: (id: string, path: string, value: unknown) => void }) {
+  const { t, tv } = useI18n();
   const { id = '' } = useParams(); const [params] = useSearchParams(); const account = dataset.accounts.find((item) => item.id === id); const [tab, setTab] = useState(params.get('tab') || 'Company');
   if (!account) return <NotFound />;
   const tabs = ['Company', 'Strategic Initiatives', 'Signals', 'Stakeholders', 'Use Cases', 'Whitespace', 'Technology', 'Power Chart', 'Competition', 'Opportunities'];
@@ -120,7 +129,7 @@ function AccountDetail({ dataset, setOverride }: { dataset: typeof sourceDataset
   const accountSignals = dataset.signals.filter((item) => item.accountId === account.id);
   const engagedCount = accountStakeholders.filter((item) => ['Engaged', 'Champion'].includes(item.relationshipStatus)).length;
   const traffic = { red: accountOpps.filter((item) => threeWhysStatus(item).tone === 'red').length, yellow: accountOpps.filter((item) => threeWhysStatus(item).tone === 'yellow').length, green: accountOpps.filter((item) => threeWhysStatus(item).tone === 'green').length };
-  return <><PageHeader eyebrow={`ACCOUNT PLAN / ${account.sector.toUpperCase()}`} title={account.name} subtitle={`${account.headquarters} · ${account.employees} employees · ${account.geographicFootprint}`} action={<Link className="button secondary" to="/accounts">← All accounts</Link>} /><div className="account-summary-strip"><button onClick={() => setTab('Strategic Initiatives')}><span>INITIATIVES</span><strong>{account.initiatives.length}</strong></button><button onClick={() => setTab('Opportunities')}><span>OPPORTUNITIES</span><strong>{accountOpps.length}</strong></button><button onClick={() => setTab('Stakeholders')}><span>ENGAGED STAKEHOLDERS</span><strong>{engagedCount}</strong></button><button onClick={() => setTab('Signals')}><span>SIGNALS</span><strong>{accountSignals.length}</strong></button><button onClick={() => setTab('Opportunities')}><span>3 WHYS</span><strong className="summary-lights">🔴 {traffic.red} 🟡 {traffic.yellow} 🟢 {traffic.green}</strong></button></div>
+  return <><PageHeader eyebrow={`ACCOUNT PLAN / ${account.sector.toUpperCase()}`} title={account.name} subtitle={`${account.headquarters} · ${account.employees} employees · ${account.geographicFootprint}`} action={<Link className="button secondary" to="/accounts">← {t('common.allAccounts')}</Link>} /><div className="account-summary-strip"><button onClick={() => setTab('Strategic Initiatives')}><span>{t('accounts.initiatives').toUpperCase()}</span><strong>{account.initiatives.length}</strong></button><button onClick={() => setTab('Opportunities')}><span>{t('accounts.opportunities').toUpperCase()}</span><strong>{accountOpps.length}</strong></button><button onClick={() => setTab('Stakeholders')}><span>{t('accounts.engaged').toUpperCase()}</span><strong>{engagedCount}</strong></button><button onClick={() => setTab('Signals')}><span>{t('accounts.signals').toUpperCase()}</span><strong>{accountSignals.length}</strong></button><button onClick={() => setTab('Opportunities')}><span>3 WHYS</span><strong className="summary-lights">🔴 {traffic.red} 🟡 {traffic.yellow} 🟢 {traffic.green}</strong></button></div>
     <div className="tab-bar">{tabs.map((item) => <button className={tab === item ? 'selected' : ''} onClick={() => setTab(item)} key={item}>{item}</button>)}</div>
     {tab === 'Company' && <><Section title="Company profile" eyebrow="OVERVIEW"><p className="lead">{account.overview}</p><div className="detail-grid">{[['Revenue', account.revenue], ['Employees', account.employees], ['Headquarters', account.headquarters], ['Geographic footprint', account.geographicFootprint], ['Financial performance', account.financialPerformance], ['Business units', account.businessUnits.join(', ')], ['Products & services', account.productsServices.join(', ')], ['Growth priorities', account.growthPriorities.join(', ')], ['Cost restructuring', account.costRestructuringInitiatives.join(', ')], ['M&A activity', account.mnaActivity.join(', ')]].map(([label, value]) => <div className="detail-item" key={label}><span>{label}</span><strong>{value}</strong></div>)}</div></Section><Section title="Company evidence" eyebrow="SOURCE REGISTER"><EvidenceList evidence={account.companyEvidence} /></Section></>}
     {tab === 'Strategic Initiatives' && <Section title="Strategic initiatives" eyebrow="WHAT THE ACCOUNT IS PRIORITISING"><div className="initiative-list">{account.initiatives.map((initiative) => <InitiativeChain account={account} initiative={initiative} opportunities={dataset.opportunities} stakeholders={accountStakeholders} key={initiative.id} />)}</div></Section>}
@@ -216,7 +225,7 @@ function WeeklyReview({ dataset }: { dataset: typeof sourceDataset }) {
   return <><PageHeader eyebrow="WEEKLY OPERATING RHYTHM" title="Weekly Account Review" subtitle="A concise review of coverage, validation, and where to place the next bet." />{summary}<div className="review-list">{accounts.map((account) => { const accountOpps = dataset.opportunities.filter((x) => x.accountId === account.id); const accountPeople = dataset.stakeholders.filter((x) => x.accountId === account.id); const newSignals = dataset.signals.filter((x) => x.accountId === account.id && today - new Date(x.date).getTime() <= days30); const gaps = accountOpps.reduce((sum, op) => sum + Object.values(op.meddpicc).filter((x) => !x || /TBD|UNKNOWN/i.test(x)).length, 0); return <article className="review-card" key={account.id}><div className="review-heading"><div className="account-avatar">{account.name.slice(0, 1)}</div><div><h2>{account.name}</h2><p>{account.overview}</p></div><Link to={`/accounts/${account.id}`}>Open account →</Link></div><div className="review-metrics"><div><span>Initiatives</span><strong>{account.initiatives.length}</strong></div><div><span>New signals</span><strong>{newSignals.length}</strong></div><div><span>Engaged stakeholders</span><strong>{accountPeople.filter((x) => ['Engaged', 'Champion'].includes(x.relationshipStatus)).length}</strong></div><div><span>Opportunities</span><strong>{accountOpps.length}</strong></div><div><span>MEDDPICC gaps</span><strong>{gaps}</strong></div></div><div className="review-bottom"><div><span>3 WHYS VALIDATION</span>{accountOpps.map((x) => <div key={x.id}><Link to={`/opportunities/${x.id}`}>{x.name}</Link> <Traffic op={x} /></div>)}</div><div><span>RISKS</span><p>{accountPeople.filter((x) => x.buyingRole === 'Economic Buyer').length ? 'Economic buyer identified' : 'No economic buyer'} · {accountOpps.some((x) => !isFullyQualified(x)) ? 'Stage / validation review' : 'No stage inconsistency'}</p></div><div><span>WHITESPACE</span><p>{account.whitespace.map((x) => x.area).join(', ')}</p></div><div><span>NEXT ACTIONS</span>{accountOpps.map((x) => <p key={x.id}>{x.nextAction}</p>)}</div></div></article>; })}</div></>;
 }
 
-function NotFound() { return <div className="empty-state"><h1>Not found</h1><Link to="/">Return to cockpit</Link></div>; }
+function NotFound() { const { t } = useI18n(); return <div className="empty-state"><h1>{t('notFound.title')}</h1><Link to="/">{t('notFound.back')}</Link></div>; }
 
 export default function App() {
   const { overrides, setOverride, meetingNotes, saveMeetingNote, tasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, upsertPg, addPg, addOpportunity, reset } = useOverrides();

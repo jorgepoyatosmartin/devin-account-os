@@ -31,6 +31,9 @@ a:hover { color: var(--bright); }
 .brand-mark { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 8px; background: linear-gradient(135deg, var(--cyan), #4d82fa); color: #07121d; font-size: 19px; font-weight: 800; }
 .brand strong, .brand span { display: block; letter-spacing: .14em; font-size: 12px; }
 .brand span { color: var(--muted); font-size: 9px; margin-top: 3px; }
+.lang-switch { display:flex; align-items:center; gap:3px; margin-top:8px; font-size:11px; color:var(--muted); }
+.lang-switch button { border:0; background:transparent; color:var(--muted); padding:2px 3px; font:inherit; cursor:pointer; }
+.lang-switch button.active { color:var(--text); font-weight:700; }
 .workspace { color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 10px 11px; font-size: 10px; letter-spacing: .1em; margin: 0 4px 22px; }
 .status-dot { width: 7px; height: 7px; display: inline-block; border-radius: 50%; background: var(--green); margin-right: 7px; box-shadow: 0 0 8px var(--green); }
 .chevron { float: right; color: var(--muted); }

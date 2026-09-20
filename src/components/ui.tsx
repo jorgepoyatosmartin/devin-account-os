@@ -1,5 +1,6 @@
 import type { Evidence, Opportunity } from '../types';
 import { threeWhysStatus } from '../lib/threeWhys';
+import { useI18n } from '../i18n';
 
 export function Badge({ children, tone = '' }: { children: React.ReactNode; tone?: string }) {
   return <span className={`badge ${tone}`}>{children}</span>;
@@ -18,21 +19,25 @@ export function Editable({ value, onChange, multiline = false, placeholder = 'Ad
 }
 
 export function EvidenceList({ evidence }: { evidence?: Evidence[] }) {
-  if (!evidence?.length) return <div className="muted">No evidence captured yet.</div>;
-  return <div className="evidence-list">{evidence.map((item, index) => <div className="evidence-row" key={`${item.claim}-${index}`}><div><strong>{item.claim}</strong><div className="muted">{item.source}</div></div><Badge tone={`category-${item.category}`}>{item.category}</Badge><span className="confidence">{item.confidence}</span><span>{item.date || '—'}</span>{item.url ? <a href={item.url} target="_blank" rel="noreferrer">Open ↗</a> : <span className="muted">No URL</span>}</div>)}</div>;
+  const { t, tv } = useI18n();
+  if (!evidence?.length) return <div className="muted">{t('common.noEvidence')}</div>;
+  return <div className="evidence-list">{evidence.map((item, index) => <div className="evidence-row" key={`${item.claim}-${index}`}><div><strong>{item.claim}</strong><div className="muted">{item.source}</div></div><Badge tone={`category-${item.category}`}>{tv(item.category)}</Badge><span className="confidence">{tv(item.confidence)}</span><span>{item.date || '—'}</span>{item.url ? <a href={item.url} target="_blank" rel="noreferrer">{t('common.open')}</a> : <span className="muted">{t('common.noUrl')}</span>}</div>)}</div>;
 }
 
 export function Traffic({ op }: { op: Opportunity }) {
+  const { tv } = useI18n();
   const status = threeWhysStatus(op);
-  return <Badge tone={`traffic-${status.tone}`}>{status.emoji} {status.label}</Badge>;
+  return <Badge tone={`traffic-${status.tone}`}>{status.emoji} {tv(status.label)}</Badge>;
 }
 
 export function Inconsistent({ op }: { op: Opportunity }) {
-  return (['Qualified', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'] as string[]).includes(op.stage) && threeWhysStatus(op).tone !== 'green' ? <Badge tone="warning">Stage inconsistent with 3 Whys validation</Badge> : null;
+  const { t } = useI18n();
+  return (['Qualified', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'] as string[]).includes(op.stage) && threeWhysStatus(op).tone !== 'green' ? <Badge tone="warning">{t('common.stageInconsistent')}</Badge> : null;
 }
 
 export function Flow({ title, text }: { title: string; text: string }) {
-  return <div className="flow-card"><span>{title}</span><p>{text || 'UNKNOWN'}</p></div>;
+  const { tv } = useI18n();
+  return <div className="flow-card"><span>{tv(title)}</span><p>{text || tv('UNKNOWN')}</p></div>;
 }
 
 export function Toast({ message, onClose }: { message: string; onClose: () => void }) {

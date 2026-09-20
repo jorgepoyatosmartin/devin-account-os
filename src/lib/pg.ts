@@ -11,6 +11,7 @@ import type {
   UseCase,
   ValidationRow,
 } from '../types';
+import type { Lang } from '../i18n';
 
 export type AccessResult = { route: AccessRoute; viaId?: string; explanation: string };
 export type PgResolved = PgRecord & {
@@ -33,6 +34,8 @@ const dateWithin90Days = (date: string) => {
   const parsed = Date.parse(date);
   return Number.isFinite(parsed) && Date.now() - parsed <= 90 * 24 * 60 * 60 * 1000 && parsed <= Date.now();
 };
+const tag = (kind: 'FACT' | 'SOURCE-BASED INTERPRETATION' | 'SALES HYPOTHESIS', lang: Lang) =>
+  `[${lang === 'es' ? ({ FACT: 'HECHO', 'SOURCE-BASED INTERPRETATION': 'INTERPRETACIÓN BASADA EN FUENTES', 'SALES HYPOTHESIS': 'HIPÓTESIS COMERCIAL' } as const)[kind] : kind}]`;
 
 export function suggestPlay(account: Account, initiative?: Account['initiatives'][number], useCases: UseCase[] = []): SalesPlay {
   const categories = new Set(useCases.map((item) => item.category));
@@ -58,19 +61,27 @@ export function relevantUseCases(account: Account, play: SalesPlay, initiativeId
   return account.useCases.filter((item) => (initiativeId && item.initiativeId === initiativeId) || Boolean(item.category && categories.includes(item.category)));
 }
 
-export function accessRoute(stakeholder: Stakeholder, accountStakeholders: Stakeholder[], opportunities: Opportunity[]): AccessResult {
-  if (engaged(stakeholder)) return { route: 'Existing customer relationship', explanation: 'Direct — already engaged' };
-  if (opportunities.some((item) => item.stakeholderIds.includes(stakeholder.id))) return { route: 'Existing opportunity', explanation: 'Already listed on an opportunity' };
+export function accessRoute(stakeholder: Stakeholder, accountStakeholders: Stakeholder[], opportunities: Opportunity[], lang: Lang = 'en'): AccessResult {
+  const text = {
+    direct: lang === 'es' ? 'Directo — ya existe relación' : 'Direct — already engaged',
+    opportunity: lang === 'es' ? 'Ya figura en una oportunidad' : 'Already listed on an opportunity',
+    champion: lang === 'es' ? 'Vía Champion mediante' : 'Champion path via',
+    internal: lang === 'es' ? 'Vía interna mediante' : 'Internal path via',
+    executive: lang === 'es' ? 'Patrocinio ejecutivo mediante' : 'Executive sponsorship via',
+    none: lang === 'es' ? 'No se ha identificado una relación existente' : 'No existing relationship identified',
+  };
+  if (engaged(stakeholder)) return { route: 'Existing customer relationship', explanation: text.direct };
+  if (opportunities.some((item) => item.stakeholderIds.includes(stakeholder.id))) return { route: 'Existing opportunity', explanation: text.opportunity };
   const connectors = accountStakeholders.filter((person) => {
     const connectorRole = role(person);
     return nonHypothesisRole(person) && engaged(person) && ['Champion', 'Technical Champion', 'Coach'].includes(connectorRole);
   });
   const related = connectors.find((person) => person.id === stakeholder.reportsTo || stakeholder.reportsTo === person.id || (person.reportsTo && person.reportsTo === stakeholder.reportsTo));
-  if (related) return { route: 'Champion introduction', viaId: related.id, explanation: `Champion path via ${related.name}` };
-  if (connectors[0]) return { route: 'Internal introduction', viaId: connectors[0].id, explanation: `Internal path via ${connectors[0].name}` };
+  if (related) return { route: 'Champion introduction', viaId: related.id, explanation: `${text.champion} ${related.name}` };
+  if (connectors[0]) return { route: 'Internal introduction', viaId: connectors[0].id, explanation: `${text.internal} ${connectors[0].name}` };
   const executive = accountStakeholders.find((person) => nonHypothesisRole(person) && engaged(person) && ['Economic Buyer', 'Executive Sponsor'].includes(role(person)));
-  if (executive) return { route: 'Executive introduction', viaId: executive.id, explanation: `Executive sponsorship via ${executive.name}` };
-  return { route: 'Direct outreach', explanation: 'No existing relationship identified' };
+  if (executive) return { route: 'Executive introduction', viaId: executive.id, explanation: `${text.executive} ${executive.name}` };
+  return { route: 'Direct outreach', explanation: text.none };
 }
 
 export function whyHighTarget(
@@ -80,17 +91,18 @@ export function whyHighTarget(
   useCases: UseCase[] = [],
   signals: Signal[] = [],
   opportunities: Opportunity[] = [],
+  lang: Lang = 'en',
 ): string {
   const parts: string[] = [];
   const sourced = stakeholder.dataOrigin === 'TERRITORY PLAN' || stakeholder.dataOrigin === 'ORIGINAL EXCEL DATA';
   if (sourced && stakeholder.powerRole && stakeholder.roleIsHypothesis !== true && stakeholder.powerRole !== 'Unknown') {
-    parts.push(`[FACT] Named ${stakeholder.powerRole} in ${stakeholder.dataOrigin === 'TERRITORY PLAN' ? 'Territory Plan' : 'Original Excel Data'}`);
+    parts.push(`${tag('FACT', lang)} ${lang === 'es' ? 'Designado como' : 'Named'} ${stakeholder.powerRole} ${lang === 'es' ? 'en el ' : 'in '}${stakeholder.dataOrigin === 'TERRITORY PLAN' ? 'Territory Plan' : 'Original Excel Data'}`);
   }
-  if (sourced && stakeholder.level && stakeholder.level !== 'Unknown') parts.push(`[FACT] ${stakeholder.level} level in ${stakeholder.dataOrigin === 'TERRITORY PLAN' ? 'Territory Plan' : 'Original Excel Data'}`);
-  if (initiative) parts.push(`[SOURCE-BASED INTERPRETATION] Linked to initiative ${initiative.name}`);
-  if (known(stakeholder.potentialPain)) parts.push(`[SALES HYPOTHESIS] Potential pain: ${stakeholder.potentialPain}`);
-  if (stakeholder.championPotential === 'High') parts.push('[SALES HYPOTHESIS] High champion potential');
-  if (stakeholder.roleIsHypothesis === true && stakeholder.powerRole) parts.push(`[SALES HYPOTHESIS] Possible ${stakeholder.powerRole} role`);
+  if (sourced && stakeholder.level && stakeholder.level !== 'Unknown') parts.push(`${tag('FACT', lang)} ${stakeholder.level} ${lang === 'es' ? 'en el ' : 'level in '}${stakeholder.dataOrigin === 'TERRITORY PLAN' ? 'Territory Plan' : 'Original Excel Data'}`);
+  if (initiative) parts.push(`${tag('SOURCE-BASED INTERPRETATION', lang)} ${lang === 'es' ? 'Vinculado a la iniciativa' : 'Linked to initiative'} ${initiative.name}`);
+  if (known(stakeholder.potentialPain)) parts.push(`${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? 'Problema potencial:' : 'Potential pain:'} ${stakeholder.potentialPain}`);
+  if (stakeholder.championPotential === 'High') parts.push(`${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? 'Alto potencial como Champion' : 'High champion potential'}`);
+  if (stakeholder.roleIsHypothesis === true && stakeholder.powerRole) parts.push(`${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? 'Posible rol de' : 'Possible'} ${stakeholder.powerRole}`);
   return parts.join(' · ') || 'UNKNOWN — VALIDATION REQUIRED';
 }
 
@@ -100,11 +112,12 @@ export function whyMeet(
   useCases: UseCase[],
   play: SalesPlay,
   businessPain = '',
+  lang: Lang = 'en',
 ): string {
   const pain = known(businessPain) ? businessPain : known(stakeholder.potentialPain) ? stakeholder.potentialPain : initiative?.potentialProblem;
-  if (!initiative && !known(pain)) return 'UNKNOWN — needs initiative or pain first';
+  if (!initiative && !known(pain)) return lang === 'es' ? 'DESCONOCIDO — primero hace falta una iniciativa o un problema' : 'UNKNOWN — needs initiative or pain first';
   const useCase = useCases[0]?.name || VALIDATION;
-  return `[SALES HYPOTHESIS] ${role(stakeholder)} stakeholder connected to ${initiative?.name || 'an unvalidated initiative'} may be exploring ${pain || VALIDATION}. ${play} could map to ${useCase}. (HYPOTHESIS — VALIDATION REQUIRED)`;
+  return `${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? `El stakeholder con rol ${role(stakeholder)} vinculado a ${initiative?.name || 'una iniciativa no validada'} podría estar explorando ${pain || VALIDATION}. ${play} podría conectarse con ${useCase}. (HIPÓTESIS — VALIDACIÓN REQUERIDA)` : `${role(stakeholder)} stakeholder connected to ${initiative?.name || 'an unvalidated initiative'} may be exploring ${pain || VALIDATION}. ${play} could map to ${useCase}. (HYPOTHESIS — VALIDATION REQUIRED)`}`;
 }
 
 export function priority(view: Pick<PgRecord, 'initiativeId' | 'businessPain' | 'accessRoute'>, stakeholder: Stakeholder, useCases: UseCase[], signals: Signal[]): PgPriority {
@@ -120,16 +133,17 @@ export function priority(view: Pick<PgRecord, 'initiativeId' | 'businessPain' | 
   return score >= 6 ? 'HIGH' : score >= 3 ? 'MEDIUM' : 'LOW';
 }
 
-export function suggestAction(view: Pick<PgRecord, 'status' | 'salesPlay' | 'businessPain' | 'initiativeId' | 'accessRoute' | 'accessViaStakeholderId'> & { accessExplanation?: string; opportunityId?: string }, stakeholder: Stakeholder, via?: Stakeholder, opportunity?: Opportunity, initiative?: Account['initiatives'][number], signals: Signal[] = []): string {
-  if (view.status === 'OUTREACH') return `[SALES HYPOTHESIS] Follow up (day +5) with ${stakeholder.name}`;
-  if (view.status === 'MEETING') return `[SALES HYPOTHESIS] Prepare meeting: validate 3 Whys with ${stakeholder.name}`;
+export function suggestAction(view: Pick<PgRecord, 'status' | 'salesPlay' | 'businessPain' | 'initiativeId' | 'accessRoute' | 'accessViaStakeholderId'> & { accessExplanation?: string; opportunityId?: string }, stakeholder: Stakeholder, via?: Stakeholder, opportunity?: Opportunity, initiative?: Account['initiatives'][number], signals: Signal[] = [], lang: Lang = 'en'): string {
+  const prefix = tag('SALES HYPOTHESIS', lang);
+  if (view.status === 'OUTREACH') return `${prefix} ${lang === 'es' ? 'Hacer seguimiento (día +5) con' : 'Follow up (day +5) with'} ${stakeholder.name}`;
+  if (view.status === 'MEETING') return `${prefix} ${lang === 'es' ? 'Preparar reunión: validar los 3 WHYS con' : 'Prepare meeting: validate 3 Whys with'} ${stakeholder.name}`;
   const path = view.accessRoute;
-  if ((path === 'Champion introduction' || path === 'Internal introduction') && via) return `[SALES HYPOTHESIS] Ask ${via.name} for an introduction to ${stakeholder.name} (${view.salesPlay})`;
-  if (path === 'Executive introduction' && via) return `[SALES HYPOTHESIS] Ask ${via.name} (EB) to sponsor a meeting with ${stakeholder.name}`;
-  if (path === 'Existing opportunity' && opportunity) return `[SALES HYPOTHESIS] Invite ${stakeholder.name} to the next working session on ${opportunity.name}`;
-  if (path === 'Existing customer relationship') return `[SALES HYPOTHESIS] Schedule discovery with ${stakeholder.name} to validate ${known(view.businessPain) ? view.businessPain : known(stakeholder.potentialPain) ? stakeholder.potentialPain : 'the potential pain (still UNKNOWN)'}`;
+  if ((path === 'Champion introduction' || path === 'Internal introduction') && via) return `${prefix} ${lang === 'es' ? 'Pedir a' : 'Ask'} ${via.name} ${lang === 'es' ? 'que nos presente a' : 'for an introduction to'} ${stakeholder.name} (${view.salesPlay})`;
+  if (path === 'Executive introduction' && via) return `${prefix} ${lang === 'es' ? 'Pedir a' : 'Ask'} ${via.name} (EB) ${lang === 'es' ? 'que patrocine una reunión con' : 'to sponsor a meeting with'} ${stakeholder.name}`;
+  if (path === 'Existing opportunity' && opportunity) return `${prefix} ${lang === 'es' ? 'Invitar a' : 'Invite'} ${stakeholder.name} ${lang === 'es' ? 'a la próxima sesión de trabajo sobre' : 'to the next working session on'} ${opportunity.name}`;
+  if (path === 'Existing customer relationship') return `${prefix} ${lang === 'es' ? 'Programar discovery con' : 'Schedule discovery with'} ${stakeholder.name} ${lang === 'es' ? 'para validar' : 'to validate'} ${known(view.businessPain) ? view.businessPain : known(stakeholder.potentialPain) ? stakeholder.potentialPain : lang === 'es' ? 'el problema potencial (aún DESCONOCIDO)' : 'the potential pain (still UNKNOWN)'}`;
   const reference = initiative?.name || signals.sort((a, b) => b.date.localeCompare(a.date))[0]?.signal || 'the account priority';
-  return `[SALES HYPOTHESIS] Send personalized LinkedIn message to ${stakeholder.name} referencing ${reference}`;
+  return `${prefix} ${lang === 'es' ? 'Enviar un mensaje personalizado de LinkedIn a' : 'Send personalized LinkedIn message to'} ${stakeholder.name} ${lang === 'es' ? 'mencionando' : 'referencing'} ${reference}`;
 }
 
 export function generateMessage(view: PgResolved, ctx: { initiative?: Account['initiatives'][number]; signal?: Signal; useCase?: UseCase; via?: Stakeholder }, lang: 'es' | 'en' = 'es'): string {
@@ -148,23 +162,23 @@ export function generateMessage(view: PgResolved, ctx: { initiative?: Account['i
     : `Hola ${firstName(target.name)}. Estoy preparando una conversación de ${view.salesPlay} sobre ${initiative}. ¿${pain} es actualmente una prioridad para vuestro equipo? Vemos un posible encaje con ${useCase}. ¿Te encajaría una conversación de 30 minutos la próxima semana?`;
 }
 
-export function resolvePg(record: PgRecord, data: Dataset): PgResolved {
+export function resolvePg(record: PgRecord, data: Dataset, lang: Lang = 'en'): PgResolved {
   const account = data.accounts.find((item) => item.id === record.accountId)!;
   const stakeholder = data.stakeholders.find((item) => item.id === record.stakeholderId)!;
   const initiative = record.initiativeId ? account.initiatives.find((item) => item.id === record.initiativeId) : undefined;
   const selectedUseCases = account.useCases.filter((item) => record.useCaseIds.includes(item.id));
   const useCases = selectedUseCases.length ? selectedUseCases : relevantUseCases(account, record.salesPlay, record.initiativeId);
   const signals = data.signals.filter((item) => item.accountId === account.id && record.signalIds.includes(item.id));
-  const access = accessRoute(stakeholder, data.stakeholders.filter((item) => item.accountId === account.id), data.opportunities.filter((item) => item.accountId === account.id));
+  const access = accessRoute(stakeholder, data.stakeholders.filter((item) => item.accountId === account.id), data.opportunities.filter((item) => item.accountId === account.id), lang);
   const linkedOpportunity = data.opportunities.find((item) => item.id === record.opportunityId) || data.opportunities.find((item) => item.stakeholderIds.includes(stakeholder.id));
   const computed: PgRecord = {
     ...record,
     accessRoute: record.accessRoute !== 'Direct outreach' ? record.accessRoute : access.route,
     accessViaStakeholderId: record.accessViaStakeholderId || access.viaId,
-    whyHighTarget: record.whyHighTarget || whyHighTarget(stakeholder, account, initiative, useCases, signals, data.opportunities),
-    whyMeet: record.whyMeet || whyMeet(stakeholder, initiative, useCases, record.salesPlay, record.businessPain),
-    howGetMeeting: record.howGetMeeting || `[${access.route === 'Direct outreach' ? 'SALES HYPOTHESIS' : 'SOURCE-BASED INTERPRETATION'}] ${access.explanation}`,
-    action: record.action || suggestAction({ ...record, accessRoute: record.accessRoute !== 'Direct outreach' ? record.accessRoute : access.route, accessViaStakeholderId: record.accessViaStakeholderId || access.viaId }, stakeholder, data.stakeholders.find((item) => item.id === (record.accessViaStakeholderId || access.viaId)), linkedOpportunity, initiative, signals),
+    whyHighTarget: record.whyHighTarget || whyHighTarget(stakeholder, account, initiative, useCases, signals, data.opportunities, lang),
+    whyMeet: record.whyMeet || whyMeet(stakeholder, initiative, useCases, record.salesPlay, record.businessPain, lang),
+    howGetMeeting: record.howGetMeeting || `${tag(access.route === 'Direct outreach' ? 'SALES HYPOTHESIS' : 'SOURCE-BASED INTERPRETATION', lang)} ${access.explanation}`,
+    action: record.action || suggestAction({ ...record, accessRoute: record.accessRoute !== 'Direct outreach' ? record.accessRoute : access.route, accessViaStakeholderId: record.accessViaStakeholderId || access.viaId }, stakeholder, data.stakeholders.find((item) => item.id === (record.accessViaStakeholderId || access.viaId)), linkedOpportunity, initiative, signals, lang),
     priority: record.priorityIsAuto ? priority({ ...record, accessRoute: record.accessRoute !== 'Direct outreach' ? record.accessRoute : access.route }, stakeholder, useCases, data.signals.filter((item) => item.accountId === account.id)) : record.priority,
     message: record.message || '',
   };
@@ -173,14 +187,14 @@ export function resolvePg(record: PgRecord, data: Dataset): PgResolved {
   return result;
 }
 
-const validation = (text: string, today: string): ValidationRow => ({
+const validation = (text: string, today: string, lang: Lang): ValidationRow => ({
   status: known(text) ? 'Hypothesis' : 'Unknown',
-  evidence: 'Created from PG record',
+  evidence: lang === 'es' ? 'Creado desde un registro PG' : 'Created from PG record',
   source: 'PG',
   lastUpdated: today,
 });
 
-export function convertToOpportunity(view: PgResolved, data: Dataset): Opportunity {
+export function convertToOpportunity(view: PgResolved, data: Dataset, lang: Lang = 'en'): Opportunity {
   const today = new Date().toISOString().slice(0, 10);
   const initiative = view.initiative;
   const useCase = view.useCases[0];
@@ -193,13 +207,13 @@ export function convertToOpportunity(view: PgResolved, data: Dataset): Opportuni
   const textImplication = initiative?.potentialImplication || VALIDATION;
   const textTrigger = view.signals[0]?.signal || VALIDATION;
   const opRows = {
-    situation: validation(textSituation, today),
-    problem: validation(textProblem, today),
-    implication: validation(textImplication, today),
-    whyNow: validation(textTrigger, today),
-    whyCognition: validation(useCase?.whyCognition || VALIDATION, today),
+    situation: validation(textSituation, today, lang),
+    problem: validation(textProblem, today, lang),
+    implication: validation(textImplication, today, lang),
+    whyNow: validation(textTrigger, today, lang),
+    whyCognition: validation(useCase?.whyCognition || VALIDATION, today, lang),
   };
-  const generic = (section: string, subject: string) => `What would you validate about ${subject} in the ${section.toLowerCase()} discussion?`;
+  const generic = (section: string, subject: string) => lang === 'es' ? `¿Qué validarías sobre ${subject} en la conversación de ${section.toLowerCase()}?` : `What would you validate about ${subject} in the ${section.toLowerCase()} discussion?`;
   return {
     id: `opp-pg-${view.id}-${Date.now()}`,
     accountId: view.accountId,
