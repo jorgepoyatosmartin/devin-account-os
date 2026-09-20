@@ -594,6 +594,8 @@ const es: Record<keyof typeof en, string> = {
   'pg.action': 'ACCIÓN',
   'pg.targetRegister': 'Registro de objetivos PG',
   'pg.originalExcelBadge': 'DATOS ORIGINALES DE EXCEL',
+  'ai.generated': 'Generado por IA',
+  'ai.hypothesis': 'Hipótesis IA',
   'composer.initiative': 'Iniciativa',
 };
 

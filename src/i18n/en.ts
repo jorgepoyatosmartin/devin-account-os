@@ -597,6 +597,8 @@ const en = {
   'pg.action': 'ACTION',
   'pg.targetRegister': 'PG target register',
   'pg.originalExcelBadge': 'ORIGINAL EXCEL DATA',
+  'ai.generated': 'AI-generated',
+  'ai.hypothesis': 'AI hypothesis',
   'composer.initiative': 'Initiative',
 } as const;
 
