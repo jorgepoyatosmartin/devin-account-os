@@ -100,6 +100,7 @@ const en = {
   'powerCharts.coverage': 'Coverage',
   'powerCharts.missingRoles': 'MISSING ROLES',
   'powerCharts.engageNext': 'ENGAGE NEXT',
+  'powerCharts.noEngageNext': 'No immediate suggestion',
   'powerCharts.expand': 'Expand',
   'powerCharts.collapse': 'Collapse',
   'stakeholders.title': 'Stakeholders',

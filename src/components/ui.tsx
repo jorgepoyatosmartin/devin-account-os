@@ -6,6 +6,11 @@ export function Badge({ children, tone = '' }: { children: React.ReactNode; tone
   return <span className={`badge ${tone}`}>{children}</span>;
 }
 
+export function AiBlock({ children, kind = 'hypothesis' }: { children: React.ReactNode; kind?: 'generated' | 'hypothesis' }) {
+  const { t } = useI18n();
+  return <div className="ai-block"><span className="ai-block-label">{t(kind === 'generated' ? 'ai.generated' : 'ai.hypothesis')}</span>{children}</div>;
+}
+
 export function Section({ title, eyebrow, children, className = '' }: { title: string; eyebrow?: string; children: React.ReactNode; className?: string }) {
   return <section className={`section ${className}`}>{eyebrow && <div className="eyebrow">{eyebrow}</div>}<h2>{title}</h2>{children}</section>;
 }

@@ -94,6 +94,7 @@ const es: Record<keyof typeof en, string> = {
   'powerCharts.coverage': 'Cobertura',
   'powerCharts.missingRoles': 'ROLES FALTANTES',
   'powerCharts.engageNext': 'ACTIVAR A CONTINUACIÓN',
+  'powerCharts.noEngageNext': 'Sin sugerencia inmediata',
   'powerCharts.expand': 'Expandir',
   'powerCharts.collapse': 'Contraer',
   'stakeholders.title': 'Stakeholders',
