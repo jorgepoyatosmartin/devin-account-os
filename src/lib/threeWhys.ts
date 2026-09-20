@@ -1,4 +1,5 @@
 import type { Opportunity, ValidationStatus } from '../types';
+import type { Lang } from '../i18n';
 
 export type ThreeWhysTraffic = 'green' | 'yellow' | 'red';
 const keys = ['situation', 'problem', 'implication', 'whyNow', 'whyCognition'] as const;
@@ -21,6 +22,25 @@ export function isFullyQualified(op: Opportunity) {
 
 export function validationKeys(): ValidationKey[] {
   return [...keys];
+}
+
+export function discoveryQuestionTemplates(lang: Lang): Record<ValidationKey, string[]> {
+  if (lang === 'es') {
+    return {
+      situation: ['¿Cómo describiría la situación actual y qué ha cambiado recientemente?'],
+      problem: ['¿Qué problema concreto está frenando al equipo y cómo lo mide?'],
+      implication: ['¿Qué impacto tendría mantener este problema durante los próximos meses?'],
+      whyNow: ['¿Qué detonante hace necesario actuar ahora?'],
+      whyCognition: ['¿Qué resultado espera conseguir y qué capacidad necesita para lograrlo?'],
+    };
+  }
+  return {
+    situation: ['How would you describe the current situation and what has changed recently?'],
+    problem: ['What concrete problem is slowing the team down, and how do you measure it?'],
+    implication: ['What would be the impact of leaving this problem unresolved over the next few months?'],
+    whyNow: ['What trigger makes action necessary now?'],
+    whyCognition: ['What outcome do you want and what capability do you need to achieve it?'],
+  };
 }
 
 export function isValidationStatus(value: unknown): value is ValidationStatus {
