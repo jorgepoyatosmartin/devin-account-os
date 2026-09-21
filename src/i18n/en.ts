@@ -419,7 +419,7 @@ const en = {
   'account.dealLandscape': 'DEAL LANDSCAPE',
   'account.company': 'Company',
   'account.revenue': 'Revenue',
-  'account.employees': 'Employees',
+  'account.planEyebrow': 'ACCOUNT PLAN', 'account.employees': 'Employees',
   'account.headquarters': 'Headquarters',
   'account.geographicFootprint': 'Geographic footprint',
   'account.financialPerformance': 'Financial performance',

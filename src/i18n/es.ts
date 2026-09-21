@@ -416,7 +416,7 @@ const es: Record<keyof typeof en, string> = {
   'account.dealLandscape': 'PANORAMA COMPETITIVO',
   'account.company': 'Compañía',
   'account.revenue': 'Ingresos',
-  'account.employees': 'Empleados',
+  'account.planEyebrow': 'PLAN DE CUENTA', 'account.employees': 'Empleados',
   'account.headquarters': 'Sede central',
   'account.geographicFootprint': 'Presencia geográfica',
   'account.financialPerformance': 'Rendimiento financiero',

@@ -11,6 +11,7 @@ const values: Record<string, string> = {
   'Direct outreach': 'Contacto directo', 'Internal introduction': 'Presentación interna', 'Champion introduction': 'Presentación vía Champion', 'Executive introduction': 'Presentación ejecutiva', 'Partner introduction': 'Presentación vía partner', Event: 'Evento', 'Existing opportunity': 'Oportunidad existente', 'Existing customer relationship': 'Relación existente con el cliente',
   'Developer Productivity': 'Productividad de Desarrollo', 'AI Engineering': 'Ingeniería de IA', 'Legacy Modernization': 'Modernización de Legacy', 'Cloud Migration': 'Migración a Cloud', 'Quality & Regulatory Delivery': 'Calidad y Entrega Regulatoria', 'Data & AI Product Engineering': 'Ingeniería de Producto de Datos e IA',
   Migrations: 'Migraciones', 'Code Quality': 'Calidad de Código', Automations: 'Automatizaciones', 'Feature Development': 'Desarrollo de Funcionalidades', 'Advanced workflows': 'Flujos de trabajo avanzados', 'Data & Analytics': 'Datos y Analítica', 'LOW / EXPLORATORY': 'BAJA / EXPLORATORIA', 'NOT RELEVANT': 'NO RELEVANTE',
+  Insurance: 'Seguros', Banking: 'Banca', 'Travel technology': 'Tecnología de viajes', 'Infrastructure, Energy, Water': 'Infraestructuras, Energía, Agua',
   Low: 'Baja', Medium: 'Media', High: 'Alta',
   'Confidence': 'Confianza', 'Source-based interpretation': 'Interpretación basada en fuentes',
   'Why Anything': 'Por qué actuar', 'Why Now': 'Por qué ahora', 'Why Cognition': 'Por qué Cognition',
