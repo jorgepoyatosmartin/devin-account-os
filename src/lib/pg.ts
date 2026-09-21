@@ -199,7 +199,7 @@ export function convertToOpportunity(view: PgResolved, data: Dataset, lang: Lang
   const initiative = view.initiative;
   const useCase = view.useCases[0];
   const via = view.accessViaStakeholderId;
-  const participants = [view.stakeholderId, via].filter((id): id is string => Boolean(id && id !== view.stakeholderId));
+  const participants = [view.stakeholderId, ...(via && via !== view.stakeholderId ? [via] : [])];
   const champion = [view.stakeholder, data.stakeholders.find((item) => item.id === via)].find((item) => item && nonHypothesisRole(item) && ['Champion', 'Technical Champion', 'Business Champion', 'Coach'].includes(role(item)));
   const buyer = [view.stakeholder, data.stakeholders.find((item) => item.id === via)].find((item) => item && nonHypothesisRole(item) && ['Economic Buyer', 'Executive Sponsor'].includes(role(item)));
   const textSituation = initiative?.currentSituation || VALIDATION;
