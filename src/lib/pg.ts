@@ -12,6 +12,7 @@ import type {
   ValidationRow,
 } from '../types';
 import type { Lang } from '../i18n';
+import values from '../i18n/values';
 
 export type AccessResult = { route: AccessRoute; viaId?: string; explanation: string };
 export type PgResolved = PgRecord & {
@@ -36,6 +37,12 @@ const dateWithin90Days = (date: string) => {
 };
 const tag = (kind: 'FACT' | 'SOURCE-BASED INTERPRETATION' | 'SALES HYPOTHESIS', lang: Lang) =>
   `[${lang === 'es' ? ({ FACT: 'HECHO', 'SOURCE-BASED INTERPRETATION': 'INTERPRETACIÓN BASADA EN FUENTES', 'SALES HYPOTHESIS': 'HIPÓTESIS COMERCIAL' } as const)[kind] : kind}]`;
+const tvl = (value: string, lang: Lang) => lang === 'es' ? (values[value] || value) : value;
+const tvlp = (value: string, lang: Lang) => {
+  if (lang === 'en') return value;
+  return ['UNKNOWN — VALIDATION REQUIRED', 'HYPOTHESIS — VALIDATION REQUIRED', 'TBD — VALIDATION REQUIRED']
+    .reduce((text, sentinel) => text.split(sentinel).join(tvl(sentinel, lang)), value);
+};
 
 export function suggestPlay(account: Account, initiative?: Account['initiatives'][number], useCases: UseCase[] = []): SalesPlay {
   const categories = new Set(useCases.map((item) => item.category));
@@ -96,14 +103,14 @@ export function whyHighTarget(
   const parts: string[] = [];
   const sourced = stakeholder.dataOrigin === 'TERRITORY PLAN' || stakeholder.dataOrigin === 'ORIGINAL EXCEL DATA';
   if (sourced && stakeholder.powerRole && stakeholder.roleIsHypothesis !== true && stakeholder.powerRole !== 'Unknown') {
-    parts.push(`${tag('FACT', lang)} ${lang === 'es' ? 'Designado como' : 'Named'} ${stakeholder.powerRole} ${lang === 'es' ? 'en el ' : 'in '}${stakeholder.dataOrigin === 'TERRITORY PLAN' ? 'Territory Plan' : 'Original Excel Data'}`);
+    parts.push(`${tag('FACT', lang)} ${lang === 'es' ? 'Designado como' : 'Named'} ${tvl(stakeholder.powerRole, lang)} ${lang === 'es' ? 'en el ' : 'in '}${stakeholder.dataOrigin === 'TERRITORY PLAN' ? 'Territory Plan' : 'Original Excel Data'}`);
   }
-  if (sourced && stakeholder.level && stakeholder.level !== 'Unknown') parts.push(`${tag('FACT', lang)} ${stakeholder.level} ${lang === 'es' ? 'en el ' : 'level in '}${stakeholder.dataOrigin === 'TERRITORY PLAN' ? 'Territory Plan' : 'Original Excel Data'}`);
+  if (sourced && stakeholder.level && stakeholder.level !== 'Unknown') parts.push(`${tag('FACT', lang)} ${tvl(stakeholder.level, lang)} ${lang === 'es' ? 'en el ' : 'level in '}${stakeholder.dataOrigin === 'TERRITORY PLAN' ? 'Territory Plan' : 'Original Excel Data'}`);
   if (initiative) parts.push(`${tag('SOURCE-BASED INTERPRETATION', lang)} ${lang === 'es' ? 'Vinculado a la iniciativa' : 'Linked to initiative'} ${initiative.name}`);
   if (known(stakeholder.potentialPain)) parts.push(`${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? 'Problema potencial:' : 'Potential pain:'} ${stakeholder.potentialPain}`);
   if (stakeholder.championPotential === 'High') parts.push(`${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? 'Alto potencial como Champion' : 'High champion potential'}`);
-  if (stakeholder.roleIsHypothesis === true && stakeholder.powerRole) parts.push(`${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? 'Posible rol de' : 'Possible'} ${stakeholder.powerRole}`);
-  return parts.join(' · ') || 'UNKNOWN — VALIDATION REQUIRED';
+  if (stakeholder.roleIsHypothesis === true && stakeholder.powerRole) parts.push(`${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? 'Posible rol de' : 'Possible'} ${tvl(stakeholder.powerRole, lang)}`);
+  return parts.join(' · ') || tvl('UNKNOWN — VALIDATION REQUIRED', lang);
 }
 
 export function whyMeet(
@@ -115,9 +122,9 @@ export function whyMeet(
   lang: Lang = 'en',
 ): string {
   const pain = known(businessPain) ? businessPain : known(stakeholder.potentialPain) ? stakeholder.potentialPain : initiative?.potentialProblem;
-  if (!initiative && !known(pain)) return lang === 'es' ? 'DESCONOCIDO — primero hace falta una iniciativa o un problema' : 'UNKNOWN — needs initiative or pain first';
-  const useCase = useCases[0]?.name || VALIDATION;
-  return `${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? `El stakeholder con rol ${role(stakeholder)} vinculado a ${initiative?.name || 'una iniciativa no validada'} podría estar explorando ${pain || VALIDATION}. ${play} podría conectarse con ${useCase}. (HIPÓTESIS — VALIDACIÓN REQUERIDA)` : `${role(stakeholder)} stakeholder connected to ${initiative?.name || 'an unvalidated initiative'} may be exploring ${pain || VALIDATION}. ${play} could map to ${useCase}. (HYPOTHESIS — VALIDATION REQUIRED)`}`;
+  if (!initiative && !known(pain)) return lang === 'es' ? `${tvl('UNKNOWN — VALIDATION REQUIRED', lang)} — primero hace falta una iniciativa o un problema` : 'UNKNOWN — needs initiative or pain first';
+  const useCase = useCases[0]?.name || tvl(VALIDATION, lang);
+  return `${tag('SALES HYPOTHESIS', lang)} ${lang === 'es' ? `El stakeholder con rol ${tvl(role(stakeholder), lang)} vinculado a ${initiative?.name || 'una iniciativa no validada'} podría estar explorando ${tvlp(pain || VALIDATION, lang)}. ${tvl(play, lang)} podría conectarse con ${useCase}. (${tvl('HYPOTHESIS — VALIDATION REQUIRED', lang)})` : `${role(stakeholder)} stakeholder connected to ${initiative?.name || 'an unvalidated initiative'} may be exploring ${pain || VALIDATION}. ${play} could map to ${useCase}. (HYPOTHESIS — VALIDATION REQUIRED)`}`;
 }
 
 export function priority(view: Pick<PgRecord, 'initiativeId' | 'businessPain' | 'accessRoute'>, stakeholder: Stakeholder, useCases: UseCase[], signals: Signal[]): PgPriority {
@@ -138,11 +145,11 @@ export function suggestAction(view: Pick<PgRecord, 'status' | 'salesPlay' | 'bus
   if (view.status === 'OUTREACH') return `${prefix} ${lang === 'es' ? 'Hacer seguimiento (día +5) con' : 'Follow up (day +5) with'} ${stakeholder.name}`;
   if (view.status === 'MEETING') return `${prefix} ${lang === 'es' ? 'Preparar reunión: validar los 3 WHYS con' : 'Prepare meeting: validate 3 Whys with'} ${stakeholder.name}`;
   const path = view.accessRoute;
-  if ((path === 'Champion introduction' || path === 'Internal introduction') && via) return `${prefix} ${lang === 'es' ? 'Pedir a' : 'Ask'} ${via.name} ${lang === 'es' ? 'que nos presente a' : 'for an introduction to'} ${stakeholder.name} (${view.salesPlay})`;
+  if ((path === 'Champion introduction' || path === 'Internal introduction') && via) return `${prefix} ${lang === 'es' ? 'Pedir a' : 'Ask'} ${via.name} ${lang === 'es' ? 'que nos presente a' : 'for an introduction to'} ${stakeholder.name} (${tvl(view.salesPlay, lang)})`;
   if (path === 'Executive introduction' && via) return `${prefix} ${lang === 'es' ? 'Pedir a' : 'Ask'} ${via.name} (EB) ${lang === 'es' ? 'que patrocine una reunión con' : 'to sponsor a meeting with'} ${stakeholder.name}`;
   if (path === 'Existing opportunity' && opportunity) return `${prefix} ${lang === 'es' ? 'Invitar a' : 'Invite'} ${stakeholder.name} ${lang === 'es' ? 'a la próxima sesión de trabajo sobre' : 'to the next working session on'} ${opportunity.name}`;
-  if (path === 'Existing customer relationship') return `${prefix} ${lang === 'es' ? 'Programar discovery con' : 'Schedule discovery with'} ${stakeholder.name} ${lang === 'es' ? 'para validar' : 'to validate'} ${known(view.businessPain) ? view.businessPain : known(stakeholder.potentialPain) ? stakeholder.potentialPain : lang === 'es' ? 'el problema potencial (aún DESCONOCIDO)' : 'the potential pain (still UNKNOWN)'}`;
-  const reference = initiative?.name || signals.sort((a, b) => b.date.localeCompare(a.date))[0]?.signal || 'the account priority';
+  if (path === 'Existing customer relationship') return `${prefix} ${lang === 'es' ? 'Programar discovery con' : 'Schedule discovery with'} ${stakeholder.name} ${lang === 'es' ? 'para validar' : 'to validate'} ${tvlp(known(view.businessPain) ? view.businessPain : known(stakeholder.potentialPain) ? stakeholder.potentialPain : lang === 'es' ? 'el problema potencial (aún DESCONOCIDO)' : 'the potential pain (still UNKNOWN)', lang)}`;
+  const reference = initiative?.name || signals.sort((a, b) => b.date.localeCompare(a.date))[0]?.signal || (lang === 'es' ? 'la prioridad de la cuenta' : 'the account priority');
   return `${prefix} ${lang === 'es' ? 'Enviar un mensaje personalizado de LinkedIn a' : 'Send personalized LinkedIn message to'} ${stakeholder.name} ${lang === 'es' ? 'mencionando' : 'referencing'} ${reference}`;
 }
 
@@ -150,16 +157,16 @@ export function generateMessage(view: PgResolved, ctx: { initiative?: Account['i
   const person = view.stakeholder;
   const target = view.accessRoute === 'Champion introduction' && ctx.via ? ctx.via : person;
   const initiative = ctx.initiative?.name || ctx.signal?.signal || view.account.name;
-  const pain = known(view.businessPain) ? view.businessPain : known(person.potentialPain) ? person.potentialPain : lang === 'en' ? 'this engineering priority' : 'esta prioridad de ingeniería';
-  const useCase = ctx.useCase?.name || view.salesPlay;
+  const pain = tvlp(known(view.businessPain) ? view.businessPain : known(person.potentialPain) ? person.potentialPain : lang === 'en' ? 'this engineering priority' : 'esta prioridad de ingeniería', lang);
+  const useCase = ctx.useCase?.name || tvl(view.salesPlay, lang);
   if (lang === 'en') {
     return view.accessRoute === 'Champion introduction' && ctx.via
       ? `Hi ${firstName(ctx.via.name)}. I am mapping a ${view.salesPlay} conversation around ${initiative} and believe ${person.name} could be relevant. Could you introduce us to discuss whether ${pain} is on their agenda? We would bring a concrete ${useCase} hypothesis. Would you be open to a 30-minute introduction next week?`
       : `Hi ${firstName(target.name)}. I am mapping a ${view.salesPlay} conversation around ${initiative}. Is ${pain} currently a priority for your team? We see a potential fit with ${useCase}. Would you be open to a 30-minute conversation next week?`;
   }
   return view.accessRoute === 'Champion introduction' && ctx.via
-    ? `Hola ${firstName(ctx.via.name)}. Estoy preparando una conversación de ${view.salesPlay} sobre ${initiative} y creo que ${person.name} puede ser una persona relevante. ¿Podrías presentarnos para validar si ${pain} está entre sus prioridades? Llevaríamos una hipótesis concreta sobre ${useCase}. ¿Te encajaría una introducción de 30 minutos la próxima semana?`
-    : `Hola ${firstName(target.name)}. Estoy preparando una conversación de ${view.salesPlay} sobre ${initiative}. ¿${pain} es actualmente una prioridad para vuestro equipo? Vemos un posible encaje con ${useCase}. ¿Te encajaría una conversación de 30 minutos la próxima semana?`;
+    ? `Hola ${firstName(ctx.via.name)}. Estoy preparando una conversación de ${tvl(view.salesPlay, lang)} sobre ${initiative} y creo que ${person.name} puede ser una persona relevante. ¿Podrías presentarnos para validar si ${pain} está entre sus prioridades? Llevaríamos una hipótesis concreta sobre ${useCase}. ¿Te encajaría una introducción de 30 minutos la próxima semana?`
+    : `Hola ${firstName(target.name)}. Estoy preparando una conversación de ${tvl(view.salesPlay, lang)} sobre ${initiative}. ¿${pain} es actualmente una prioridad para vuestro equipo? Vemos un posible encaje con ${useCase}. ¿Te encajaría una conversación de 30 minutos la próxima semana?`;
 }
 
 export function resolvePg(record: PgRecord, data: Dataset, lang: Lang = 'en'): PgResolved {
