@@ -14,7 +14,7 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { dump as yamlDump } from 'js-yaml'
-import { MAPFRE } from './data/mapfre'
+import { ACCOUNT, MAPFRE } from './data/mapfre'
 import { autoLayout, NODE_H, NODE_W } from './layout'
 import { PersonNode, type PersonNodeType } from './PersonNode'
 import { SidePanel } from './SidePanel'
@@ -271,20 +271,22 @@ function Chart() {
 
   const exportYaml = () => {
     const doc = {
-      account: 'mapfre',
+      account: ACCOUNT,
       updated: new Date().toISOString().slice(0, 10),
-      stakeholders: people.map(({ id, name, title, level, unit, salesPlay, role, attitude, influence, status, owner, lastTouch, reportsTo, reportsToConfidence, influences, notes }) => ({
+      schema: 'stakeholders/v1',
+      stakeholders: people.map(({ id, name, title, level, unit, salesPlay, role, attitude, influence, status, owner, lastTouch, reportsTo, reportsToConfidence, influences, notes, external }) => ({
         id, name, title, level, unit, sales_play: salesPlay, role, attitude, influence, status, owner,
-        last_touch: lastTouch, reports_to: reportsTo, reports_to_confidence: reportsToConfidence, influences, notes: notes || undefined,
+        last_touch: lastTouch, reports_to: reportsTo, reports_to_confidence: reportsToConfidence, influences,
+        ...(external ? { source: 'research' } : {}), ...(notes ? { notes } : {}),
       })),
     }
-    const text = yamlDump(doc, { lineWidth: 120, noRefs: true })
+    const text = `# Fuente de verdad de stakeholders de ${ACCOUNT.toUpperCase()}. Editar aquí o desde apps/power-chart (Exportar YAML).\n` + yamlDump(doc, { lineWidth: 120, noRefs: true })
     const blob = new Blob([text], { type: 'text/yaml' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
     a.download = 'stakeholders.yaml'
     a.click()
-    setToast('stakeholders.yaml descargado — en el OS esto sería un commit al repo.')
+    setToast('stakeholders.yaml descargado — sustituye accounts/mapfre/stakeholders.yaml y abre PR.')
   }
 
   const selected = people.find((p) => p.id === selectedId) ?? null

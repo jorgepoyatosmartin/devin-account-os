@@ -5,5 +5,5 @@ import { viteSingleFile } from 'vite-plugin-singlefile'
 export default defineConfig({
   base: './',
   plugins: [react(), viteSingleFile()],
-  server: { host: true, port: 5173 },
+  server: { host: true, port: 5173, fs: { allow: ['../..'] } },
 })
