@@ -63,8 +63,8 @@ function Chart() {
   const { fitView, getIntersectingNodes } = useReactFlow()
 
   const commit = useCallback(
-    (nextPeople: Stakeholder[], nextPositions?: Positions) => {
-      setHistory((h) => [...h.slice(-30), { people, positions }])
+    (nextPeople: Stakeholder[], nextPositions?: Positions, record = true) => {
+      if (record) setHistory((h) => [...h.slice(-30), { people, positions }])
       setPeopleRaw(nextPeople)
       if (nextPositions) setPositions(nextPositions)
     },
@@ -166,7 +166,7 @@ function Chart() {
           source: p.reportsTo,
           target: p.id,
           type: 'smoothstep',
-          style: { stroke: hyp ? '#94a3b8' : '#334155', strokeWidth: 1.5 },
+          style: { stroke: hyp ? '#94a3b8' : '#334155', strokeWidth: 1.5, strokeDasharray: hyp ? '6 4' : undefined },
           label: hyp ? '?' : undefined,
           labelStyle: { fill: '#94a3b8', fontSize: 10 },
           labelBgStyle: { fill: '#fff' },
@@ -193,7 +193,7 @@ function Chart() {
     commit(people.map((p) => (p.id === id ? { ...p, ...patch } : p)))
   }
 
-  const reparent = (childId: string, parentId: string | null) => {
+  const reparent = (childId: string, parentId: string | null, record = true) => {
     if (childId === parentId) return
     if (parentId && isAncestor(childId, parentId, people)) {
       setToast('No puedes colgar a alguien de su propio subordinado.')
@@ -202,7 +202,7 @@ function Chart() {
     const child = people.find((p) => p.id === childId)!
     const parent = parentId ? people.find((p) => p.id === parentId) : null
     const next = people.map((p) => (p.id === childId ? { ...p, reportsTo: parentId, reportsToConfidence: 'confirmed' as const } : p))
-    commit(next, autoLayout(next))
+    commit(next, autoLayout(next), record)
     setToast(parent ? `${child.name} ahora reporta a ${parent.name}` : `${child.name} pasa a ser raíz`)
   }
 
@@ -232,8 +232,13 @@ function Chart() {
     setSelectedId(id)
   }
 
+  const onNodeDragStart: OnNodeDrag = useCallback(() => {
+    setHistory((h) => [...h.slice(-30), { people, positions }])
+  }, [people, positions])
+
   const onNodeDrag: OnNodeDrag = useCallback(
     (_e, node) => {
+      setPositions((pos) => ({ ...pos, [node.id]: node.position }))
       const hits = getIntersectingNodes(node).filter((n) => n.id !== node.id)
       setDropTarget(hits[0]?.id ?? null)
     },
@@ -245,10 +250,9 @@ function Chart() {
       const target = dropTarget
       setDropTarget(null)
       if (target) {
-        reparent(node.id, target)
+        reparent(node.id, target, false)
         return
       }
-      setHistory((h) => [...h.slice(-30), { people, positions }])
       setPositions((pos) => ({ ...pos, [node.id]: node.position }))
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -334,6 +338,7 @@ function Chart() {
             nodeTypes={nodeTypes}
             onNodeClick={onNodeClick}
             onPaneClick={() => setSelectedId(null)}
+            onNodeDragStart={onNodeDragStart}
             onNodeDrag={onNodeDrag}
             onNodeDragStop={onNodeDragStop}
             onConnect={onConnect}
