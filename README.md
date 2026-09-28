@@ -6,6 +6,7 @@ Este repo es la **memoria compartida** del OS: Devin es el runtime, las Skills s
 ```
 accounts/<slug>/        estado por cuenta: profile.md, plan.md, stakeholders.yaml, signals.md, log.md, cadences/
 .agents/skills/         Skills de Devin (se cargan automáticamente en cada sesión que clona el repo)
+playbooks/              Playbooks de Devin (trabajos completos que encadenan Skills; registrados también en Devin)
 apps/power-chart/       Power Chart interactivo (React Flow) que lee/escribe stakeholders.yaml
 docs/                   visión, decisiones
 ```
@@ -23,6 +24,18 @@ docs/                   visión, decisiones
 | `deal-risk-review` | Semáforo de riesgo de la oportunidad + 3 acciones | Slack / `log.md` |
 
 Toda escritura de una Skill pasa por PR; nada va directo a `main`.
+
+## Playbooks
+
+| Playbook | Macro | Cuándo |
+|---|---|---|
+| [`account-onboarding`](playbooks/account-onboarding.md) | `!onboard_account` | Alta de una cuenta desde Account Plan o research |
+| [`pg-activation`](playbooks/pg-activation.md) | `!pg_activation` | Arrancar cadencias (draft) para un sales play |
+| [`meeting-brief`](playbooks/meeting-brief.md) | `!meeting_brief` | Antes de una reunión |
+| [`meeting-debrief`](playbooks/meeting-debrief.md) | `!meeting_debrief` | Después de una reunión: actualizar YAML, plan, señales |
+| [`weekly-deal-review`](playbooks/weekly-deal-review.md) | `!deal_review` | Semanal / pre-forecast (candidato a Automation) |
+
+Sin integraciones por ahora: ningún playbook envía emails ni escribe en el CRM; la salida es siempre un PR.
 
 ## Power Chart
 
