@@ -10,8 +10,10 @@ import {
   isAncestor,
   type Stakeholder,
 } from './model'
+import { launchPlaybook } from './playbooks'
 
 interface Props {
+  account: string
   person: Stakeholder
   people: Stakeholder[]
   onChange: (patch: Partial<Stakeholder>) => void
@@ -19,9 +21,11 @@ interface Props {
   onRemove: () => void
   onFocus: (id: string) => void
   onClose: () => void
+  onLaunched: (prompt: string) => void
 }
 
-export function SidePanel({ person: p, people, onChange, onReparent, onRemove, onFocus, onClose }: Props) {
+export function SidePanel({ account, person: p, people, onChange, onReparent, onRemove, onFocus, onClose, onLaunched }: Props) {
+  const launch = (a: 'cadence' | 'brief' | 'team') => launchPlaybook(a, account, p).then(onLaunched)
   const d = daysSince(p.lastTouch)
   const reports = people.filter((x) => x.reportsTo === p.id)
   const manager = people.find((x) => x.id === p.reportsTo)
@@ -130,9 +134,9 @@ export function SidePanel({ person: p, people, onChange, onReparent, onRemove, o
       </div>
 
       <div className="actions">
-        <button className="primary" onClick={() => alert(`Playbook "Activar PG" → cadencia 21 días para ${p.name} (${p.salesPlay}). En el OS esto lanza una sesión de Devin con el contexto de la cuenta.`)}>Generar cadencia</button>
-        <button onClick={() => alert(`Playbook "Brief" → 1 página sobre ${p.name}: señales, MEDDPICC abierto, preguntas de discovery.`)}>Brief</button>
-        <button onClick={() => alert(`Skill "stakeholder-mapping" → buscar en fuentes públicas quién más hay en el equipo de ${p.name}.`)}>Buscar equipo</button>
+        <button className="primary" title="!pg_activation para esta persona" onClick={() => launch('cadence')}>Generar cadencia</button>
+        <button title="!meeting_brief para esta persona" onClick={() => launch('brief')}>Brief</button>
+        <button title="stakeholder-mapping: buscar el equipo" onClick={() => launch('team')}>Buscar equipo</button>
         <button className="danger" onClick={onRemove}>Eliminar</button>
       </div>
     </div>

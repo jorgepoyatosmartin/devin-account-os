@@ -378,6 +378,7 @@ function Chart() {
         <aside className="side">
           {selected ? (
             <SidePanel
+              account={ACCOUNT}
               person={selected}
               people={people}
               onChange={(patch) => update(selected.id, patch)}
@@ -385,6 +386,7 @@ function Chart() {
               onRemove={() => removePerson(selected.id)}
               onFocus={(id) => setSelectedId(id)}
               onClose={() => setSelectedId(null)}
+              onLaunched={() => setToast('Prompt copiado al portapapeles — pégalo en la nueva sesión de Devin.')}
             />
           ) : (
             <GapsPanel gaps={gaps} onFocus={(id) => setSelectedId(id)} people={people} />
@@ -419,7 +421,7 @@ function GapsPanel({ gaps, onFocus, people }: { gaps: Gap[]; onFocus: (id: strin
       <ul className="devin">
         <li><b>Exportar YAML</b> → `accounts/mapfre/stakeholders.yaml` (commit/PR).</li>
         <li>Skill <b>power-map-review</b>: lee este YAML y propone el camino al EB.</li>
-        <li>Desde una persona: <i>Generar cadencia</i> / <i>Brief</i> lanzan los playbooks con su contexto.</li>
+        <li>Desde una persona: <i>Generar cadencia</i> / <i>Brief</i> / <i>Buscar equipo</i> copian el prompt del playbook con su contexto y abren Devin.</li>
       </ul>
     </div>
   )
