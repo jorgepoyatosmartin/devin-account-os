@@ -5,6 +5,7 @@ import { missingPowerRoles, singleThreaded } from '../lib/coverage';
 import { weakWhys } from '../lib/threeWhys';
 import InitiativeChain from '../components/InitiativeChain';
 import PowerChart from '../components/PowerChart';
+import PowerChartMapfre from '../powerchart/PowerChartMapfre';
 import { Badge, EvidenceList, OptionalValue, PageHeader, Section, Toast, Traffic } from '../components/ui';
 import { useI18n } from '../i18n';
 
@@ -14,7 +15,7 @@ export function PowerChartsPage({ dataset }: { dataset: Dataset }) {
   const { t, tv } = useI18n();
   const [params, setParams] = useSearchParams(); const selected = params.get('account') || dataset.accounts[0]?.id || ''; const account = dataset.accounts.find((item) => item.id === selected) || dataset.accounts[0]; const navigate = useNavigate();
   if (!account) return <div className="empty-state">{t('common.noEvidence')}</div>;
-  return <><PageHeader eyebrow={t('powerCharts.coverage')} title={t('powerCharts.title')} subtitle={t('powerCharts.subtitle')} /><div className="selector-chips">{dataset.accounts.map((item) => <button className={item.id === account.id ? 'selected' : ''} onClick={() => setParams({ account: item.id })} key={item.id}>{item.name}</button>)}</div><PowerChart account={account} stakeholders={dataset.stakeholders.filter((item) => item.accountId === account.id)} opportunities={dataset.opportunities.filter((item) => item.accountId === account.id)} onSelect={(id) => navigate(`/stakeholders/${id}`)} /></>;
+  return <><PageHeader eyebrow={t('powerCharts.coverage')} title={t('powerCharts.title')} subtitle={t('powerCharts.subtitle')} /><div className="selector-chips">{dataset.accounts.map((item) => <button className={item.id === account.id ? 'selected' : ''} onClick={() => setParams({ account: item.id })} key={item.id}>{item.name}</button>)}</div>{account.id === 'mapfre' ? <PowerChartMapfre /> : <PowerChart account={account} stakeholders={dataset.stakeholders.filter((item) => item.accountId === account.id)} opportunities={dataset.opportunities.filter((item) => item.accountId === account.id)} onSelect={(id) => navigate(`/stakeholders/${id}`)} />}</>;
 }
 
 export function StakeholderProfilePage({ dataset, setOverride, addTask, onToast }: { dataset: Dataset; setOverride: (id: string, path: string, value: unknown) => void; addTask: (task: Task) => void; onToast: (message: string) => void }) {
