@@ -12,7 +12,7 @@
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 16px; background: #fff; border-bottom: 1px solid #e2e8f0; gap: 12px; flex-wrap: wrap;
 }
-.pc-app .brand { display: flex; align-items: center; gap: 10px; }
+.pc-app .pc-brand { display: flex; align-items: center; gap: 10px; }
 .pc-app .logo { font-size: 20px; color: #7c3aed; }
 .pc-app .acct { font-weight: 700; font-size: 15px; }
 .pc-app .sub { color: #64748b; font-size: 12px; }
@@ -72,7 +72,7 @@ button.danger { color: #dc2626; border-color: #fecaca; }
 .pc-app .line.inf { border-top: 2px dashed #7c3aed; }
 .pc-app .lg-hint { margin-top: 8px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 6px; }
 
-.pc-app .toast {
+.pc-app .pc-toast {
   position: absolute; top: 14px; left: 50%; transform: translateX(-50%); background: #0f172a; color: #fff;
   padding: 8px 14px; border-radius: 8px; font-size: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.2);
 }
@@ -81,7 +81,7 @@ button.danger { color: #dc2626; border-color: #fecaca; }
 .pc-app .panel { padding: 16px; }
 .pc-app .panel h2 { margin: 0 0 4px; font-size: 16px; }
 .pc-app .panel h3 { margin: 18px 0 6px; font-size: 13px; color: #334155; }
-.pc-app .muted { color: #64748b; }
+.pc-app .pc-muted { color: #64748b; }
 .pc-app .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 12px; }
 .pc-app .panel-head > div { flex: 1; min-width: 0; }
 .pc-app .name-input { font-weight: 700; font-size: 15px; border: none; border-bottom: 1px dashed transparent; width: 100%; background: transparent; padding: 2px 0; }
@@ -102,8 +102,8 @@ button.danger { color: #dc2626; border-color: #fecaca; }
 .pc-app .inline button { flex: none; }
 .pc-app .rel { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
 .pc-app .rel a { color: #7c3aed; cursor: pointer; text-decoration: underline dotted; }
-.pc-app .tag { display: inline-flex; align-items: center; gap: 2px; background: #f5f3ff; border-radius: 999px; padding: 1px 4px 1px 8px; margin: 0 4px 2px 0; }
-.pc-app .tag button { border: none; background: transparent; cursor: pointer; color: #7c3aed; font-size: 13px; line-height: 1; }
+.pc-app .pc-tag { display: inline-flex; align-items: center; gap: 2px; background: #f5f3ff; border-radius: 999px; padding: 1px 4px 1px 8px; margin: 0 4px 2px 0; }
+.pc-app .pc-tag button { border: none; background: transparent; cursor: pointer; color: #7c3aed; font-size: 13px; line-height: 1; }
 .pc-app .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; padding-top: 14px; border-top: 1px solid #e2e8f0; }
 
 .pc-app .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }

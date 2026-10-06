@@ -300,7 +300,7 @@ function Chart() {
   return (
     <div className="pc-app">
       <header className="topbar">
-        <div className="brand">
+        <div className="pc-brand">
           <span className="logo">◆</span>
           <div>
             <div className="acct">MAPFRE · Power Chart</div>
@@ -372,7 +372,7 @@ function Chart() {
             <div className="lg-hint">Arrastra una tarjeta <b>sobre otra</b> para cambiar a quién reporta. Arrastra desde el punto inferior a otra tarjeta para añadir influencia.</div>
           </div>
 
-          {toast && <div className="toast">{toast}</div>}
+          {toast && <div className="pc-toast">{toast}</div>}
         </div>
 
         <aside className="side">
@@ -402,7 +402,7 @@ function GapsPanel({ gaps, onFocus, people }: { gaps: Gap[]; onFocus: (id: strin
   return (
     <div className="panel">
       <h2>Gaps MEDDPICC</h2>
-      <p className="muted">Lo que falta para trabajar la cuenta. Haz clic para ir a la persona.</p>
+      <p className="pc-muted">Lo que falta para trabajar la cuenta. Haz clic para ir a la persona.</p>
       <div className="kpis">
         <div><b>{byRole('EB')}</b><span>EB</span></div>
         <div><b>{byRole('Champion')}</b><span>Champion</span></div>

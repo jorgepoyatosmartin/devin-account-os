@@ -110,17 +110,17 @@ export function SidePanel({ account, person: p, people, onChange, onReparent, on
       </Field>
 
       <div className="rel">
-        {manager && <div><span className="muted">Jefe:</span> <a onClick={() => onFocus(manager.id)}>{manager.name}</a></div>}
+        {manager && <div><span className="pc-muted">Jefe:</span> <a onClick={() => onFocus(manager.id)}>{manager.name}</a></div>}
         {reports.length > 0 && (
-          <div><span className="muted">Equipo:</span> {reports.map((r, i) => <span key={r.id}>{i ? ', ' : ''}<a onClick={() => onFocus(r.id)}>{r.name}</a></span>)}</div>
+          <div><span className="pc-muted">Equipo:</span> {reports.map((r, i) => <span key={r.id}>{i ? ', ' : ''}<a onClick={() => onFocus(r.id)}>{r.name}</a></span>)}</div>
         )}
         {p.influences.length > 0 && (
           <div>
-            <span className="muted">Influye en:</span>{' '}
+            <span className="pc-muted">Influye en:</span>{' '}
             {p.influences.map((id) => {
               const t = people.find((x) => x.id === id)
               return t ? (
-                <span key={id} className="tag">
+                <span key={id} className="pc-tag">
                   <a onClick={() => onFocus(id)}>{t.name}</a>
                   <button title="Quitar" onClick={() => onChange({ influences: p.influences.filter((i) => i !== id) })}>×</button>
                 </span>
@@ -129,7 +129,7 @@ export function SidePanel({ account, person: p, people, onChange, onReparent, on
           </div>
         )}
         {influencedBy.length > 0 && (
-          <div><span className="muted">Le influyen:</span> {influencedBy.map((r, i) => <span key={r.id}>{i ? ', ' : ''}<a onClick={() => onFocus(r.id)}>{r.name}</a></span>)}</div>
+          <div><span className="pc-muted">Le influyen:</span> {influencedBy.map((r, i) => <span key={r.id}>{i ? ', ' : ''}<a onClick={() => onFocus(r.id)}>{r.name}</a></span>)}</div>
         )}
       </div>
 
