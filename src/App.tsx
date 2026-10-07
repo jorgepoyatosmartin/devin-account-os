@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { Account, Evidence, MeetingNote, Opportunity, Stakeholder, Task, ValidationStatus } from './types';
-import { accountById, dataset as sourceDataset, opportunitiesForAccount, signalsForAccount, stakeholderById, stakeholdersForAccount } from './data';
+import { accountById, dataset as sourceDataset, opportunitiesForAccount, signalsForAccount } from './data';
 import { discoveryQuestionTemplates, isFullyQualified, threeWhysStatus, validationKeys, weakWhys } from './lib/threeWhys';
 import { singleThreaded } from './lib/coverage';
 import { resolvePg } from './lib/pg';
@@ -10,6 +10,8 @@ import { Badge as SharedBadge, EvidenceList as SharedEvidenceList, PageHeader as
 import CommandBar from './components/CommandBar';
 import PowerChart from './components/PowerChart';
 import PowerChartMapfre from './powerchart/PowerChartMapfre';
+import { appOverrideToChartPatch, isMapfreChartId, unifyMapfre } from './powerchart/bridge';
+import { resetMapfre, updateMapfrePerson, useMapfrePeople } from './powerchart/store';
 import InitiativeChain from './components/InitiativeChain';
 import { CrossAccountPage, InitiativesPage, OpportunityActivity, OpportunityNextActions, OpportunityStakeholders, PipelinePage, PowerChartsPage, StakeholderProfilePage, TasksPage, UseCasesPage } from './pages/IntelligencePages';
 import PgPage from './pages/PgPage';
@@ -99,7 +101,7 @@ function Cockpit({ dataset, addTask, onToast }: { dataset: typeof sourceDataset;
     <Section eyebrow={t('cockpit.priorityQueue')} title={t('common.todayFocus')}>
       <div className="action-grid">{actions.map((action) => {
         const account = accountById(action.accountId); const op = action.opportunityId ? dataset.opportunities.find((item) => item.id === action.opportunityId) : undefined;
-        const stakeholder = action.stakeholderId ? stakeholderById(action.stakeholderId) : undefined;
+        const stakeholder = action.stakeholderId ? dataset.stakeholders.find((item) => item.id === action.stakeholderId) : undefined;
         return <article className="action-card" key={action.id}><div className="card-top"><Badge tone="priority">P{action.priority}</Badge><span className="muted">{account?.name}</span></div><h3>{op?.name || action.signal}</h3><div className="entity-line">{stakeholder?.name || t('cockpit.stakeholder')} <span>·</span> {action.signal}</div><div className="mini-label">{t('cockpit.threeWhys').toUpperCase()} {t('common.status').toUpperCase()}</div>{op && <Traffic op={op} />}<div className="action-block"><span>{t('cockpit.whyThisMatters')}</span><p>{action.whyThisMatters}</p></div><div className="action-block"><span>{t('cockpit.recommendedAction')}</span><p>{action.recommendedAction}</p></div><div className="ai-block"><span className="ai-block-label">{t('ai.generated')}</span><div className="message-block"><span>{t('cockpit.suggestedMessage')} <button onClick={async () => { await navigator.clipboard?.writeText(action.suggestedMessage); onToast(t('toast.messageCopied')); }}>{t('cockpit.copy')}</button></span><code>{action.suggestedMessage}</code></div></div><div className="action-outcome"><span>{t('cockpit.expectedOutcome')}</span><strong>{action.expectedOutcome}</strong></div><div className="context-actions">{op && <button onClick={() => navigate(`/opportunities/${op.id}?tab=3%20WHYS`)}>{t('cockpit.threeWhys')}</button>}<button onClick={() => navigate(`/power-charts?account=${action.accountId}`)}>{t('cockpit.powerChart')}</button>{stakeholder && <button onClick={() => navigate(`/stakeholders/${stakeholder.id}`)}>{t('cockpit.stakeholder')}</button>}{op && <button onClick={() => navigate(`/opportunities/${op.id}?tab=Meeting%20Prep`)}>{t('cockpit.meeting')}</button>}<button onClick={() => { addTask({ id: `task-${Date.now()}`, title: action.recommendedAction, accountId: action.accountId, opportunityId: action.opportunityId, stakeholderId: action.stakeholderId, status: 'Open', createdAt: new Date().toISOString(), source: 'cockpit' }); onToast(t('toast.actionAdded')); }}>{t('cockpit.task')}</button></div></article>;
       })}</div>
       <div className="weak-whys-panel"><div><span>{t('cockpit.weakNow')}</span>{dataset.opportunities.filter((item) => weakWhys(item).whyNow === 'weak').map((item) => <Link key={item.id} to={`/opportunities/${item.id}?tab=3%20WHYS`}>{item.name}</Link>)}</div><div><span>{t('cockpit.weakCognition')}</span>{dataset.opportunities.filter((item) => weakWhys(item).whyCognition === 'weak').map((item) => <Link key={item.id} to={`/opportunities/${item.id}?tab=3%20WHYS`}>{item.name}</Link>)}</div></div>
@@ -118,7 +120,7 @@ function PipelineTable({ opportunities, dataset }: { opportunities: Opportunity[
 
 function AccountsPage({ dataset }: { dataset: typeof sourceDataset }) {
   const { t } = useI18n();
-  return <><PageHeader eyebrow={`${t('accounts.title').toUpperCase()} / PORTFOLIO`} title={t('accounts.title')} subtitle={t('accounts.subtitle')} /><div className="account-grid">{dataset.accounts.map((account) => <Link className="account-card" to={`/accounts/${account.id}`} key={account.id}><div className="account-avatar">{account.name.slice(0, 1)}</div><div><div className="eyebrow">{account.sector}</div><h2>{account.name}</h2><p>{account.overview}</p><div className="card-stats"><span>{opportunitiesForAccount(account.id).length} {t('accounts.opportunities').toLowerCase()}</span><span>{stakeholdersForAccount(account.id).length} {t('nav.stakeholders').toLowerCase()}</span><span>{signalsForAccount(account.id).length} {t('nav.signals').toLowerCase()}</span></div></div><span className="arrow">→</span></Link>)}</div></>;
+  return <><PageHeader eyebrow={`${t('accounts.title').toUpperCase()} / PORTFOLIO`} title={t('accounts.title')} subtitle={t('accounts.subtitle')} /><div className="account-grid">{dataset.accounts.map((account) => <Link className="account-card" to={`/accounts/${account.id}`} key={account.id}><div className="account-avatar">{account.name.slice(0, 1)}</div><div><div className="eyebrow">{account.sector}</div><h2>{account.name}</h2><p>{account.overview}</p><div className="card-stats"><span>{opportunitiesForAccount(account.id).length} {t('accounts.opportunities').toLowerCase()}</span><span>{dataset.stakeholders.filter((item) => item.accountId === account.id).length} {t('nav.stakeholders').toLowerCase()}</span><span>{signalsForAccount(account.id).length} {t('nav.signals').toLowerCase()}</span></div></div><span className="arrow">→</span></Link>)}</div></>;
 }
 
 function AccountDetail({ dataset, setOverride }: { dataset: typeof sourceDataset; setOverride: (id: string, path: string, value: unknown) => void }) {
@@ -250,7 +252,14 @@ function WeeklyReview({ dataset }: { dataset: typeof sourceDataset }) {
 function NotFound() { const { t } = useI18n(); return <div className="empty-state"><h1>{t('notFound.title')}</h1><Link to="/">{t('notFound.back')}</Link></div>; }
 
 export default function App() {
-  const { overrides, setOverride, meetingNotes, saveMeetingNote, tasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, upsertPg, addPg, addOpportunity, reset } = useOverrides();
+  const { overrides, setOverride: setBaseOverride, meetingNotes, saveMeetingNote, tasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, upsertPg, addPg, addOpportunity, reset: resetBase } = useOverrides();
+  const mapfrePeople = useMapfrePeople();
+  const setOverride = useCallback((entityId: string, path: string, value: unknown) => {
+    const patch = isMapfreChartId(entityId, mapfrePeople) ? appOverrideToChartPatch(path, value) : null;
+    if (patch) updateMapfrePerson(entityId, patch);
+    else setBaseOverride(entityId, path, value);
+  }, [mapfrePeople, setBaseOverride]);
+  const reset = useCallback(() => { resetBase(); resetMapfre(); }, [resetBase]);
   const [commandOpen, setCommandOpen] = useState(false); const [toast, setToast] = useState('');
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -262,7 +271,7 @@ export default function App() {
     window.addEventListener('keydown', handleShortcut);
     return () => window.removeEventListener('keydown', handleShortcut);
   }, []);
-  const dataset = useMemo(() => mergeDataset(sourceDataset, overrides, pgEdits, pgCustom, customOpportunities), [overrides, pgEdits, pgCustom, customOpportunities]);
+  const dataset = useMemo(() => unifyMapfre(mergeDataset(sourceDataset, overrides, pgEdits, pgCustom, customOpportunities), mapfrePeople), [overrides, pgEdits, pgCustom, customOpportunities, mapfrePeople]);
   const exportData = () => { const blob = new Blob([JSON.stringify({ ...dataset, meetingNotes, tasks, pgEdits, pgCustom, customOpportunities }, null, 2)], { type: 'application/json' }); const href = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = href; link.download = `cognition-pipeline-export-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(href); };
   return <Layout dataset={dataset} reset={reset} exportData={exportData} openCommand={() => setCommandOpen(true)}><Routes><Route path="/" element={<Cockpit dataset={dataset} addTask={addTask} onToast={setToast} />} /><Route path="/accounts" element={<AccountsPage dataset={dataset} />} /><Route path="/accounts/:id" element={<AccountDetail dataset={dataset} setOverride={setOverride} />} /><Route path="/initiatives" element={<InitiativesPage dataset={dataset} />} /><Route path="/power-charts" element={<PowerChartsPage dataset={dataset} />} /><Route path="/stakeholders" element={<StakeholdersPage dataset={dataset} setOverride={setOverride} />} /><Route path="/stakeholders/:id" element={<StakeholderProfilePage dataset={dataset} setOverride={setOverride} addTask={addTask} onToast={setToast} />} /><Route path="/use-cases" element={<UseCasesPage dataset={dataset} />} /><Route path="/pg" element={<PgPage dataset={dataset} upsertPg={upsertPg} addPg={addPg} addOpportunity={addOpportunity} addTask={addTask} onToast={setToast} />} /><Route path="/pg/:id" element={<PgPage dataset={dataset} upsertPg={upsertPg} addPg={addPg} addOpportunity={addOpportunity} addTask={addTask} onToast={setToast} />} /><Route path="/opportunities" element={<OpportunitiesPage dataset={dataset} />} /><Route path="/opportunities/:id" element={<OpportunityDetail dataset={dataset} setOverride={setOverride} meetingNotes={meetingNotes} saveMeetingNote={saveMeetingNote} tasks={tasks} addTask={addTask} toggleTask={toggleTask} />} /><Route path="/signals" element={<SignalsPage dataset={dataset} />} /><Route path="/pipeline" element={<PipelinePage dataset={dataset} />} /><Route path="/tasks" element={<TasksPage dataset={dataset} tasks={tasks} addTask={addTask} toggleTask={toggleTask} deleteTask={deleteTask} />} /><Route path="/weekly-review" element={<WeeklyReview dataset={dataset} />} /><Route path="/cross-account" element={<CrossAccountPage dataset={dataset} />} /><Route path="*" element={<NotFound />} /></Routes>{commandOpen && <CommandBar dataset={dataset} onClose={() => setCommandOpen(false)} />}{toast && <Toast message={toast} onClose={() => setToast('')} />}</Layout>;
 }

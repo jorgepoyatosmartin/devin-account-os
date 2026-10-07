@@ -1,6 +1,6 @@
 # Fuente de verdad de stakeholders de MAPFRE. Editar aquí o desde apps/power-chart (Exportar YAML).
 account: mapfre
-updated: '2026-09-27'
+updated: '2026-10-07'
 schema: stakeholders/v1
 stakeholders:
   - id: vescriva
@@ -15,8 +15,8 @@ stakeholders:
     status: No contact
     owner: Jorge
     last_touch: null
-    reports_to: null
-    reports_to_confidence: confirmed
+    reports_to: ahuertas
+    reports_to_confidence: hypothesis
     influences:
       - swiznez
     source: research
@@ -513,3 +513,243 @@ stakeholders:
     influences:
       - msolanas
     notes: 'AI Act (ago-2026) y DORA: aliado natural para el ángulo de gobernanza.'
+  - id: ahuertas
+    name: Antonio Huertas Mejías
+    title: Chairman & CEO, MAPFRE S.A.
+    level: C Level
+    unit: CEO
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 3
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: 'Añadida desde la Cognition Pipeline App (territory plan / research). Executive sponsor level; unlikely first contact.
+      Message: technology pillar delivery speed.'
+  - id: mdelicado
+    name: Malu Delicado
+    title: CIO, Iberia Region
+    level: 2nd
+    unit: CIO (regional)
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: vescriva
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research). Potential entry point for a regional pilot;
+      possible champion candidate.
+  - id: jledesma
+    name: José Antonio Ledesma
+    title: CISO
+    level: 2nd
+    unit: Security
+    sales_play: Security AI Governance
+    role: Influencer
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: vescriva
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: ljimenez
+    name: Leire Jiménez
+    title: Chief Innovation Officer
+    level: 2nd
+    unit: Innovation
+    sales_play: Agentic Readiness
+    role: Influencer
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: vescriva
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: ilacave
+    name: Íñigo Lacave
+    title: Technology & Architecture Director
+    level: 3rd
+    unit: Technology & Architecture
+    sales_play: Agentic Readiness
+    role: Coach
+    attitude: positive
+    influence: 2
+    status: In contact
+    owner: Jorge
+    last_touch: null
+    reports_to: swiznez
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: mjavanovic
+    name: Mat Javanovic
+    title: Global Cloud Director
+    level: 4th
+    unit: Global Cloud
+    sales_play: Agentic Readiness
+    role: Influencer
+    attitude: unknown
+    influence: 1
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: ilacave
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: jmarana
+    name: Javier Maraña
+    title: Head of Agentic Architecture & Technological Innovation
+    level: 3rd
+    unit: Agentic Architecture & Technological Innovation
+    sales_play: Agentic Readiness
+    role: Champion
+    attitude: positive
+    influence: 2
+    status: In process
+    owner: Jorge
+    last_touch: null
+    reports_to: swiznez
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: gandujar
+    name: Gabriel Andújar
+    title: Agent Architecture Manager
+    level: 4th
+    unit: Agent Architecture
+    sales_play: Agentic Readiness
+    role: Champion
+    attitude: positive
+    influence: 1
+    status: In process
+    owner: Jorge
+    last_touch: null
+    reports_to: jmarana
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: dbodas
+    name: Diego José Bodas
+    title: AI Center Director
+    level: 3rd
+    unit: AI / Data leadership
+    sales_play: Agentic Readiness
+    role: Influencer
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: msolanas
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: ahevia
+    name: Andrés Hevia
+    title: IT Architecture
+    level: 4th
+    unit: IT Architecture
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 1
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: mjavanovic
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: gcabanillas
+    name: Gonzalo Cabanillas
+    title: Senior Software Engineer
+    level: 4th
+    unit: Senior Software Engineer
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 1
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: gandujar
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: eturillo
+    name: Enrique Turillo
+    title: Data and IA Ciber Director
+    level: 3rd
+    unit: Data and IA Ciber Director
+    sales_play: Security AI Governance
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: jledesma
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: mencinar
+    name: Mario Encinar
+    title: AI Lead Expert
+    level: 4th
+    unit: AI Lead Expert
+    sales_play: Agentic Readiness
+    role: Coach
+    attitude: positive
+    influence: 1
+    status: In contact
+    owner: Jorge
+    last_touch: null
+    reports_to: dbodas
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).
+  - id: jlopez
+    name: Jesús López
+    title: HTech Innovation Manager
+    level: 3rd
+    unit: HTech Innovation Manager
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: Jorge
+    last_touch: null
+    reports_to: swiznez
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    notes: Añadida desde la Cognition Pipeline App (territory plan / research).

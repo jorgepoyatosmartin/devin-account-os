@@ -14,7 +14,7 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { dump as yamlDump } from 'js-yaml'
-import { ACCOUNT, MAPFRE, MAPFRE_VERSION } from './data/mapfre'
+import { ACCOUNT, MAPFRE } from './data/mapfre'
 import { autoLayout, NODE_H, NODE_W } from './layout'
 import { PersonNode, type PersonNodeType } from './PersonNode'
 import { SidePanel } from './SidePanel'
@@ -30,30 +30,15 @@ import {
   type Gap,
   type SalesPlay,
   type Stakeholder,
+  todayISO,
 } from './model'
 import './powerchart.css'
 
 const nodeTypes = { person: PersonNode }
-const STORAGE_KEY = 'power-chart:mapfre'
-
-type Positions = Record<string, { x: number; y: number }>
-
-function loadInitial(): { people: Stakeholder[]; positions: Positions | null } {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      const saved = JSON.parse(raw)
-      if (saved.sourceVersion === MAPFRE_VERSION) return saved
-      localStorage.removeItem(STORAGE_KEY)
-    }
-  } catch {
-    /* ignore */
-  }
-  return { people: MAPFRE, positions: null }
-}
+import { getMapfreSnapshot, resetMapfre, setMapfreSnapshot, subscribeMapfre, type Positions } from './store'
 
 function Chart() {
-  const init = useRef(loadInitial())
+  const init = useRef(getMapfreSnapshot())
   const [people, setPeopleRaw] = useState<Stakeholder[]>(init.current.people)
   const [positions, setPositions] = useState<Positions>(() => init.current.positions ?? autoLayout(init.current.people))
   const [history, setHistory] = useState<{ people: Stakeholder[]; positions: Positions }[]>([])
@@ -76,8 +61,17 @@ function Chart() {
   )
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ people, positions, sourceVersion: MAPFRE_VERSION }))
+    if (getMapfreSnapshot().people !== people || getMapfreSnapshot().positions !== positions) setMapfreSnapshot(people, positions)
   }, [people, positions])
+
+  useEffect(
+    () =>
+      subscribeMapfre(() => {
+        const snap = getMapfreSnapshot()
+        setPeopleRaw((cur) => (snap.people === cur ? cur : snap.people))
+      }),
+    [],
+  )
 
   useEffect(() => {
     if (!toast) return
@@ -101,7 +95,7 @@ function Chart() {
 
   const reset = () => {
     if (!confirm('¿Restaurar los datos originales del Account Plan?')) return
-    localStorage.removeItem(STORAGE_KEY)
+    resetMapfre()
     setPeopleRaw(MAPFRE)
     setPositions(autoLayout(MAPFRE))
     setHistory([])
@@ -210,14 +204,12 @@ function Chart() {
     setToast(parent ? `${child.name} ahora reporta a ${parent.name}` : `${child.name} pasa a ser raíz`)
   }
 
-  const removePerson = (id: string) => {
+  const markDeparted = (id: string) => {
     const p = people.find((x) => x.id === id)!
-    if (!confirm(`¿Eliminar a ${p.name} del chart?`)) return
-    const next = people
-      .filter((x) => x.id !== id)
-      .map((x) => ({ ...x, reportsTo: x.reportsTo === id ? p.reportsTo : x.reportsTo, influences: x.influences.filter((i) => i !== id) }))
-    commit(next, autoLayout(next))
-    setSelectedId(null)
+    if (!confirm(`¿Marcar a ${p.name} como baja? Se conserva en el YAML con status "No contact".`)) return
+    const note = `Salió en ${todayISO()}`
+    update(id, { status: 'No contact', role: 'None', attitude: 'unknown', notes: p.notes ? `${note}. ${p.notes}` : note })
+    setToast(`${p.name} marcado como baja`)
   }
 
   const addPerson = () => {
@@ -387,7 +379,7 @@ function Chart() {
               people={people}
               onChange={(patch) => update(selected.id, patch)}
               onReparent={(pid) => reparent(selected.id, pid)}
-              onRemove={() => removePerson(selected.id)}
+              onRemove={() => markDeparted(selected.id)}
               onFocus={(id) => setSelectedId(id)}
               onClose={() => setSelectedId(null)}
               onLaunched={(copied) => setToast(copied ? 'Prompt copiado al portapapeles — pégalo en la nueva sesión de Devin.' : 'No se pudo copiar el prompt (portapapeles no disponible). Inténtalo de nuevo.')}

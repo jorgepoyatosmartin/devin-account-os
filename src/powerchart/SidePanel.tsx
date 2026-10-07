@@ -138,7 +138,7 @@ export function SidePanel({ account, person: p, people, onChange, onReparent, on
         <button className="primary" title="!pg_activation para esta persona" onClick={() => launch('cadence')}>Generar cadencia</button>
         <button title="!meeting_brief para esta persona" onClick={() => launch('brief')}>Brief</button>
         <button title="stakeholder-mapping: buscar el equipo" onClick={() => launch('team')}>Buscar equipo</button>
-        <button className="danger" onClick={onRemove}>Eliminar</button>
+        <button className="danger" title="Se conserva en el YAML con status No contact" onClick={onRemove}>Marcar como baja</button>
       </div>
     </div>
   )
