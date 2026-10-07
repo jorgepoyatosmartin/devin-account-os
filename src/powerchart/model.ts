@@ -69,11 +69,13 @@ export const ATTITUDES: Attitude[] = ['positive', 'neutral', 'negative', 'unknow
 export const STATUSES: Status[] = ['No contact', 'In contact', 'In process', 'Opportunity']
 export const SALES_PLAYS: SalesPlay[] = ['Agentic Readiness', 'Security AI Governance', 'API + AI Monetization']
 
-export const TODAY = new Date('2026-09-27')
+export function todayISO(): string {
+  return new Date().toISOString().slice(0, 10)
+}
 
 export function daysSince(date: string | null): number | null {
   if (!date) return null
-  return Math.floor((TODAY.getTime() - new Date(date).getTime()) / 86400000)
+  return Math.floor((Date.now() - new Date(date).getTime()) / 86400000)
 }
 
 export type Freshness = 'fresh' | 'aging' | 'stale' | 'never'

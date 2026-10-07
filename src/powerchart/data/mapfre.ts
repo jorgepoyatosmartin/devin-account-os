@@ -30,6 +30,13 @@ const doc = yamlLoad(raw) as YamlDoc
 
 export const ACCOUNT = doc.account
 
+// Hash del YAML empaquetado: invalida snapshots locales cuando cambia la fuente.
+export const MAPFRE_VERSION: string = (() => {
+  let h = 0
+  for (let i = 0; i < raw.length; i++) h = (h * 31 + raw.charCodeAt(i)) | 0
+  return h.toString(16)
+})()
+
 export const MAPFRE: Stakeholder[] = doc.stakeholders.map((s) => ({
   id: s.id,
   name: s.name,

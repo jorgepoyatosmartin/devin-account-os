@@ -7,6 +7,7 @@ import {
   SALES_PLAYS,
   STATUSES,
   daysSince,
+  todayISO,
   isAncestor,
   type Stakeholder,
 } from './model'
@@ -21,11 +22,11 @@ interface Props {
   onRemove: () => void
   onFocus: (id: string) => void
   onClose: () => void
-  onLaunched: (prompt: string) => void
+  onLaunched: (copied: boolean) => void
 }
 
 export function SidePanel({ account, person: p, people, onChange, onReparent, onRemove, onFocus, onClose, onLaunched }: Props) {
-  const launch = (a: 'cadence' | 'brief' | 'team') => launchPlaybook(a, account, p).then(onLaunched)
+  const launch = (a: 'cadence' | 'brief' | 'team') => launchPlaybook(a, account, p).then((r) => onLaunched(r.copied))
   const d = daysSince(p.lastTouch)
   const reports = people.filter((x) => x.reportsTo === p.id)
   const manager = people.find((x) => x.id === p.reportsTo)
@@ -84,7 +85,7 @@ export function SidePanel({ account, person: p, people, onChange, onReparent, on
         <Field label={`Último touch${d !== null ? ` · hace ${d} d` : ''}`}>
           <div className="inline">
             <input type="date" value={p.lastTouch ?? ''} onChange={(e) => onChange({ lastTouch: e.target.value || null })} />
-            <button onClick={() => onChange({ lastTouch: '2026-09-27', status: p.status === 'No contact' ? 'In contact' : p.status })}>Hoy</button>
+            <button onClick={() => onChange({ lastTouch: todayISO(), status: p.status === 'No contact' ? 'In contact' : p.status })}>Hoy</button>
           </div>
         </Field>
         <Field label="Reporta a">

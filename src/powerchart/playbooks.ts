@@ -35,13 +35,15 @@ export function buildPrompt(action: Action, account: string, p: Stakeholder): st
   }
 }
 
-export async function launchPlaybook(action: Action, account: string, p: Stakeholder): Promise<string> {
+export async function launchPlaybook(action: Action, account: string, p: Stakeholder): Promise<{ prompt: string; copied: boolean }> {
   const prompt = buildPrompt(action, account, p)
+  let copied = false
   try {
     await navigator.clipboard.writeText(prompt)
+    copied = true
   } catch {
-    /* clipboard may be unavailable; the prompt is still returned */
+    copied = false
   }
-  window.open(DEVIN_URL, '_blank', 'noopener')
-  return prompt
+  if (copied) window.open(DEVIN_URL, '_blank', 'noopener')
+  return { prompt, copied }
 }

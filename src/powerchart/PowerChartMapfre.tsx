@@ -14,7 +14,7 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { dump as yamlDump } from 'js-yaml'
-import { ACCOUNT, MAPFRE } from './data/mapfre'
+import { ACCOUNT, MAPFRE, MAPFRE_VERSION } from './data/mapfre'
 import { autoLayout, NODE_H, NODE_W } from './layout'
 import { PersonNode, type PersonNodeType } from './PersonNode'
 import { SidePanel } from './SidePanel'
@@ -41,7 +41,11 @@ type Positions = Record<string, { x: number; y: number }>
 function loadInitial(): { people: Stakeholder[]; positions: Positions | null } {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const saved = JSON.parse(raw)
+      if (saved.sourceVersion === MAPFRE_VERSION) return saved
+      localStorage.removeItem(STORAGE_KEY)
+    }
   } catch {
     /* ignore */
   }
@@ -72,7 +76,7 @@ function Chart() {
   )
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ people, positions }))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ people, positions, sourceVersion: MAPFRE_VERSION }))
   }, [people, positions])
 
   useEffect(() => {
@@ -201,7 +205,7 @@ function Chart() {
     }
     const child = people.find((p) => p.id === childId)!
     const parent = parentId ? people.find((p) => p.id === parentId) : null
-    const next = people.map((p) => (p.id === childId ? { ...p, reportsTo: parentId, reportsToConfidence: 'confirmed' as const } : p))
+    const next = people.map((p) => (p.id === childId ? { ...p, reportsTo: parentId, reportsToConfidence: 'hypothesis' as const } : p))
     commit(next, autoLayout(next), record)
     setToast(parent ? `${child.name} ahora reporta a ${parent.name}` : `${child.name} pasa a ser raíz`)
   }
@@ -386,7 +390,7 @@ function Chart() {
               onRemove={() => removePerson(selected.id)}
               onFocus={(id) => setSelectedId(id)}
               onClose={() => setSelectedId(null)}
-              onLaunched={() => setToast('Prompt copiado al portapapeles — pégalo en la nueva sesión de Devin.')}
+              onLaunched={(copied) => setToast(copied ? 'Prompt copiado al portapapeles — pégalo en la nueva sesión de Devin.' : 'No se pudo copiar el prompt (portapapeles no disponible). Inténtalo de nuevo.')}
             />
           ) : (
             <GapsPanel gaps={gaps} onFocus={(id) => setSelectedId(id)} people={people} />
