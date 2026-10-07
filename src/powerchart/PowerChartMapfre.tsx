@@ -54,6 +54,7 @@ function Chart() {
   const commit = useCallback(
     (nextPeople: Stakeholder[], nextPositions?: Positions, record = true) => {
       if (record) setHistory((h) => [...h.slice(-30), { people, positions }])
+      setMapfreSnapshot(nextPeople, nextPositions ?? positions)
       setPeopleRaw(nextPeople)
       if (nextPositions) setPositions(nextPositions)
     },
@@ -61,8 +62,9 @@ function Chart() {
   )
 
   useEffect(() => {
-    if (getMapfreSnapshot().people !== people || getMapfreSnapshot().positions !== positions) setMapfreSnapshot(people, positions)
-  }, [people, positions])
+    const s = getMapfreSnapshot()
+    if (s.positions !== positions) setMapfreSnapshot(s.people, positions)
+  }, [positions])
 
   useEffect(
     () =>
@@ -83,6 +85,7 @@ function Chart() {
     const last = history[history.length - 1]
     if (!last) return
     setHistory((h) => h.slice(0, -1))
+    setMapfreSnapshot(last.people, last.positions)
     setPeopleRaw(last.people)
     setPositions(last.positions)
   }
@@ -188,7 +191,8 @@ function Chart() {
   }, [people, nodes, showInfluence])
 
   const update = (id: string, patch: Partial<Stakeholder>) => {
-    commit(people.map((p) => (p.id === id ? { ...p, ...patch } : p)))
+    const p2 = 'status' in patch ? { ...patch, appStatus: undefined } : patch
+    commit(people.map((p) => (p.id === id ? { ...p, ...p2 } : p)))
   }
 
   const reparent = (childId: string, parentId: string | null, record = true) => {
@@ -208,7 +212,7 @@ function Chart() {
     const p = people.find((x) => x.id === id)!
     if (!confirm(`¿Marcar a ${p.name} como baja? Se conserva en el YAML con status "No contact".`)) return
     const note = `Salió en ${todayISO()}`
-    update(id, { status: 'No contact', role: 'None', attitude: 'unknown', notes: p.notes ? `${note}. ${p.notes}` : note })
+    update(id, { status: 'No contact', role: 'None', attitude: 'unknown', departed: true, notes: p.notes ? `${note}. ${p.notes}` : note })
     setToast(`${p.name} marcado como baja`)
   }
 
@@ -274,10 +278,10 @@ function Chart() {
       account: ACCOUNT,
       updated: new Date().toISOString().slice(0, 10),
       schema: 'stakeholders/v1',
-      stakeholders: people.map(({ id, name, title, level, unit, salesPlay, role, attitude, influence, status, owner, lastTouch, reportsTo, reportsToConfidence, influences, notes, external }) => ({
+      stakeholders: people.map(({ id, name, title, level, unit, salesPlay, role, attitude, influence, status, owner, lastTouch, reportsTo, reportsToConfidence, influences, notes, external, departed }) => ({
         id, name, title, level, unit, sales_play: salesPlay, role, attitude, influence, status, owner,
         last_touch: lastTouch, reports_to: reportsTo, reports_to_confidence: reportsToConfidence, influences,
-        ...(external ? { source: 'research' } : {}), ...(notes ? { notes } : {}),
+        ...(external ? { source: 'research' } : {}), ...(departed ? { departed: true } : {}), ...(notes ? { notes } : {}),
       })),
     }
     const text = `# Fuente de verdad de stakeholders de ${ACCOUNT.toUpperCase()}. Editar aquí o desde apps/power-chart (Exportar YAML).\n` + yamlDump(doc, { lineWidth: 120, noRefs: true })

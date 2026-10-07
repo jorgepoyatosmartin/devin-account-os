@@ -23,6 +23,8 @@ export interface Stakeholder {
   influences: string[]
   notes: string
   external?: boolean
+  departed?: boolean
+  appStatus?: string
 }
 
 export interface Gap {
@@ -96,16 +98,17 @@ export const FRESHNESS_COLOR: Record<Freshness, string> = {
 
 export function computeGaps(people: Stakeholder[]): Gap[] {
   const gaps: Gap[] = []
-  const byId = new Map(people.map((p) => [p.id, p]))
+  const active = people.filter((p) => !p.departed)
+  const byId = new Map(active.map((p) => [p.id, p]))
 
-  const ebs = people.filter((p) => p.role === 'EB')
+  const ebs = active.filter((p) => p.role === 'EB')
   if (ebs.length === 0) gaps.push({ kind: 'critical', text: 'No hay Economic Buyer identificado.' })
   for (const eb of ebs) {
     if (eb.status === 'No contact') gaps.push({ kind: 'critical', nodeId: eb.id, text: `${eb.name} es EB y no hay contacto.` })
     else if (freshness(eb.lastTouch) === 'stale') gaps.push({ kind: 'warning', nodeId: eb.id, text: `${eb.name} (EB) sin contacto en ${daysSince(eb.lastTouch)} días.` })
   }
 
-  const champs = people.filter((p) => p.role === 'Champion')
+  const champs = active.filter((p) => p.role === 'Champion')
   if (champs.length === 0) gaps.push({ kind: 'critical', text: 'No hay Champion. Candidatos: quien tenga actitud a favor y acceso al EB.' })
   for (const c of champs) {
     const f = freshness(c.lastTouch)
@@ -114,24 +117,24 @@ export function computeGaps(people: Stakeholder[]): Gap[] {
     if (ebs.length && !hasEbPath) gaps.push({ kind: 'warning', nodeId: c.id, text: `${c.name} (Champion) no tiene línea directa al EB en el chart.` })
   }
 
-  for (const b of people.filter((p) => p.role === 'Blocker')) {
+  for (const b of active.filter((p) => p.role === 'Blocker')) {
     if (!/mitig|plan/i.test(b.notes)) gaps.push({ kind: 'warning', nodeId: b.id, text: `Blocker ${b.name} sin plan de mitigación en notas.` })
   }
 
-  for (const p of people) {
+  for (const p of active) {
     if (p.attitude === 'positive' && freshness(p.lastTouch) === 'stale')
       gaps.push({ kind: 'warning', nodeId: p.id, text: `${p.name} está a favor pero lleva ${daysSince(p.lastTouch)} días sin touch.` })
   }
 
-  const roots = people.filter((p) => !p.reportsTo)
+  const roots = active.filter((p) => !p.reportsTo || !byId.has(p.reportsTo))
   for (const r of roots) {
-    const branch = descendants(r.id, people)
+    const branch = descendants(r.id, active)
     const touched = branch.filter((p) => p.status !== 'No contact')
     if (branch.length >= 3 && touched.length === 0)
       gaps.push({ kind: 'warning', nodeId: r.id, text: `Rama de ${r.name} (${branch.length} personas) sin ningún contacto activo.` })
   }
 
-  const hyp = people.filter((p) => p.reportsTo && p.reportsToConfidence === 'hypothesis').length
+  const hyp = active.filter((p) => p.reportsTo && p.reportsToConfidence === 'hypothesis').length
   if (hyp) gaps.push({ kind: 'warning', text: `${hyp} líneas de reporte son hipótesis (sin confirmar en reunión).` })
 
   return gaps

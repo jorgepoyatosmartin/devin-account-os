@@ -22,6 +22,7 @@ type YamlStakeholder = {
   influences?: string[]
   source?: 'research' | 'account-plan'
   notes?: string
+  departed?: boolean
 }
 
 type YamlDoc = { account: string; updated: string; schema: string; stakeholders: YamlStakeholder[] }
@@ -55,4 +56,5 @@ export const MAPFRE: Stakeholder[] = doc.stakeholders.map((s) => ({
   influences: s.influences ?? [],
   notes: s.notes ?? '',
   external: s.source === 'research',
+  departed: s.departed === true,
 }))

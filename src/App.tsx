@@ -10,7 +10,7 @@ import { Badge as SharedBadge, EvidenceList as SharedEvidenceList, PageHeader as
 import CommandBar from './components/CommandBar';
 import PowerChart from './components/PowerChart';
 import PowerChartMapfre from './powerchart/PowerChartMapfre';
-import { appOverrideToChartPatch, isMapfreChartId, unifyMapfre } from './powerchart/bridge';
+import { LEGACY_ID_ALIAS, appOverrideToChartPatch, isMapfreChartId, unifyMapfre } from './powerchart/bridge';
 import { resetMapfre, updateMapfrePerson, useMapfrePeople } from './powerchart/store';
 import InitiativeChain from './components/InitiativeChain';
 import { CrossAccountPage, InitiativesPage, OpportunityActivity, OpportunityNextActions, OpportunityStakeholders, PipelinePage, PowerChartsPage, StakeholderProfilePage, TasksPage, UseCasesPage } from './pages/IntelligencePages';
@@ -252,8 +252,12 @@ function WeeklyReview({ dataset }: { dataset: typeof sourceDataset }) {
 function NotFound() { const { t } = useI18n(); return <div className="empty-state"><h1>{t('notFound.title')}</h1><Link to="/">{t('notFound.back')}</Link></div>; }
 
 export default function App() {
-  const { overrides, setOverride: setBaseOverride, meetingNotes, saveMeetingNote, tasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, upsertPg, addPg, addOpportunity, reset: resetBase } = useOverrides();
+  const { overrides, setOverride: setBaseOverride, meetingNotes, saveMeetingNote, tasks: storedTasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, upsertPg, addPg, addOpportunity, reset: resetBase } = useOverrides();
   const mapfrePeople = useMapfrePeople();
+  const tasks = useMemo(
+    () => storedTasks.map((t) => (t.stakeholderId ? { ...t, stakeholderId: LEGACY_ID_ALIAS[t.stakeholderId] ?? t.stakeholderId } : t)),
+    [storedTasks],
+  );
   const setOverride = useCallback((entityId: string, path: string, value: unknown) => {
     const patch = isMapfreChartId(entityId, mapfrePeople) ? appOverrideToChartPatch(path, value) : null;
     if (patch) updateMapfrePerson(entityId, patch);

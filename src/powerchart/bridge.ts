@@ -27,7 +27,12 @@ export function toAppStakeholder(p: ChartStakeholder, legacy: AppStakeholder | u
     technologyPriorities: '', relevantInitiatives: [], publicStatements: [], recentActivity: '', potentialPain: '', cognitionRelevance: '',
     relationshipStatus: 'No contact', buyingRole: 'Unknown', sources: [],
   }
-  const status = p.role === 'Champion' && p.status !== 'No contact' ? 'Champion' : STATUS_TO_APP[p.status]
+  const status =
+    p.role === 'Champion' && p.status !== 'No contact'
+      ? 'Champion'
+      : p.appStatus && APP_TO_STATUS[p.appStatus as RelationshipStatus] === p.status
+        ? (p.appStatus as RelationshipStatus)
+        : STATUS_TO_APP[p.status]
   return {
     ...base, id: p.id, name: p.name, title: p.title, functionArea: base.functionArea || p.unit, businessUnit: p.unit,
     relationshipStatus: status, buyingRole: ROLE_TO_APP[p.role], powerRole: ROLE_TO_APP[p.role], roleIsHypothesis: p.reportsToConfidence === 'hypothesis',
@@ -39,13 +44,16 @@ export function toAppStakeholder(p: ChartStakeholder, legacy: AppStakeholder | u
 
 // Traduce una edición hecha en las vistas legadas (tabla de stakeholders, perfil) a campos del chart.
 export function appOverrideToChartPatch(path: string, value: unknown): Partial<ChartStakeholder> | null {
-  if (path === 'relationshipStatus') return { status: APP_TO_STATUS[value as RelationshipStatus] ?? 'No contact' }
+  if (path === 'relationshipStatus') return { status: APP_TO_STATUS[value as RelationshipStatus] ?? 'No contact', appStatus: String(value) }
   if (path === 'buyingRole' || path === 'powerRole') return { role: APP_TO_ROLE[String(value)] ?? 'None' }
   if (path === 'recentActivity') return { notes: String(value) }
+  if (path === 'name') return { name: String(value) }
+  if (path === 'title') return { title: String(value) }
+  if (path === 'roleIsHypothesis') return { reportsToConfidence: value ? 'hypothesis' : 'confirmed' }
   return null
 }
 
-function remapIds<T>(value: T): T {
+export function remapIds<T>(value: T): T {
   if (typeof value === 'string') return (LEGACY_ID_ALIAS[value] ?? value) as T
   if (Array.isArray(value)) return value.map(remapIds) as T
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, remapIds(v)])) as T
