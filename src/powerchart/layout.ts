@@ -2,7 +2,7 @@ import dagre from '@dagrejs/dagre'
 import type { Stakeholder } from './model'
 
 export const NODE_W = 220
-export const NODE_H = 78
+export const NODE_H = 96
 
 export function autoLayout(people: Stakeholder[]): Record<string, { x: number; y: number }> {
   const g = new dagre.graphlib.Graph()

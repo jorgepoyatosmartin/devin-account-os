@@ -11,6 +11,10 @@ export interface Stakeholder {
   title: string
   level: Level
   unit: string
+  businessUnit: string
+  country: string | null
+  responsibilities: string
+  priorities: string
   salesPlay: SalesPlay
   role: Role
   attitude: Attitude

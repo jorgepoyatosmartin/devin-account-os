@@ -10,6 +10,10 @@ type YamlStakeholder = {
   title: string
   level: Stakeholder['level']
   unit: string
+  business_unit?: string
+  country?: string | null
+  responsibilities?: string
+  priorities?: string
   sales_play: Stakeholder['salesPlay']
   role: Stakeholder['role']
   attitude: Stakeholder['attitude']
@@ -30,6 +34,7 @@ type YamlDoc = { account: string; updated: string; schema: string; stakeholders:
 const doc = yamlLoad(raw) as YamlDoc
 
 export const ACCOUNT = doc.account
+export const MAPFRE_UPDATED = doc.updated
 
 // Hash del YAML empaquetado: invalida snapshots locales cuando cambia la fuente.
 export const MAPFRE_VERSION: string = (() => {
@@ -44,6 +49,10 @@ export const MAPFRE: Stakeholder[] = doc.stakeholders.map((s) => ({
   title: s.title,
   level: s.level,
   unit: s.unit,
+  businessUnit: s.business_unit ?? s.unit,
+  country: s.country ?? null,
+  responsibilities: s.responsibilities ?? '',
+  priorities: s.priorities ?? '',
   salesPlay: s.sales_play,
   role: s.role,
   attitude: s.attitude,

@@ -9,11 +9,13 @@ export type PersonNodeData = {
   gap: 'critical' | 'warning' | null
   dropTarget: boolean
   onToggle: (id: string) => void
+  managerStub?: string
+  onManagerClick?: (id: string) => void
 }
 export type PersonNodeType = Node<PersonNodeData, 'person'>
 
 export function PersonNode({ data, selected }: NodeProps<PersonNodeType>) {
-  const { person: p, childCount, collapsed, dimmed, gap, dropTarget } = data
+  const { person: p, childCount, collapsed, dimmed, gap, dropTarget, managerStub } = data
   const f = freshness(p.lastTouch)
   const d = daysSince(p.lastTouch)
   const border = ATTITUDE_COLOR[p.attitude]
@@ -22,7 +24,6 @@ export function PersonNode({ data, selected }: NodeProps<PersonNodeType>) {
     <div
       className={`person ${dimmed ? 'dimmed' : ''} ${selected ? 'selected' : ''} ${dropTarget ? 'drop' : ''} ${gap ? `gap-${gap}` : ''}`}
       style={{ borderColor: border, borderWidth: width, borderStyle: p.attitude === 'unknown' ? 'dashed' : 'solid' }}
-      title={p.title}
     >
       <Handle type="target" position={Position.Top} className="handle" />
       <div className="row">
@@ -40,9 +41,20 @@ export function PersonNode({ data, selected }: NodeProps<PersonNodeType>) {
       <div className="meta">
         <span>{p.level}</span>
         <span className="dot">·</span>
-        <span>{p.unit}</span>
+        <span>{p.businessUnit || p.unit}</span>
         {p.external && <span className="ext">research</span>}
       </div>
+      {managerStub && p.reportsTo && (
+        <button
+          className="pc-manager-stub nodrag"
+          onClick={(e) => {
+            e.stopPropagation()
+            data.onManagerClick?.(p.reportsTo!)
+          }}
+        >
+          ↑ {managerStub}
+        </button>
+      )}
       {childCount > 0 && (
         <button
           className="toggle"

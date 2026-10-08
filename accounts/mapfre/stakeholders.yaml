@@ -8,6 +8,7 @@ stakeholders:
     title: Directora Área Corporativa de Tecnología y Dato
     level: C Level
     unit: Tecnología y Dato
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -20,6 +21,8 @@ stakeholders:
     influences:
       - swiznez
     source: research
+    responsibilities: Group technology and data, including AI strategy and the AI Manifesto governance.
+    priorities: Value from AI for customer and business; hybrid AI model; information security and bias controls.
     notes: >-
       Añadida por research (no estaba en la lista PG). Reporta a Antonio Huertas (CEO) desde 1-ene-2026. Por encima del
       EB de OPP-1; EB de nivel superior si la compra escala a grupo.
@@ -28,6 +31,7 @@ stakeholders:
     title: Chief Technology Transformation Officer
     level: C Level
     unit: Tecnología y Dato
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: EB
     attitude: positive
@@ -39,6 +43,8 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: >-
       EB de OPP-1 (Global Agentic Platform): presupuesto aprobado por el Comité Ejecutivo, MVP oct-2026, POC Kong
       nov-2026. Su equipo detectó los gaps de gobierno LLM. Pendiente: criterios de éxito del POC por escrito (AIMA W
@@ -48,6 +54,7 @@ stakeholders:
     title: Chief Technology Officer
     level: C Level
     unit: Tecnología
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -63,6 +70,7 @@ stakeholders:
     title: Director of Technology
     level: 2nd
     unit: Tecnología
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -78,6 +86,7 @@ stakeholders:
     title: Deputy Director of Corporate Technology Solutions
     level: 2nd
     unit: Tecnología
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -93,6 +102,7 @@ stakeholders:
     title: Deputy Director of Information Technology
     level: 2nd
     unit: Tecnología
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -108,6 +118,7 @@ stakeholders:
     title: Head of Core IT Systems
     level: 3rd
     unit: Tecnología
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: Influencer
     attitude: positive
@@ -124,6 +135,7 @@ stakeholders:
     title: Director of Architecture and Innovation
     level: 2nd
     unit: Tecnología
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: Influencer
     attitude: unknown
@@ -141,6 +153,7 @@ stakeholders:
     title: Head of Technological Innovation
     level: 3rd
     unit: Tecnología
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -156,6 +169,7 @@ stakeholders:
     title: Global Head of IT Infrastructure and Operations
     level: 3rd
     unit: Tecnología
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -171,6 +185,7 @@ stakeholders:
     title: Director Infraestructura y Operación · CTO Región Iberia
     level: C Level
     unit: Tecnología (Iberia)
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -186,6 +201,7 @@ stakeholders:
     title: Group Chief Data Officer
     level: C Level
     unit: Datos e IA
+    business_unit: Datos e IA
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -197,12 +213,15 @@ stakeholders:
     reports_to_confidence: confirmed
     influences:
       - vescriva
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Lidera la estrategia de IA del grupo. EB alternativo si la compra se hace desde Datos.
   - id: hlapaz
     name: Heribert Lapaz
     title: Global Deputy Director of Data and AI
     level: 2nd
     unit: Datos e IA
+    business_unit: Datos e IA
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -218,6 +237,7 @@ stakeholders:
     title: Director of Artificial Intelligence
     level: 2nd
     unit: Datos e IA
+    business_unit: Datos e IA
     sales_play: Agentic Readiness
     role: Influencer
     attitude: neutral
@@ -237,6 +257,7 @@ stakeholders:
     title: Head of AI for Operations
     level: 3rd
     unit: Datos e IA
+    business_unit: Datos e IA
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -252,6 +273,7 @@ stakeholders:
     title: Head of Data Platform
     level: 3rd
     unit: Datos e IA
+    business_unit: Datos e IA
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -268,6 +290,7 @@ stakeholders:
     title: Head of Data and AI
     level: 3rd
     unit: Datos e IA
+    business_unit: Datos e IA
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -283,6 +306,7 @@ stakeholders:
     title: Deputy Director of Data Governance and DataOps
     level: 2nd
     unit: Datos e IA
+    business_unit: Datos e IA
     sales_play: Security AI Governance
     role: None
     attitude: unknown
@@ -298,6 +322,7 @@ stakeholders:
     title: Chief Data Officer
     level: C Level
     unit: Datos e IA
+    business_unit: Datos e IA
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -314,6 +339,7 @@ stakeholders:
     title: Director of Security (CISO)
     level: 2nd
     unit: Seguridad
+    business_unit: Seguridad
     sales_play: Security AI Governance
     role: None
     attitude: unknown
@@ -330,6 +356,7 @@ stakeholders:
     title: Deputy Director of Cybersecurity · Head of Security in Digital Transformation
     level: 2nd
     unit: Seguridad
+    business_unit: Seguridad
     sales_play: Security AI Governance
     role: None
     attitude: unknown
@@ -345,6 +372,7 @@ stakeholders:
     title: Corporate Security Architecture Leader
     level: 4th
     unit: Seguridad
+    business_unit: Seguridad
     sales_play: Security AI Governance
     role: None
     attitude: unknown
@@ -360,6 +388,7 @@ stakeholders:
     title: Director of Security Systems
     level: 2nd
     unit: Seguridad
+    business_unit: Seguridad
     sales_play: Security AI Governance
     role: Coach
     attitude: positive
@@ -378,6 +407,7 @@ stakeholders:
     title: Head of Security Technology Architecture
     level: 3rd
     unit: Seguridad
+    business_unit: Seguridad
     sales_play: Security AI Governance
     role: None
     attitude: unknown
@@ -393,6 +423,7 @@ stakeholders:
     title: Chief Digital, Data and Innovation Officer
     level: C Level
     unit: Digital
+    business_unit: Digital
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -404,11 +435,14 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences:
       - vescriva
+    responsibilities: Aligning transformation initiatives with global strategy; AI and digital innovation in insurance.
+    priorities: AI-driven operational efficiency and transformation.
   - id: ryepes
     name: Rodrigo Yepes
     title: Chief Digital Officer and Director of Digital
     level: C Level
     unit: Digital
+    business_unit: Digital
     sales_play: API + AI Monetization
     role: None
     attitude: unknown
@@ -424,6 +458,7 @@ stakeholders:
     title: Chief Financial Officer
     level: C Level
     unit: Finanzas
+    business_unit: Finanzas y Compras
     sales_play: API + AI Monetization
     role: None
     attitude: unknown
@@ -439,6 +474,7 @@ stakeholders:
     title: CFO MAPFRE España
     level: C Level
     unit: Finanzas
+    business_unit: Finanzas y Compras
     sales_play: API + AI Monetization
     role: None
     attitude: unknown
@@ -454,6 +490,7 @@ stakeholders:
     title: Chief Investment Officer
     level: C Level
     unit: Finanzas
+    business_unit: Finanzas y Compras
     sales_play: API + AI Monetization
     role: None
     attitude: unknown
@@ -469,6 +506,7 @@ stakeholders:
     title: Deputy Director of IT Procurement
     level: 2nd
     unit: Compras
+    business_unit: Finanzas y Compras
     sales_play: API + AI Monetization
     role: None
     attitude: unknown
@@ -485,6 +523,7 @@ stakeholders:
     title: Corporate Director of IT and Security Audit
     level: 2nd
     unit: Auditoría
+    business_unit: Corporativo
     sales_play: Security AI Governance
     role: None
     attitude: unknown
@@ -501,6 +540,7 @@ stakeholders:
     title: Data Protection Officer
     level: C Level
     unit: Cumplimiento
+    business_unit: Corporativo
     sales_play: Security AI Governance
     role: None
     attitude: unknown
@@ -518,6 +558,7 @@ stakeholders:
     title: Chairman & CEO, MAPFRE S.A.
     level: C Level
     unit: CEO
+    business_unit: Corporativo
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -529,13 +570,17 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    notes: 'Añadida desde la Cognition Pipeline App (territory plan / research). Executive sponsor level; unlikely first contact.
-      Message: technology pillar delivery speed.'
+    responsibilities: Group leadership; owner of the 2024-2026 Strategic Plan.
+    priorities: Profitable growth (ROE >13%, combined ratio 93-94%), digital and operational transformation, LATAM consolidation.
+    notes: >-
+      Añadida desde la Cognition Pipeline App (territory plan / research). Executive sponsor level; unlikely first
+      contact. Message: technology pillar delivery speed.
   - id: mdelicado
     name: Malu Delicado
     title: CIO, Iberia Region
     level: 2nd
     unit: CIO (regional)
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -547,13 +592,16 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    notes: Añadida desde la Cognition Pipeline App (territory plan / research). Potential entry point for a regional pilot;
+    responsibilities: Technology for MAPFRE Iberia (Spain and Portugal). UNKNOWN — VALIDATION REQUIRED.
+    notes: >-
+      Añadida desde la Cognition Pipeline App (territory plan / research). Potential entry point for a regional pilot;
       possible champion candidate.
   - id: jledesma
     name: José Antonio Ledesma
     title: CISO
     level: 2nd
     unit: Security
+    business_unit: Seguridad
     sales_play: Security AI Governance
     role: Influencer
     attitude: unknown
@@ -565,12 +613,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: ljimenez
     name: Leire Jiménez
     title: Chief Innovation Officer
     level: 2nd
     unit: Innovation
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: Influencer
     attitude: unknown
@@ -582,12 +633,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: ilacave
     name: Íñigo Lacave
     title: Technology & Architecture Director
     level: 3rd
     unit: Technology & Architecture
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: Coach
     attitude: positive
@@ -599,12 +653,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: mjavanovic
     name: Mat Javanovic
     title: Global Cloud Director
     level: 4th
     unit: Global Cloud
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: Influencer
     attitude: unknown
@@ -616,12 +673,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: jmarana
     name: Javier Maraña
     title: Head of Agentic Architecture & Technological Innovation
     level: 3rd
     unit: Agentic Architecture & Technological Innovation
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: Champion
     attitude: positive
@@ -633,12 +693,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: gandujar
     name: Gabriel Andújar
     title: Agent Architecture Manager
     level: 4th
     unit: Agent Architecture
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: Champion
     attitude: positive
@@ -650,12 +713,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: dbodas
     name: Diego José Bodas
     title: AI Center Director
     level: 3rd
     unit: AI / Data leadership
+    business_unit: Datos e IA
     sales_play: Agentic Readiness
     role: Influencer
     attitude: unknown
@@ -667,12 +733,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: ahevia
     name: Andrés Hevia
     title: IT Architecture
     level: 4th
     unit: IT Architecture
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -684,12 +753,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: gcabanillas
     name: Gonzalo Cabanillas
     title: Senior Software Engineer
     level: 4th
     unit: Senior Software Engineer
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -701,12 +773,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: eturillo
     name: Enrique Turillo
     title: Data and IA Ciber Director
     level: 3rd
     unit: Data and IA Ciber Director
+    business_unit: Seguridad
     sales_play: Security AI Governance
     role: None
     attitude: unknown
@@ -718,12 +793,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: mencinar
     name: Mario Encinar
     title: AI Lead Expert
     level: 4th
     unit: AI Lead Expert
+    business_unit: Datos e IA
     sales_play: Agentic Readiness
     role: Coach
     attitude: positive
@@ -735,12 +813,15 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: jlopez
     name: Jesús López
     title: HTech Innovation Manager
     level: 3rd
     unit: HTech Innovation Manager
+    business_unit: Tecnología
     sales_play: Agentic Readiness
     role: None
     attitude: unknown
@@ -752,4 +833,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
+    responsibilities: UNKNOWN
+    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).

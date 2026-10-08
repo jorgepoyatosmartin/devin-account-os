@@ -6,7 +6,7 @@ import type { Stakeholder } from './model'
 export const STORAGE_KEY = 'power-chart:mapfre'
 
 export type Positions = Record<string, { x: number; y: number }>
-type Snapshot = { people: Stakeholder[]; positions: Positions | null; sourceVersion?: string }
+type Snapshot = { people: Stakeholder[]; layouts: Record<string, Positions>; sourceVersion?: string }
 
 function read(): Snapshot {
   try {
@@ -19,7 +19,7 @@ function read(): Snapshot {
   } catch {
     /* ignore */
   }
-  return { people: MAPFRE, positions: null }
+  return { people: MAPFRE, layouts: {} }
 }
 
 let snapshot: Snapshot = read()
@@ -30,19 +30,23 @@ export function getMapfreSnapshot(): Snapshot {
   return snapshot
 }
 
-export function setMapfreSnapshot(people: Stakeholder[], positions: Positions | null) {
-  snapshot = { people, positions, sourceVersion: MAPFRE_VERSION }
+export function setMapfreSnapshot(people: Stakeholder[], layouts: Record<string, Positions>) {
+  snapshot = { people, layouts, sourceVersion: MAPFRE_VERSION }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot))
   emit()
 }
 
+export function setMapfreLayout(viewKey: string, positions: Positions) {
+  setMapfreSnapshot(snapshot.people, { ...snapshot.layouts, [viewKey]: positions })
+}
+
 export function updateMapfrePerson(id: string, patch: Partial<Stakeholder>) {
-  setMapfreSnapshot(snapshot.people.map((p) => (p.id === id ? { ...p, ...patch } : p)), snapshot.positions)
+  setMapfreSnapshot(snapshot.people.map((p) => (p.id === id ? { ...p, ...patch } : p)), snapshot.layouts)
 }
 
 export function resetMapfre() {
   localStorage.removeItem(STORAGE_KEY)
-  snapshot = { people: MAPFRE, positions: null }
+  snapshot = { people: MAPFRE, layouts: {} }
   emit()
 }
 
