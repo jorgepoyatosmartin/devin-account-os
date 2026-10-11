@@ -43,8 +43,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: >-
       EB de OPP-1 (Global Agentic Platform): presupuesto aprobado por el Comité Ejecutivo, MVP oct-2026, POC Kong
       nov-2026. Su equipo detectó los gaps de gobierno LLM. Pendiente: criterios de éxito del POC por escrito (AIMA W
@@ -213,8 +211,6 @@ stakeholders:
     reports_to_confidence: confirmed
     influences:
       - vescriva
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Lidera la estrategia de IA del grupo. EB alternativo si la compra se hace desde Datos.
   - id: hlapaz
     name: Heribert Lapaz
@@ -613,8 +609,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: ljimenez
     name: Leire Jiménez
@@ -633,8 +627,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: ilacave
     name: Íñigo Lacave
@@ -653,8 +645,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: mjavanovic
     name: Mat Javanovic
@@ -673,8 +663,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: jmarana
     name: Javier Maraña
@@ -693,8 +681,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: gandujar
     name: Gabriel Andújar
@@ -713,8 +699,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: dbodas
     name: Diego José Bodas
@@ -733,8 +717,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: ahevia
     name: Andrés Hevia
@@ -753,8 +735,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: gcabanillas
     name: Gonzalo Cabanillas
@@ -773,8 +753,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: eturillo
     name: Enrique Turillo
@@ -793,8 +771,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: mencinar
     name: Mario Encinar
@@ -813,8 +789,6 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).
   - id: jlopez
     name: Jesús López
@@ -833,6 +807,4 @@ stakeholders:
     reports_to_confidence: hypothesis
     influences: []
     source: research
-    responsibilities: UNKNOWN
-    priorities: UNKNOWN
     notes: Añadida desde la Cognition Pipeline App (territory plan / research).

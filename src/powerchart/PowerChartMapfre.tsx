@@ -501,27 +501,31 @@ function Chart() {
           </div>
         </div>
         <div className="tools">
-          <select aria-label="País" value={view.country} onChange={(e) => updateSearch({ country: e.target.value })}>
-            <option value="all">Todos los países</option>
-            {allCountries.map((x) => <option key={x} value={x}>{x}</option>)}
-            {hasNoCountry && <option value="__none__">Sin país</option>}
-          </select>
-          <select aria-label="Unidad" value={view.unit} onChange={(e) => updateSearch({ unit: e.target.value })}>
-            <option value="all">Todas las unidades</option>{allUnits.map((x) => <option key={x} value={x}>{x}</option>)}
-          </select>
-          <div className="pc-group-control"><span>Agrupar:</span>{(['none', 'unit', 'country'] as const).map((x) => <button key={x} className={view.group === x ? 'pc-group-active' : ''} onClick={() => updateSearch({ group: x })}>{x === 'none' ? 'Ninguno' : x === 'unit' ? 'Unidad' : 'País'}</button>)}</div>
-          <button onClick={() => updateSearch({ country: 'all', unit: 'all', group: 'none' })}>Global</button>
-          <select aria-label="Sales play" value={playFilter} onChange={(e) => setPlayFilter(e.target.value as SalesPlay | 'all')}>
-            <option value="all">Todos los sales plays</option>{SALES_PLAYS.map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
-          <label className="chk"><input type="checkbox" checked={showInfluence} onChange={(e) => setShowInfluence(e.target.checked)} /> Influencia</label>
-          <button className={gapsMode ? 'primary' : ''} onClick={() => setGapsMode((g) => !g)}>Modo Gaps {gapsMode ? 'ON' : 'OFF'}</button>
-          <button onClick={addPerson}>+ Persona</button>
-          <button onClick={relayout}>Reordenar</button>
-          <button onClick={undo} disabled={!history.length}>Deshacer</button>
-          <button disabled={!pending.length} onClick={() => setRepoOpen(true)}>Guardar en repo ({pending.length})</button>
-          <button onClick={() => { setCountryOpen(true); setCountryResult(null) }}>Importar países</button>
-          <button className="ghost" onClick={reset}>Reset</button>
+          <div className="pc-toolbar-row">
+            <select aria-label="País" value={view.country} onChange={(e) => updateSearch({ country: e.target.value })}>
+              <option value="all">Todos los países</option>
+              {allCountries.map((x) => <option key={x} value={x}>{x}</option>)}
+              {hasNoCountry && <option value="__none__">Sin país</option>}
+            </select>
+            <select aria-label="Unidad" value={view.unit} onChange={(e) => updateSearch({ unit: e.target.value })}>
+              <option value="all">Todas las unidades</option>{allUnits.map((x) => <option key={x} value={x}>{x}</option>)}
+            </select>
+            <div className="pc-group-control"><span>Agrupar:</span>{(['none', 'unit', 'country'] as const).map((x) => <button key={x} className={view.group === x ? 'pc-group-active' : ''} onClick={() => updateSearch({ group: x })}>{x === 'none' ? 'Ninguno' : x === 'unit' ? 'Unidad' : 'País'}</button>)}</div>
+            <button onClick={() => updateSearch({ country: 'all', unit: 'all', group: 'none' })}>Global consolidado</button>
+          </div>
+          <div className="pc-toolbar-row">
+            <select aria-label="Sales play" value={playFilter} onChange={(e) => setPlayFilter(e.target.value as SalesPlay | 'all')}>
+              <option value="all">Todos los sales plays</option>{SALES_PLAYS.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <label className="chk"><input type="checkbox" checked={showInfluence} onChange={(e) => setShowInfluence(e.target.checked)} /> Influencia</label>
+            <button className={gapsMode ? 'primary' : ''} onClick={() => setGapsMode((g) => !g)}>Modo Gaps {gapsMode ? 'ON' : 'OFF'}</button>
+            <button onClick={addPerson}>+ Persona</button>
+            <button onClick={relayout}>Reordenar</button>
+            <button onClick={undo} disabled={!history.length}>Deshacer</button>
+            <button onClick={() => { setCountryOpen(true); setCountryResult(null) }}>Importar países</button>
+            <button disabled={!pending.length} onClick={() => setRepoOpen(true)}>Guardar en repo ({pending.length})</button>
+            <button className="ghost" onClick={reset}>Reset</button>
+          </div>
         </div>
       </header>
 

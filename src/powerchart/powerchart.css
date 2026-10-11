@@ -16,7 +16,9 @@
 .pc-app .logo { font-size: 20px; color: #7c3aed; }
 .pc-app .acct { font-weight: 700; font-size: 15px; }
 .pc-app .sub { color: #64748b; font-size: 12px; }
-.pc-app .tools { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.pc-app .tools { display: flex; flex: 1 0 100%; flex-direction: column; gap: 6px; align-items: stretch; width: 100%; }
+.pc-app .pc-toolbar-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.pc-app .tools select { width: auto; min-width: 170px; max-width: 220px; flex: 0 1 auto; }
 .pc-app .tools button, .pc-app .tools select, .pc-app .actions button, .pc-app .seg button, .pc-app .inline button {
   border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; padding: 6px 10px; cursor: pointer; color: #0f172a;
 }

@@ -25,9 +25,9 @@ Registros (YAML):
 export function buildRepoSavePrompt(account: string, people: Stakeholder[], summary: string) {
   const records = yamlDump(people.map(toYamlRecord), { lineWidth: 120, noRefs: true }).trimEnd()
   return REPO_SAVE_TEMPLATE
-    .replace(/\{ACCOUNT_UPPER\}/g, account.toUpperCase())
-    .replace(/\{account\}/g, account)
-    .replace(/\{n\}/g, String(people.length))
-    .replace(/\{summary\}/g, summary)
-    .replace(/\{records\}/g, records)
+    .replace(/\{ACCOUNT_UPPER\}/g, () => account.toUpperCase())
+    .replace(/\{account\}/g, () => account)
+    .replace(/\{n\}/g, () => String(people.length))
+    .replace(/\{summary\}/g, () => summary)
+    .replace(/\{records\}/g, () => records)
 }
