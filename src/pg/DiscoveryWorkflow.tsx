@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { products, pgScoreConfig, salesPlays } from '../config'
 import { useI18n } from '../i18n'
@@ -25,7 +25,16 @@ export function DiscoveryWorkflow({
 }) {
   const { lang } = useI18n()
   const [draft, setDraft] = useState<Hypothesis | null>(null)
+  const [signalAccountId, setSignalAccountId] = useState('')
+  const [expandedSignalId, setExpandedSignalId] = useState<string | null>(null)
   const label = (es: string, en: string) => lang === 'es' ? es : en
+  const signalScore = (signal: Signal) => pgScore(signal.scoreInputs || {}, pgScoreConfig.weights)
+  const scoredSignals = [...dataset.signals]
+    .filter((signal) => !signalAccountId || signal.accountId === signalAccountId)
+    .sort((left, right) => {
+      const scoreDiff = (signalScore(right) ?? -1) - (signalScore(left) ?? -1)
+      return scoreDiff || (Date.parse(right.date) || 0) - (Date.parse(left.date) || 0)
+    })
   const accountScore = useMemo(() => {
     const result: Record<string, number> = {}
     for (const hypothesis of hypotheses) {
@@ -75,29 +84,6 @@ export function DiscoveryWorkflow({
   }
 
   return <>
-    <Section title={label('Señales puntuadas', 'Scored signals')} eyebrow={label('Enriquecimiento local', 'Local enrichment')}>
-      <div className="discovery-signal-list">{dataset.signals.map((signal) => {
-        const score = pgScore(signal.scoreInputs || {}, pgScoreConfig.weights)
-        const inputs = signal.scoreInputs || {}
-        const setInput = (key: keyof PgScoreInputs, value: string) => {
-          const next = { ...inputs }
-          if (value) next[key] = Number(value)
-          else delete next[key]
-          upsertSignalMeta(signal.id, { scoreInputs: next })
-        }
-        return <article className="discovery-signal" key={signal.id}>
-          <div><Link to={`/accounts/${signal.accountId}`}><strong>{dataset.accounts.find((account) => account.id === signal.accountId)?.name || signal.accountId}</strong></Link><h3>{signal.signal}</h3><p>{signal.cognitionRelevance}</p><small>{signal.date} · {signal.source}</small></div>
-          <div className="discovery-fields">
-            <label>{label('Productos', 'Products')}<select multiple value={signal.productIds || []} onChange={(event) => upsertSignalMeta(signal.id, { productIds: [...event.currentTarget.selectedOptions].map((option) => option.value) })}>{products.map((product) => <option key={product.id} value={product.id}>{product.id}</option>)}</select></label>
-            <label>{label('Sales play', 'Sales play')}<select value={signal.salesPlayId || ''} onChange={(event) => upsertSignalMeta(signal.id, { salesPlayId: event.target.value || undefined })}><option value="">{label('Sin asignar', 'Unset')}</option>{salesPlays.map((play) => <option key={play.id} value={play.id}>{play.id}</option>)}</select></label>
-            <div className="discovery-score-inputs">{(['fit', 'signals', 'access', 'economic', 'urgency'] as const).map((key) => <label key={key}>{label(({ fit: 'Ajuste', signals: 'Señales', access: 'Acceso', economic: 'Económico', urgency: 'Urgencia' })[key], key)}<select value={inputs[key] ?? ''} onChange={(event) => setInput(key, event.target.value)}><option value="">—</option>{[1, 2, 3, 4, 5].map((value) => <option key={value}>{value}</option>)}</select></label>)}</div>
-            <Badge>{score == null ? label('Sin puntuar', 'Unscored') : `${score.toFixed(1)} / 100`}</Badge>
-            <button className="button secondary" onClick={() => beginHypothesis(signal)}>{label('Crear hipótesis', 'Create hypothesis')}</button>
-          </div>
-        </article>
-      })}</div>
-    </Section>
-
     <Section title={label('Hipótesis', 'Hypotheses')} eyebrow={label('Descubrimiento de oportunidades', 'Opportunity discovery')}>
       {grouped.map((accountId) => <div className="hypothesis-account" key={accountId}>
         <h3>{dataset.accounts.find((account) => account.id === accountId)?.name || accountId} · {label('score máx.', 'max score')} {accountScore[accountId] || 0}</h3>
@@ -107,6 +93,43 @@ export function DiscoveryWorkflow({
         </article>)}
       </div>)}
       {!hypotheses.length && <p className="muted">{label('Aún no hay hipótesis.', 'No hypotheses yet.')}</p>}
+    </Section>
+
+    <Section title={label('Señales puntuadas', 'Scored signals')} eyebrow={label('Enriquecimiento local', 'Local enrichment')}>
+      <div className="discovery-toolbar"><label>{label('Cuenta', 'Account')}<select value={signalAccountId} onChange={(event) => setSignalAccountId(event.target.value)}><option value="">{label('Todas las cuentas', 'All accounts')}</option>{dataset.accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}</select></label><small>{scoredSignals.length} {label('señales', 'signals')}</small></div>
+      <div className="table-wrap"><table className="discovery-table"><thead><tr>
+        <th>{label('Cuenta', 'Account')}</th><th>{label('Fecha', 'Date')}</th><th>{label('Señal', 'Signal')}</th><th>{label('Sales play', 'Sales play')}</th><th>{label('Productos', 'Products')}</th><th>Score</th><th>{label('Acciones', 'Actions')}</th>
+      </tr></thead><tbody>{scoredSignals.map((signal) => {
+        const score = signalScore(signal)
+        const inputs = signal.scoreInputs || {}
+        const setInput = (key: keyof PgScoreInputs, value: number | undefined) => {
+          const next = { ...inputs }
+          if (value == null) delete next[key]
+          else next[key] = value
+          upsertSignalMeta(signal.id, { scoreInputs: next })
+        }
+        return <Fragment key={signal.id}>
+          <tr>
+            <td><Link to={`/accounts/${signal.accountId}`}>{dataset.accounts.find((account) => account.id === signal.accountId)?.name || signal.accountId}</Link></td>
+            <td>{signal.date}</td><td className="discovery-signal-cell" title={signal.signal}>{signal.signal}</td>
+            <td>{salesPlays.find((play) => play.id === signal.salesPlayId)?.id || signal.salesPlayId || '—'}</td>
+            <td>{(signal.productIds || []).map((id) => products.find((product) => product.id === id)?.id || id).join(', ') || '—'}</td>
+            <td><Badge>{score == null ? '—' : score.toFixed(1)}</Badge></td>
+            <td className="discovery-actions"><button className="button secondary" onClick={() => setExpandedSignalId(expandedSignalId === signal.id ? null : signal.id)}>{label('Puntuar', 'Score')}</button><button className="button secondary" onClick={() => beginHypothesis(signal)}>{label('Crear hipótesis', 'Create hypothesis')}</button></td>
+          </tr>
+          {expandedSignalId === signal.id && <tr className="discovery-editor-row"><td colSpan={7}><div className="discovery-editor">
+            <div className="discovery-segments">{(['fit', 'signals', 'access', 'economic', 'urgency'] as const).map((key) => <div className="discovery-segment" key={key}>
+              <strong>{label(({ fit: 'Fit', signals: 'Señales', access: 'Acceso', economic: 'Económico', urgency: 'Urgencia' })[key], ({ fit: 'Fit', signals: 'Signals', access: 'Access', economic: 'Economic', urgency: 'Urgency' })[key])}</strong>
+              <small>{label('Peso', 'Weight')} {pgScoreConfig.weights[key]}</small>
+              <div>{[1, 2, 3, 4, 5].map((value) => <button type="button" key={value} aria-pressed={inputs[key] === value} className={inputs[key] === value ? 'selected' : ''} onClick={() => setInput(key, value)}>{value}</button>)}</div>
+            </div>)}</div>
+            <div className="discovery-enrichment">
+              <label>{label('Sales play', 'Sales play')}<select value={signal.salesPlayId || ''} onChange={(event) => upsertSignalMeta(signal.id, { salesPlayId: event.target.value || undefined })}><option value="">{label('Sin asignar', 'Unset')}</option>{salesPlays.map((play) => <option key={play.id} value={play.id}>{play.id}</option>)}</select></label>
+              <label>{label('Productos', 'Products')}<select multiple value={signal.productIds || []} onChange={(event) => upsertSignalMeta(signal.id, { productIds: [...event.currentTarget.selectedOptions].map((option) => option.value) })}>{products.map((product) => <option key={product.id} value={product.id}>{product.id}</option>)}</select></label>
+            </div>
+          </div></td></tr>}
+        </Fragment>
+      })}</tbody></table></div>
     </Section>
 
     {draft && <div className="modal-backdrop"><form className="modal-card hypothesis-form" onSubmit={saveHypothesis}>

@@ -4,6 +4,7 @@ import { engagementConfig, stagesConfig } from '../config'
 import { useI18n } from '../i18n'
 import type { Dataset, Hypothesis, OpportunityPerson, OpportunityV2 } from '../types'
 import { Section } from '../components/ui'
+import '../pg/discovery.css'
 
 type Save = (opportunity: OpportunityV2) => void
 
@@ -56,9 +57,12 @@ export function OpportunityStageGatesTab({ opportunity, save, setLegacyStage }: 
     save({ ...opportunity, exitChecks: { ...opportunity.exitChecks, [opportunity.stageId]: next } })
   }
   return <Section title={label('Stage gates', 'Stage gates')} eyebrow={stage?.label || opportunity.stageId}>
-    <label>{label('Etapa', 'Stage')}<select value={opportunity.stageId} onChange={(event) => advance(event.target.value)}>{stagesConfig.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+    <div className="stage-gate-control"><label>{label('Etapa', 'Stage')}<select value={opportunity.stageId} onChange={(event) => advance(event.target.value)}>{stagesConfig.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label><span>{stage?.exitCriteria.filter((criterion) => completed.includes(criterion)).length || 0}/{stage?.exitCriteria.length || 0} {label('criterios', 'criteria')}</span></div>
     {warning && <p className="warning">{warning}</p>}
-    <div className="checkbox-grid">{(stage?.exitCriteria || []).map((criterion) => <label key={criterion}><input type="checkbox" checked={completed.includes(criterion)} onChange={(event) => toggle(criterion, event.target.checked)} />{criterion}</label>)}</div>
+    <div className="stage-gates-list">{(stage?.exitCriteria || []).map((criterion) => {
+      const checked = completed.includes(criterion)
+      return <label className={`stage-gate-option${checked ? ' complete' : ''}`} key={criterion}><input type="checkbox" checked={checked} onChange={(event) => toggle(criterion, event.target.checked)} /><span>{criterion}</span></label>
+    })}</div>
   </Section>
 }
 

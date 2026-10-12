@@ -1,11 +1,30 @@
-.discovery-signal-list { display: grid; gap: 12px; }
-.discovery-signal { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(420px, 1.5fr); gap: 18px; padding: 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
-.discovery-signal h3 { margin: 7px 0; }
-.discovery-signal p { margin: 0 0 6px; color: var(--color-text-muted); }
-.discovery-fields { display: grid; gap: 9px; }
-.discovery-fields > label, .discovery-score-inputs label { display: grid; gap: 5px; font-size: 11px; color: var(--color-text-muted); }
-.discovery-fields select[multiple] { min-height: 50px; }
-.discovery-score-inputs { display: grid; grid-template-columns: repeat(5, minmax(65px, 1fr)); gap: 7px; }
+.discovery-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 10px; }
+.discovery-toolbar label { display: flex; align-items: center; gap: 10px; }
+.discovery-toolbar select { min-width: 190px; }
+.discovery-toolbar small { color: var(--color-text-muted); }
+.discovery-table { table-layout: fixed; }
+.discovery-table th:nth-child(1) { width: 13%; }
+.discovery-table th:nth-child(2) { width: 9%; }
+.discovery-table th:nth-child(3) { width: 28%; }
+.discovery-table th:nth-child(4), .discovery-table th:nth-child(5) { width: 13%; }
+.discovery-table th:nth-child(6) { width: 8%; }
+.discovery-table th:nth-child(7) { width: 16%; }
+.discovery-signal-cell { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.35; }
+.discovery-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+.discovery-actions .button { padding: 6px 8px; font-size: 10px; }
+.discovery-editor-row > td { padding: 14px !important; background: var(--color-surface-secondary); }
+.discovery-editor { display: grid; gap: 12px; }
+.discovery-segments { display: grid; grid-template-columns: repeat(5, minmax(110px, 1fr)); gap: 10px; }
+.discovery-segment { display: grid; gap: 5px; }
+.discovery-segment strong { color: var(--color-text-primary); font-size: 12px; }
+.discovery-segment small { color: var(--color-text-muted); font-size: 10px; }
+.discovery-segment > div { display: flex; }
+.discovery-segment button { min-width: 30px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text-secondary); padding: 5px; }
+.discovery-segment button:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.discovery-segment button:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.discovery-segment button.selected { border-color: var(--color-accent); background: var(--color-accent-tint); color: var(--color-accent); }
+.discovery-enrichment { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(200px, 2fr); gap: 12px; }
+.discovery-enrichment select[multiple] { min-height: 58px; }
 .hypothesis-account { display: grid; gap: 8px; margin-bottom: 15px; }
 .hypothesis-account h3 { margin: 0; }
 .hypothesis-card { display: flex; gap: 14px; justify-content: space-between; align-items: center; padding: 13px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
@@ -17,11 +36,19 @@
 .hypothesis-form label { display: grid; gap: 5px; }
 .hypothesis-form fieldset { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px; }
 .hypothesis-form fieldset label { display: flex; align-items: center; }
+.stage-gate-control { display: flex; align-items: end; gap: 14px; margin-bottom: 12px; }
+.stage-gate-control label { min-width: 260px; }
+.stage-gate-control > span { padding-bottom: 9px; color: var(--color-text-secondary); font-size: 12px; }
+.stage-gates-list { display: grid; gap: 8px; }
+label.stage-gate-option { display: flex; align-items: flex-start; gap: 9px; color: var(--color-text-primary); font-size: 13px; font-weight: 500; letter-spacing: normal; text-transform: none; }
+.stage-gate-option input { width: auto; flex: 0 0 auto; margin: 2px 0 0; }
+.stage-gate-option.complete span { color: var(--color-text-muted); text-decoration: line-through; }
 @media (max-width: 900px) {
-  .discovery-signal { grid-template-columns: 1fr; }
+  .discovery-segments { grid-template-columns: repeat(3, minmax(100px, 1fr)); }
+  .discovery-table { min-width: 880px; }
   .hypothesis-card { align-items: flex-start; flex-direction: column; }
 }
 @media (max-width: 600px) {
-  .discovery-score-inputs { grid-template-columns: repeat(2, 1fr); }
+  .discovery-segments { grid-template-columns: repeat(2, minmax(100px, 1fr)); }
   .hypothesis-form fieldset { grid-template-columns: 1fr; }
 }

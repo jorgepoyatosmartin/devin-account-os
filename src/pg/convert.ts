@@ -6,6 +6,11 @@ export interface DiscoveryConversion {
   name: string
   amount: number | null
   valueAssumptions?: string
+  whyChange?: string
+  whyNow?: string
+  whyUs?: string
+  routeToMarket?: Hypothesis['routeToMarket']
+  nextBestAction?: string
   stakeholderIds: string[]
   signalIds: string[]
   productIds: string[]
@@ -16,6 +21,9 @@ export interface DiscoveryConversion {
 }
 
 const emptyValidation = () => ({ status: 'Unknown' as const, evidence: '' })
+const hypothesisValidation = (value?: string) => value
+  ? { status: 'Hypothesis' as const, evidence: value }
+  : emptyValidation()
 
 export function convertDiscoveryToOpportunity(
   source: DiscoveryConversion,
@@ -40,19 +48,22 @@ export function convertDiscoveryToOpportunity(
       metrics: '', economicBuyer: '', decisionCriteria: '', decisionProcess: '',
       paperProcess: '', identifyPain: '', champion: '', competition: '',
     },
-    nextAction: source.valueAssumptions || 'Schedule discovery meeting',
+    nextAction: [
+      source.routeToMarket ? `Route to market: ${source.routeToMarket}` : '',
+      source.nextBestAction || '',
+    ].filter(Boolean).join(' · ') || source.valueAssumptions || 'Schedule discovery meeting',
     evidence: [],
     confidence: 'Low',
     threeWhys: {
-      whyAnything: { situation: '', problem: '', implication: '' },
-      whyNow: { trigger: '', timing: '', urgency: '' },
-      whyCognition: { customerPain: '', cognitionCapability: '', businessOutcome: '' },
+      whyAnything: { situation: '', problem: source.whyChange || '', implication: '' },
+      whyNow: { trigger: source.whyNow || '', timing: '', urgency: '' },
+      whyCognition: { customerPain: '', cognitionCapability: source.whyUs || '', businessOutcome: '' },
       validation: {
         situation: emptyValidation(),
-        problem: emptyValidation(),
+        problem: hypothesisValidation(source.whyChange),
         implication: emptyValidation(),
-        whyNow: emptyValidation(),
-        whyCognition: emptyValidation(),
+        whyNow: hypothesisValidation(source.whyNow),
+        whyCognition: hypothesisValidation(source.whyUs),
       },
       discoveryQuestions: {
         situation: [], problem: [], implication: [], whyNow: [], whyCognition: [],
@@ -87,6 +98,11 @@ export function hypothesisConversion(hypothesis: Hypothesis, today: string): Dis
     name: hypothesis.title,
     amount: hypothesis.valueEstimate.amount,
     valueAssumptions: hypothesis.valueEstimate.assumptions,
+    whyChange: hypothesis.whyChange,
+    whyNow: hypothesis.whyNow,
+    whyUs: hypothesis.whyUs,
+    routeToMarket: hypothesis.routeToMarket,
+    nextBestAction: hypothesis.nextBestAction,
     stakeholderIds: hypothesis.stakeholderIds,
     signalIds: hypothesis.signalIds,
     productIds: hypothesis.productIds,

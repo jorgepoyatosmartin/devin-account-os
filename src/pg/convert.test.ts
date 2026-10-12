@@ -35,8 +35,19 @@ describe('PG discovery conversion', () => {
       amount: 42000,
       productIds: ['devin-cloud'],
       salesPlayId: 'modernization',
+      nextAction: 'Route to market: direct · Schedule discovery',
       origin: { signalIds: ['signal-a'], pgId: 'pg-1', hypothesisId: 'hyp-signal-a' },
       people: [{ stakeholderId: 'ana-rivero', role: 'Unknown', confirmed: false }],
+    })
+    expect(opportunity.threeWhys).toMatchObject({
+      whyAnything: { problem: hypothesis.whyChange },
+      whyNow: { trigger: hypothesis.whyNow },
+      whyCognition: { cognitionCapability: hypothesis.whyUs },
+      validation: {
+        problem: { status: 'Hypothesis' },
+        whyNow: { status: 'Hypothesis' },
+        whyCognition: { status: 'Hypothesis' },
+      },
     })
   })
 
