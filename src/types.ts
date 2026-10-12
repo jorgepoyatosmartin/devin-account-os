@@ -265,6 +265,87 @@ export interface Opportunity {
   threeWhys: ThreeWhys;
 }
 
+export interface OpportunityPerson {
+  stakeholderId: string;
+  role: PowerRole;
+  confirmed: boolean;
+  evidence?: string;
+  verifiedAt?: string;
+}
+
+export interface OpportunityV2 extends Opportunity {
+  amount: number | null;
+  currency: 'EUR' | 'USD';
+  closeDate: string | null;
+  stageId: string;
+  status: 'open' | 'won' | 'lost';
+  forecastCategory: 'Pipeline' | 'Upside' | 'Commit' | 'Closed';
+  countsForQuota: boolean;
+  commissionType: 'new' | 'renewal';
+  stageHistory: { stageId: string; date: string; note?: string }[];
+  people: OpportunityPerson[];
+  engagement: { phase: string; date: string | null; evidence: string }[];
+  origin: { signalIds: string[]; pgId?: string; hypothesisId?: string };
+  productIds: string[];
+  salesPlayId?: string;
+}
+
+export interface CompPlan {
+  fiscalYear: number;
+  currency: 'EUR';
+  quotaByQuarter: [number, number, number, number];
+  tiers: { fromPct: number; toPct: number | null; rate: number }[];
+  renewalRate: number;
+  taxFactor: number;
+  fxEurUsd: number;
+  netTarget: number;
+  personalTargetQuarterSplit: [number, number, number, number];
+  coverageMultiple: number;
+  avgDealSize: number;
+}
+
+export interface PrpQuarterResult {
+  q: 1 | 2 | 3 | 4;
+  quota: number;
+  closedWonQuota: number;
+  personalTarget: number;
+  pipelineTotal: number;
+}
+
+export interface PrpResult {
+  year: number;
+  annualQuota: number;
+  closedWonQuota: number;
+  renewalClosed: number;
+  gapToQuota: number;
+  grossCommissionNeeded: number;
+  personalTargetSales: number;
+  gapToPersonal: number;
+  pipelineTotal: number;
+  pipelineWeighted: number;
+  forecastCommit: number;
+  forecastBestCase: number;
+  pipelineRequiredQuota: number;
+  pipelineGapQuota: number;
+  pipelineRequiredPersonal: number;
+  pipelineGapPersonal: number;
+  weeksRemaining: number;
+  weeklyPipelinePacePersonal: number;
+  oppsMissingAmount: string[];
+  oppsOutsideFiscalYear: string[];
+  commissionGrossClosed: number;
+  commissionNetClosed: number;
+  commissionGrossCommit: number;
+  funnelNeeded: {
+    WON: number;
+    BVA_TV: number;
+    TFW: number;
+    NBM: number;
+    DM: number;
+  };
+  quarters: [PrpQuarterResult, PrpQuarterResult, PrpQuarterResult, PrpQuarterResult];
+}
+
 export interface CockpitAction {
   id: string;
   priority: number;

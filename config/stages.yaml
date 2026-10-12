@@ -1,0 +1,57 @@
+stages:
+  - id: 1-disco-scheduled
+    label: Discovery Scheduled
+    probability: 0.05
+    order: 1
+    exitCriteria:
+      - Discovery meeting is scheduled
+      - Customer participants are identified
+  - id: 2-engage
+    label: Engage
+    probability: 0.1
+    order: 2
+    exitCriteria:
+      - Discovery meeting is completed
+      - Customer problem and desired outcome are documented
+  - id: 3-qualify
+    label: Qualify
+    probability: 0.2
+    order: 3
+    exitCriteria:
+      - Use case and business impact are identified
+      - Sponsor and decision path are understood
+  - id: 4-evaluate
+    label: Evaluate
+    probability: 0.4
+    order: 4
+    exitCriteria:
+      - Solution fit is reviewed with the customer
+      - Success criteria are agreed
+  - id: 6-validate
+    label: Validate
+    probability: 0.6
+    order: 6
+    exitCriteria:
+      - Technical feasibility is validated
+      - Security and deployment requirements are reviewed
+  - id: 7-negotiate
+    label: Negotiate
+    probability: 0.8
+    order: 7
+    exitCriteria:
+      - Commercial proposal is reviewed
+      - Decision timeline and procurement steps are confirmed
+  - id: closed-won
+    label: Closed Won
+    probability: 1
+    order: 8
+    exitCriteria:
+      - Customer commitment is documented
+      - Opportunity is recorded as won
+  - id: closed-lost
+    label: Closed Lost
+    probability: 0
+    order: 9
+    exitCriteria:
+      - Loss reason is documented
+      - Opportunity is recorded as lost

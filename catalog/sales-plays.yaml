@@ -1,0 +1,47 @@
+salesPlays:
+  - id: appsec
+    provisional: true
+    productIds:
+      - devin-cloud
+      - devin-cli
+      - devin-review
+    pains:
+      - Vulnerability remediation competes with roadmap delivery
+      - Security fixes accumulate in the engineering backlog
+  - id: modernization
+    provisional: true
+    productIds:
+      - devin-cloud
+      - devin-desktop
+      - devin-cli
+    pains:
+      - Legacy language and version migrations consume engineering capacity
+      - Refactors and technical debt delay modernization
+      - On-prem workloads and data migrations slow cloud adoption
+  - id: dev-productivity
+    provisional: true
+    productIds:
+      - devin-cloud
+      - devin-desktop
+      - devin-cli
+    pains:
+      - End-to-end ticket delivery is constrained by available engineers
+      - CI/CD and documentation work competes with product delivery
+  - id: quality-testing
+    provisional: true
+    productIds:
+      - devin-desktop
+      - devin-cli
+      - devin-review
+    pains:
+      - Test coverage is insufficient to release changes confidently
+      - Browser QA is repetitive and time-consuming
+  - id: ops-incidents
+    provisional: true
+    productIds:
+      - devin-cloud
+      - devin-cli
+      - devin-review
+    pains:
+      - Incident root-cause analysis takes too long
+      - High MTTR delays engineering work and customer recovery
