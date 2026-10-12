@@ -136,6 +136,7 @@ export function prp(
   const nbmRate = funnelRates.NBM_to_TFW * tfwRate
   const dmRate = funnelRates.DM_to_NBM * nbmRate
   const commissionGrossClosed = compGross(closedWonQuota, plan) + renewalGrossClosed
+  const commissionGrossCommit = compGross(forecastCommit, plan) + renewalGrossClosed
   const quarters = plan.quotaByQuarter.map((quarterQuota, index) => ({
     q: (index + 1) as 1 | 2 | 3 | 4,
     quota: quarterQuota,
@@ -167,7 +168,8 @@ export function prp(
     oppsOutsideFiscalYear,
     commissionGrossClosed,
     commissionNetClosed: commissionGrossClosed * plan.taxFactor,
-    commissionGrossCommit: compGross(forecastCommit, plan) + renewalGrossClosed,
+    commissionGrossCommit,
+    commissionNetCommit: commissionGrossCommit * plan.taxFactor,
     funnelNeeded: {
       WON: wonNeeded,
       BVA_TV: funnelCount(wonNeeded, bvaTvRate),

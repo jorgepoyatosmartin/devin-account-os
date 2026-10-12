@@ -54,6 +54,10 @@ describe('PRP engine', () => {
     })) as unknown as OpportunityV2[]
     const result = prp(opportunities, fixture.plan, fixture.stageProbabilities, expected.today)
     expect(result.year).toBe(fixture.plan.fiscalYear)
+    expect(result.commissionNetCommit).toBeCloseTo(
+      result.commissionGrossCommit * fixture.plan.taxFactor,
+      2,
+    )
 
     for (const [key, value] of Object.entries(expected)) {
       if (key === 'today') {

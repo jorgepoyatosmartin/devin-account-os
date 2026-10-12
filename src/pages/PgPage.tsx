@@ -70,7 +70,7 @@ function PgDashboard({ dataset, upsertPg, addPg, addOpportunity, onToast }: Prop
     onToast(`${t('toast.messageCopied')} · ${tv('OUTREACH')}`);
   };
   return <>
-    <PageHeader eyebrow={t('pg.eyebrow')} title={t('pg.title')} subtitle={t('pg.subtitle')} action={<button className="button primary" onClick={() => setShowComposer((value) => !value)}>{t('pg.newTarget')}</button>} />
+    <PageHeader eyebrow={t('pg.eyebrow')} title={t('pg.title')} subtitle={t('pg.subtitle')} action={<div className="context-actions"><Link className="button secondary" to="/signals">{t('pg.signalsLink')}</Link><button className="button primary" onClick={() => setShowComposer((value) => !value)}>{t('pg.newTarget')}</button></div>} />
     <div className="pipeline-kpis pg-kpis">{[
       [t('pg.total'), records.length], [t('pg.highPriority'), records.filter((r) => r.priority === 'HIGH').length], [t('pg.ready'), records.filter((r) => r.status === 'READY').length],
       [t('pg.outreach'), records.filter((r) => r.status === 'OUTREACH').length], [t('pg.engaged'), records.filter((r) => r.status === 'ENGAGED').length],

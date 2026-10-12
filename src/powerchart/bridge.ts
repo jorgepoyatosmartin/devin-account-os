@@ -37,7 +37,7 @@ export function toAppStakeholder(p: ChartStakeholder, legacy: AppStakeholder | u
     ...base, id: p.id, name: p.name, title: p.title, functionArea: base.functionArea || p.unit, businessUnit: p.businessUnit || p.unit,
     relationshipStatus: status, buyingRole: ROLE_TO_APP[p.role], powerRole: ROLE_TO_APP[p.role], roleIsHypothesis: p.reportsToConfidence === 'hypothesis',
     level: LEVEL_TO_APP[p.level], influence: INFLUENCE_TO_APP[p.influence], reportsTo: p.reportsTo ?? undefined,
-    dataOrigin: p.external ? 'PUBLIC RESEARCH' : 'TERRITORY PLAN', lastUpdated: p.lastTouch ?? base.lastUpdated,
+    dataOrigin: p.external ? 'PUBLIC RESEARCH' : 'TERRITORY PLAN', lastTouch: p.lastTouch, lastUpdated: p.lastTouch ?? base.lastUpdated,
     recentActivity: p.notes || base.recentActivity,
     responsibilities: p.responsibilities || base.responsibilities,
     strategicPriorities: p.priorities || base.strategicPriorities,

@@ -1,5 +1,8 @@
 import { useCallback, useState } from 'react';
-import type { Dataset, MeetingNote, Opportunity, PgRecord, Task } from './types';
+import type { CompPlan, Dataset, MeetingNote, Opportunity, OpportunityV2, PgRecord, Stakeholder, Task } from './types';
+import { dataset as sourceDataset } from './data';
+import { migrateOpportunity } from './prp/migrate';
+import { isCompPlan } from './lib/compPlan';
 
 export type OverrideMap = Record<string, unknown>;
 const OVERRIDES_KEY = 'cognition-pipeline-overrides';
@@ -8,6 +11,14 @@ const TASKS_KEY = 'cognition-pipeline-tasks';
 const PG_EDITS_KEY = 'cognition-pipeline-pg';
 const PG_CUSTOM_KEY = 'cognition-pipeline-pg-custom';
 const CUSTOM_OPPORTUNITIES_KEY = 'cognition-pipeline-custom-opps';
+export const OPPORTUNITIES_V2_KEY = 'cognition-pipeline-opps-v2';
+export const COMP_PLAN_KEY = 'cognition-pipeline-comp-plan';
+export const OPPORTUNITIES_V2_SNAPSHOT_VERSION = 1;
+
+export interface OpportunityV2Snapshot {
+  version: number;
+  items: OpportunityV2[];
+}
 
 const load = <T,>(key: string, fallback: T): T => {
   try {
@@ -33,6 +44,37 @@ export function mergeOverrides<T extends object>(entity: T, entityId: string, ov
     });
   });
   return result;
+}
+
+function isOpportunityV2(value: unknown): value is OpportunityV2 {
+  return Boolean(
+    value
+    && typeof value === 'object'
+    && typeof (value as OpportunityV2).id === 'string'
+    && typeof (value as OpportunityV2).stageId === 'string',
+  );
+}
+
+export function migrateOpportunitySnapshot(
+  legacyOpportunities: Opportunity[],
+  customOpportunities: Opportunity[],
+  stakeholders: Stakeholder[],
+  snapshot: unknown,
+  version = OPPORTUNITIES_V2_SNAPSHOT_VERSION,
+): OpportunityV2Snapshot {
+  const migrated = [...legacyOpportunities, ...customOpportunities]
+    .map((opportunity) => migrateOpportunity(opportunity, stakeholders));
+  const items = new Map(migrated.map((opportunity) => [opportunity.id, opportunity]));
+  const savedItems = snapshot && typeof snapshot === 'object' && Array.isArray((snapshot as OpportunityV2Snapshot).items)
+    ? (snapshot as OpportunityV2Snapshot).items.filter(isOpportunityV2)
+    : [];
+
+  savedItems.forEach((saved) => {
+    const base = items.get(saved.id);
+    items.set(saved.id, base ? { ...base, ...saved } : saved);
+  });
+
+  return { version, items: [...items.values()] };
 }
 
 export function mergeDataset(
@@ -61,6 +103,36 @@ export function useOverrides() {
   const [pgEdits, setPgEdits] = useState<Record<string, Partial<PgRecord>>>(() => load(PG_EDITS_KEY, {}));
   const [pgCustom, setPgCustom] = useState<PgRecord[]>(() => load(PG_CUSTOM_KEY, []));
   const [customOpportunities, setCustomOpportunities] = useState<Opportunity[]>(() => load(CUSTOM_OPPORTUNITIES_KEY, []));
+  const [opportunitiesV2, setOpportunitiesV2] = useState<OpportunityV2[]>(() => {
+    const legacyOpportunities = sourceDataset.opportunities.map((item) => mergeOverrides(item, item.id, overrides));
+    const custom = customOpportunities.map((item) => mergeOverrides(item, item.id, overrides));
+    const stakeholders = sourceDataset.stakeholders.map((item) => mergeOverrides(item, item.id, overrides));
+    return migrateOpportunitySnapshot(
+      legacyOpportunities,
+      custom,
+      stakeholders,
+      load<unknown>(OPPORTUNITIES_V2_KEY, null),
+    ).items;
+  });
+  const [compPlan, setCompPlanState] = useState<CompPlan | null>(() => {
+    const stored = load<unknown>(COMP_PLAN_KEY, null);
+    return isCompPlan(stored) ? stored : null;
+  });
+  const upsertOpportunityV2 = useCallback((opportunity: OpportunityV2) => {
+    setOpportunitiesV2((current) => {
+      const next = [opportunity, ...current.filter((item) => item.id !== opportunity.id)];
+      localStorage.setItem(OPPORTUNITIES_V2_KEY, JSON.stringify({
+        version: OPPORTUNITIES_V2_SNAPSHOT_VERSION,
+        items: next,
+      } satisfies OpportunityV2Snapshot));
+      return next;
+    });
+  }, []);
+  const setCompPlan = useCallback((plan: CompPlan | null) => {
+    if (plan) localStorage.setItem(COMP_PLAN_KEY, JSON.stringify(plan));
+    else localStorage.removeItem(COMP_PLAN_KEY);
+    setCompPlanState(plan);
+  }, []);
   const setOverride = useCallback((entityId: string, path: string, value: unknown) => {
     setOverrides((current) => {
       const next = { ...current, [overrideKey(entityId, path)]: value };
@@ -82,12 +154,21 @@ export function useOverrides() {
     localStorage.removeItem(PG_EDITS_KEY);
     localStorage.removeItem(PG_CUSTOM_KEY);
     localStorage.removeItem(CUSTOM_OPPORTUNITIES_KEY);
+    localStorage.removeItem(OPPORTUNITIES_V2_KEY);
+    localStorage.removeItem(COMP_PLAN_KEY);
     setOverrides({});
     setMeetingNotes([]);
     setTasks([]);
     setPgEdits({});
     setPgCustom([]);
     setCustomOpportunities([]);
+    setOpportunitiesV2(migrateOpportunitySnapshot(
+      sourceDataset.opportunities,
+      [],
+      sourceDataset.stakeholders,
+      null,
+    ).items);
+    setCompPlanState(null);
   }, []);
   const persistTasks = useCallback((next: Task[]) => {
     localStorage.setItem(TASKS_KEY, JSON.stringify(next));
@@ -141,7 +222,9 @@ export function useOverrides() {
       localStorage.setItem(CUSTOM_OPPORTUNITIES_KEY, JSON.stringify(next));
       return next;
     });
-  }, []);
+    const stakeholders = sourceDataset.stakeholders.map((item) => mergeOverrides(item, item.id, overrides));
+    upsertOpportunityV2(migrateOpportunity(opportunity, stakeholders));
+  }, [overrides, upsertOpportunityV2]);
   return {
     overrides,
     setOverride,
@@ -154,6 +237,10 @@ export function useOverrides() {
     pgEdits,
     pgCustom,
     customOpportunities,
+    opportunitiesV2,
+    upsertOpportunityV2,
+    compPlan,
+    setCompPlan,
     upsertPg,
     addPg,
     deletePg,

@@ -184,6 +184,7 @@ export interface Stakeholder {
   level?: Level;
   businessUnit?: string;
   influence?: Influence;
+  lastTouch?: string | null;
   championPotential?: 'High' | 'Medium' | 'Low' | 'Unknown';
   reportsTo?: string; // stakeholder id, only when sourced
   dataOrigin?: DataOrigin;
@@ -336,6 +337,7 @@ export interface PrpResult {
   commissionGrossClosed: number;
   commissionNetClosed: number;
   commissionGrossCommit: number;
+  commissionNetCommit: number;
   funnelNeeded: {
     WON: number;
     BVA_TV: number;

@@ -1,0 +1,55 @@
+.today-prp-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  color: var(--muted, #65716f);
+}
+
+.today-prp-summary strong {
+  color: var(--ink, #17221f);
+}
+
+.today-action-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.today-action-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line, #dce4df);
+  border-radius: 0.75rem;
+  background: var(--surface, #fff);
+}
+
+.today-action-card h3 {
+  margin: 0.3rem 0;
+}
+
+.today-action-card p {
+  margin: 0 0 0.4rem;
+}
+
+.today-action-kind {
+  color: var(--accent, #156a52);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.today-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 720px) {
+  .today-action-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
