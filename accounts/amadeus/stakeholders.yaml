@@ -1,0 +1,69 @@
+# Fuente de verdad de stakeholders de AMADEUS.
+account: amadeus
+updated: '2026-10-12'
+schema: stakeholders/v1
+stakeholders:
+  - id: ama-roy
+    name: Sylvain Roy
+    title: Chief Technology Officer; President of Amadeus France; Executive Committee member
+    level: C Level
+    unit: CTO
+    business_unit: CTO
+    sales_play: Agentic Readiness
+    role: EB
+    attitude: unknown
+    influence: 3
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: >-
+      Technology strategy; global engineering community >10,000 across 50+ sites; multi-cloud strategy; Open Platform;
+      scaling AI and Agentic AI; oversees CISO and internal IT.
+    priorities: >-
+      Cloud migration (biggest programme), GenAI internal and in products, operating model change (developer
+      empowerment).
+    notes: Renewed Microsoft partnership (Feb 2025); FY2025 results Feb 2026.
+  - id: ama-mendez
+    name: Beatriz Méndez-Villamil
+    title: Global CIO (internal IT)
+    level: 2nd
+    unit: CIO
+    business_unit: CIO
+    sales_play: Agentic Readiness
+    role: Influencer
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: Internal IT, digital transformation programmes, technology governance and risk.
+    priorities: Digital, AI and technology strategy; governance and risk management.
+    notes: Global CIO since Jul 2024 (LinkedIn).
+  - id: ama-krips
+    name: Wolfgang Krips
+    title: SVP Corporate Strategy
+    level: 2nd
+    unit: Innovation / Strategy
+    business_unit: Innovation / Strategy
+    sales_play: Agentic Readiness
+    role: Influencer
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: Corporate strategy; Agentic AI thought leadership.
+    priorities: GenAI as a once-in-a-generation shift; agentic AI operating models.
+    notes: Published Agentic AI in travel report with Microsoft (Jul 2025).

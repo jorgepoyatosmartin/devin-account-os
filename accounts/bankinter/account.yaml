@@ -1,0 +1,13 @@
+id: bankinter
+name: Bankinter
+sector: Banking
+headquarters: Madrid, Spain
+country: Spain
+businessUnits:
+  - Retail & Private Banking
+  - Corporate Banking
+  - Bankinter Consumer Finance
+  - Bankinter Investment
+  - Bankinter Portugal
+  - Avant Money (Ireland)
+  - EVO Banco (digital)

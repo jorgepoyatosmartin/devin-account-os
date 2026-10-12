@@ -1,0 +1,12 @@
+id: amadeus
+name: Amadeus
+sector: Travel technology
+headquarters: Madrid, Spain
+country: Spain
+businessUnits:
+  - Air Distribution
+  - Air IT Solutions (Altéa, Nevio, Navitaire)
+  - Hospitality
+  - Payments (Outpayce)
+  - Airport IT
+  - Corporate Technology & Engineering (CTO)

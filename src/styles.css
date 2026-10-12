@@ -301,3 +301,18 @@ tbody tr:hover { background: var(--color-surface-tint); }
 .auto-line, .message-block { border-left: 2px solid var(--color-ai); background: var(--color-surface); }
 .pg-source { color: var(--color-text-muted); font-family: var(--font-mono); }
 ::selection { background: var(--color-accent-tint); }
+.territory-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.territory-summary > div { display: flex; flex-direction: column; gap: 6px; }
+.territory-summary span { color: var(--color-text-secondary); font-size: 12px; }
+.territory-summary strong { color: var(--color-text-primary); font-size: 21px; }
+.territory-links { flex-wrap: wrap; }
+.territory-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); max-width: none; }
+.territory-table td:first-child { min-width: 150px; }
+.territory-table input { max-width: 115px; min-width: 78px; width: 100%; }
+.territory-modal-backdrop { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(15, 23, 42, .45); }
+.territory-modal { width: min(560px, 100%); padding: 24px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-lg); }
+.territory-modal h2 { margin-top: 0; }
+.territory-modal li { margin: 6px 0; }
+@media (max-width: 760px) {
+  .territory-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

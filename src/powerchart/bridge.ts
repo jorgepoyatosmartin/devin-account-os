@@ -21,9 +21,9 @@ const APP_TO_STATUS: Record<RelationshipStatus, Status> = { 'No contact': 'No co
 const LEVEL_TO_APP: Record<ChartStakeholder['level'], AppLevel> = { 'C Level': 'Executive Committee', '2nd': 'Senior Leadership', '3rd': 'Director', '4th': 'Manager' }
 const INFLUENCE_TO_APP = { 1: 'Low', 2: 'Medium', 3: 'High' } as const
 
-export function toAppStakeholder(p: ChartStakeholder, legacy: AppStakeholder | undefined): AppStakeholder {
+export function toAppStakeholder(p: ChartStakeholder, legacy: AppStakeholder | undefined, accountId = 'mapfre'): AppStakeholder {
   const base: AppStakeholder = legacy ?? {
-    id: p.id, accountId: 'mapfre', name: p.name, title: p.title, functionArea: p.unit, responsibilities: '', strategicPriorities: '',
+    id: p.id, accountId, name: p.name, title: p.title, functionArea: p.unit, responsibilities: '', strategicPriorities: '',
     technologyPriorities: '', relevantInitiatives: [], publicStatements: [], recentActivity: '', potentialPain: '', cognitionRelevance: '',
     relationshipStatus: 'No contact', buyingRole: 'Unknown', sources: [],
   }
@@ -34,7 +34,7 @@ export function toAppStakeholder(p: ChartStakeholder, legacy: AppStakeholder | u
         ? (p.appStatus as RelationshipStatus)
         : STATUS_TO_APP[p.status]
   return {
-    ...base, id: p.id, name: p.name, title: p.title, functionArea: base.functionArea || p.unit, businessUnit: p.businessUnit || p.unit,
+    ...base, id: p.id, name: p.name, title: p.title, functionArea: p.unit, businessUnit: p.businessUnit || p.unit, country: p.country ?? base.country ?? null,
     relationshipStatus: status, buyingRole: ROLE_TO_APP[p.role], powerRole: ROLE_TO_APP[p.role], roleIsHypothesis: p.reportsToConfidence === 'hypothesis',
     level: LEVEL_TO_APP[p.level], influence: INFLUENCE_TO_APP[p.influence], reportsTo: p.reportsTo ?? undefined,
     dataOrigin: p.external ? 'PUBLIC RESEARCH' : 'TERRITORY PLAN', lastTouch: p.lastTouch, lastUpdated: p.lastTouch ?? base.lastUpdated,
@@ -66,13 +66,20 @@ export function remapIds<T>(value: T): T {
 }
 
 export function unifyMapfre(dataset: Dataset, people: ChartStakeholder[]): Dataset {
-  const legacyById = new Map<string, AppStakeholder>()
-  dataset.stakeholders.filter((s) => s.accountId === 'mapfre').forEach((s) => legacyById.set(LEGACY_ID_ALIAS[s.id] ?? s.id, s))
-  const mapfre = people.map((p) => toAppStakeholder(p, legacyById.get(p.id)))
-  const others = dataset.stakeholders.filter((s) => s.accountId !== 'mapfre')
+  return unifyAccountStakeholders(dataset, { mapfre: people })
+}
+
+export function unifyAccountStakeholders(dataset: Dataset, peopleByAccount: Record<string, ChartStakeholder[]>): Dataset {
+  const remapped = remapIds(dataset)
+  const accountIds = new Set(Object.keys(peopleByAccount))
+  const legacyById = new Map(remapped.stakeholders.map((person) => [person.id, person]))
+  const chartPeople = Object.entries(peopleByAccount).flatMap(([accountId, people]) =>
+    people.map((person) => toAppStakeholder(person, legacyById.get(person.id), accountId)),
+  )
+  const others = remapped.stakeholders.filter((person) => !accountIds.has(person.accountId))
   return {
-    ...remapIds({ ...dataset, stakeholders: [] }),
-    stakeholders: [...others, ...mapfre],
+    ...remapped,
+    stakeholders: [...others, ...chartPeople],
   }
 }
 

@@ -9,21 +9,24 @@ import { mergeDataset, mergeOverrides, useOverrides } from './store';
 import { stageDisplayLabel } from './lib/stageLabel';
 import { Badge as SharedBadge, EvidenceList as SharedEvidenceList, PageHeader as SharedPageHeader, Section as SharedSection, Toast } from './components/ui';
 import CommandBar from './components/CommandBar';
-import PowerChart from './components/PowerChart';
-import PowerChartMapfre from './powerchart/PowerChartMapfre';
-import { LEGACY_ID_ALIAS, appOverrideToChartPatch, isMapfreChartId, unifyMapfre } from './powerchart/bridge';
-import { resetMapfre, updateMapfrePerson, useMapfrePeople } from './powerchart/store';
+import PowerChart from './powerchart/PowerChart';
+import { LEGACY_ID_ALIAS, appOverrideToChartPatch, unifyAccountStakeholders } from './powerchart/bridge';
+import { resetAllAccounts, updateAccountPerson, useAllAccountPeople } from './powerchart/store';
+import { registeredAccounts } from './accounts/registry';
+import { territoryWithOverlay } from './lib/territory';
 import InitiativeChain from './components/InitiativeChain';
 import { CrossAccountPage, InitiativesPage, OpportunityActivity, OpportunityNextActions, OpportunityStakeholders, PipelinePage, PowerChartsPage, StakeholderProfilePage, TasksPage, UseCasesPage } from './pages/IntelligencePages';
 import PgPage from './pages/PgPage';
 import PrpPage from './pages/PrpPage';
 import TodayPage from './pages/TodayPage';
+import TerritoryPage from './pages/TerritoryPage';
 import OpportunityCommercialFields from './components/OpportunityCommercialFields';
 import { useI18n } from './i18n';
 import en from './i18n/en';
 
 const tabs = ['Overview', '3 WHYS', 'MEDDPICC', 'Stakeholders', 'Activity', 'Next Actions', 'Meeting Prep', 'Post-Meeting Update'];
 const statusOptions: ValidationStatus[] = ['Confirmed', 'Validated', 'Partially validated', 'Hypothesis', 'Unknown'];
+const registryDataset = { ...sourceDataset, accounts: registeredAccounts.map(({ account }) => account) };
 
 function Badge({ children, tone = '' }: { children: React.ReactNode; tone?: string }) {
   return <span className={`badge ${tone}`}>{children}</span>;
@@ -136,6 +139,7 @@ function AccountDetail({ dataset, setOverride }: { dataset: typeof sourceDataset
   const { t, tv } = useI18n();
   const { id = '' } = useParams(); const [params] = useSearchParams(); const account = dataset.accounts.find((item) => item.id === id); const [tab, setTab] = useState(params.get('tab') || 'Company');
   if (!account) return <NotFound />;
+  const territory = territoryWithOverlay(account.id, account.territory);
   const tabLabels: Record<string, string> = { Company: t('account.company'), 'Strategic Initiatives': t('account.strategicInitiatives'), Signals: t('account.accountSignals'), Stakeholders: t('account.stakeholderMap'), 'Use Cases': t('account.useCases'), Whitespace: t('account.whitespace'), Technology: t('account.technologyProfile'), 'Power Chart': t('accounts.powerChart'), Competition: t('account.competitiveIntelligence'), Opportunities: t('accounts.opportunities') };
   const tabs = Object.keys(tabLabels);
   const accountStakeholders = dataset.stakeholders.filter((item) => item.accountId === account.id);
@@ -145,6 +149,13 @@ function AccountDetail({ dataset, setOverride }: { dataset: typeof sourceDataset
   const traffic = { red: accountOpps.filter((item) => threeWhysStatus(item).tone === 'red').length, yellow: accountOpps.filter((item) => threeWhysStatus(item).tone === 'yellow').length, green: accountOpps.filter((item) => threeWhysStatus(item).tone === 'green').length };
   return <><PageHeader eyebrow={`${t('account.planEyebrow')} / ${tv(account.sector).toUpperCase()}`} title={account.name} subtitle={`${account.headquarters} · ${account.employees} ${t('account.employees').toLowerCase()} · ${account.geographicFootprint}`} action={<Link className="button secondary" to="/accounts">← {t('common.allAccounts')}</Link>} /><div className="account-summary-strip"><button onClick={() => setTab('Strategic Initiatives')}><span>{t('accounts.initiatives').toUpperCase()}</span><strong>{account.initiatives.length}</strong></button><button onClick={() => setTab('Opportunities')}><span>{t('accounts.opportunities').toUpperCase()}</span><strong>{accountOpps.length}</strong></button><button onClick={() => setTab('Stakeholders')}><span>{t('accounts.engaged').toUpperCase()}</span><strong>{engagedCount}</strong></button><button onClick={() => setTab('Signals')}><span>{t('accounts.signals').toUpperCase()}</span><strong>{accountSignals.length}</strong></button><button onClick={() => setTab('Opportunities')}><span>3 WHYS</span><strong className="summary-lights">🔴 {traffic.red} 🟡 {traffic.yellow} 🟢 {traffic.green}</strong></button></div>
     <div className="tab-bar">{tabs.map((item) => <button className={tab === item ? 'selected' : ''} onClick={() => setTab(item)} key={item}>{tabLabels[item]}</button>)}</div>
+    {tab === 'Company' && <Section title="Plan territorial" eyebrow={account.name}><div className="detail-grid">
+      <div className="detail-item"><span>Tier</span><strong>{territory.tier || '—'}</strong></div>
+      <div className="detail-item"><span>Potencial</span><strong>{territory.potentialEur == null ? '—' : new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(territory.potentialEur)}</strong></div>
+      <div className="detail-item"><span>Esfuerzo</span><strong>{territory.effortPct == null ? '—' : `${territory.effortPct}%`}</strong></div>
+      <div className="detail-item"><span>Segmento</span><strong>{territory.segment || '—'}</strong></div>
+      <div className="detail-item"><span>Prioridad</span><strong>{territory.priority ?? '—'}</strong></div>
+    </div></Section>}
     {tab === 'Company' && <><Section title={t('account.companyProfile')} eyebrow={t('account.overview')}><p className="lead">{account.overview}</p><div className="detail-grid">{[[t('account.revenue'), account.revenue], [t('account.employees'), account.employees], [t('account.headquarters'), account.headquarters], [t('account.geographicFootprint'), account.geographicFootprint], [t('account.financialPerformance'), account.financialPerformance], [t('account.businessUnits'), account.businessUnits.join(', ')], [t('account.productsServices'), account.productsServices.join(', ')], [t('account.growthPriorities'), account.growthPriorities.join(', ')], [t('account.costRestructuring'), account.costRestructuringInitiatives.join(', ')], [t('account.mnaActivity'), account.mnaActivity.join(', ')]].map(([label, value]) => <div className="detail-item" key={label}><span>{label}</span><strong>{value}</strong></div>)}</div></Section><Section title={t('account.companyEvidence')} eyebrow={t('account.sourceRegister')}><EvidenceList evidence={account.companyEvidence} /></Section></>}
     {tab === 'Strategic Initiatives' && <Section title={t('account.strategicInitiatives')} eyebrow={t('account.priorities')}><div className="initiative-list">{account.initiatives.map((initiative) => <InitiativeChain account={account} initiative={initiative} opportunities={dataset.opportunities} stakeholders={accountStakeholders} key={initiative.id} />)}</div></Section>}
     {tab === 'Signals' && <Section title={t('account.accountSignals')} eyebrow={t('account.signalMonitor')}><div className="signal-list">{dataset.signals.filter((item) => item.accountId === account.id).map((signal) => <article className="signal-card" key={signal.id}><div className="card-top"><Badge tone={`category-${signal.category}`}>{tv(signal.category)}</Badge><span>{signal.date} · {signal.source}</span></div><h3>{signal.signal}</h3><div className="three-col"><div><span>{t('account.businessRelevance')}</span><p>{signal.businessRelevance}</p></div><div><span>{t('account.cognitionRelevance')}</span><p>{signal.cognitionRelevance}</p></div><div><span>{t('account.threeWhysImpact')}</span><p>{signal.threeWhysImpact}</p><p>{signal.salesAction}</p></div></div>{signal.url && <a href={signal.url} target="_blank" rel="noreferrer">{t('account.sourceLink')}</a>}</article>)}</div></Section>}
@@ -152,7 +163,7 @@ function AccountDetail({ dataset, setOverride }: { dataset: typeof sourceDataset
     {tab === 'Use Cases' && <Section title={t('account.useCases')} eyebrow={t('account.valueHypotheses')}><div className="usecase-grid">{account.useCases.map((item) => <article className="card" key={item.id}><div className="card-top"><Badge>{tv(item.category || 'UNKNOWN')}</Badge><Badge tone={`relevance-${(item.relevance || 'NOT RELEVANT').split(' ')[0].toLowerCase()}`}>{tv(item.relevance || 'NOT RELEVANT')}</Badge></div><h3>{item.name}</h3><div className="three-col"><div><span>{t('pg.businessPain').toUpperCase()}</span><p>{item.businessProblem || item.whyAnything}</p></div><div><span>{t('common.targetStakeholders').toUpperCase()}</span><p>{(item.targetStakeholderIds || []).map((stakeholderId) => dataset.stakeholders.find((person) => person.id === stakeholderId)?.name || stakeholderId).join(', ') || tv('UNKNOWN')}</p></div><div><span>{t('opportunities.whyCognition')}</span><p>{item.whyCognition}</p></div></div><div className="outcome"><span>{t('opportunities.businessOutcome').toUpperCase()}</span>{item.businessOutcome}</div></article>)}</div></Section>}
     {tab === 'Whitespace' && <Section title={t('account.whitespace')} eyebrow={t('account.expansionMap')}><div className="table-wrap"><table><thead><tr><th>{t('account.area')}</th><th>{t('account.currentRelationship')}</th><th>{t('account.existingUseCases')}</th><th>{t('account.untappedAreas')}</th><th>{t('account.potentialOpportunity')}</th></tr></thead><tbody>{account.whitespace.map((item) => <tr key={item.area}><td><strong>{item.area}</strong></td><td>{item.currentRelationship}</td><td>{item.existingUseCases}</td><td>{item.untappedAreas}</td><td>{item.potentialOpportunity}</td></tr>)}</tbody></table></div></Section>}
     {tab === 'Technology' && <Section title={t('account.technologyProfile')} eyebrow={t('account.currentEnvironment')}><div className="detail-grid">{Object.entries(account.technology || {}).map(([key, value]) => { const fallbackLabel = key.replace(/[A-Z]/g, (letter) => ` ${letter}`).toUpperCase(); const translationKey = `account.tech.${key}` as keyof typeof en; const label = translationKey in en ? t(translationKey) : fallbackLabel; return <div className="detail-item" key={key}><span>{label}</span><strong>{value || tv('UNKNOWN')}</strong></div>; })}{!account.technology && <div className="muted detail-item">{t('account.technologyProfile')} {tv('UNKNOWN')}</div>}</div></Section>}
-    {tab === 'Power Chart' && (account.id === 'mapfre' ? <PowerChartMapfre /> : <PowerChart account={account} stakeholders={accountStakeholders} opportunities={accountOpps} onSelect={(stakeholderId) => window.location.hash = `/stakeholders/${stakeholderId}`} />)}
+    {tab === 'Power Chart' && <PowerChart key={account.id} accountId={account.id} />}
     {tab === 'Competition' && <Section title={t('account.competitiveIntelligence')} eyebrow={t('account.dealLandscape')}><div className="table-wrap"><table><thead><tr><th>{t('account.currentTechnology')}</th><th>{t('account.potentialCompetitor')}</th><th>{t('account.evidence')}</th><th>{t('account.category')}</th><th>{t('account.differentiation')}</th><th>{t('account.discoveryQuestion')}</th></tr></thead><tbody>{(account.competitiveIntel || []).map((item, index) => <tr key={index}><td>{item.currentTechnology}</td><td>{item.potentialCompetitor}</td><td>{item.evidence}</td><td><Badge tone={`category-${item.category}`}>{tv(item.category)}</Badge></td><td>{item.differentiation}</td><td>{item.discoveryQuestion}</td></tr>)}{!account.competitiveIntel?.length && <tr><td colSpan={6}>{tv('UNKNOWN')}</td></tr>}</tbody></table></div></Section>}
     {tab === 'Opportunities' && <Section title={t('accounts.opportunities')} eyebrow={t('common.pipeline')}><div className="opportunity-list">{dataset.opportunities.filter((item) => item.accountId === account.id).map((op) => <Link to={`/opportunities/${op.id}`} className="opportunity-row" key={op.id}><div><Badge>{tv(op.stage)}</Badge><h3>{op.name}</h3><p>{tv(op.useCase)}</p></div><div><Traffic op={op} /><strong>{tv(op.potentialValue)}</strong></div><span>→</span></Link>)}</div></Section>}
   </>;
@@ -166,17 +177,6 @@ function StakeholderTable({ stakeholders, setOverride }: { stakeholders: Stakeho
 function OpportunitiesPage({ dataset, opportunitiesV2, fxEurUsd }: { dataset: typeof sourceDataset; opportunitiesV2: OpportunityV2[]; fxEurUsd: number }) {
   const { t, tv } = useI18n();
   return <><PageHeader eyebrow={`OPPORTUNITIES / ${t('nav.pipeline')}`} title={t('opportunities.title')} subtitle={t('opportunities.subtitle')} action={<div className="context-actions"><Link className="button secondary" to="/pipeline">{t('opportunities.pipelineLink')}</Link><Link className="button secondary" to="/tasks">{t('opportunities.tasksLink')}</Link></div>} /><div className="pipeline-kpis"><div><span>{t('opportunities.identified')}</span><strong>{dataset.opportunities.filter((x) => x.stage === 'Identified').length}</strong></div><div><span>{t('opportunities.inDiscovery')}</span><strong>{dataset.opportunities.filter((x) => x.stage === 'Discovery').length}</strong></div><div><span>{t('opportunities.qualifiedPlus')}</span><strong>{dataset.opportunities.filter((x) => ['Qualified', 'Proposal', 'Negotiation'].includes(x.stage)).length}</strong></div><div><span>{t('opportunities.greenWhys')}</span><strong>{dataset.opportunities.filter(isFullyQualified).length}</strong></div></div><Section title={t('opportunities.pipelineRegister')} eyebrow={t('opportunities.activeDeals')}><PipelineTable opportunities={dataset.opportunities} dataset={dataset} opportunitiesV2={opportunitiesV2} fxEurUsd={fxEurUsd} /></Section></>;
-}
-
-function TerritoryPage({ dataset }: { dataset: typeof sourceDataset }) {
-  const { t } = useI18n();
-  return <><AccountsPage dataset={dataset} /><Section title={t('territory.shortcuts')}><div className="context-actions">
-    <Link className="button secondary" to="/stakeholders">{t('territory.stakeholders')}</Link>
-    <Link className="button secondary" to="/power-charts">{t('territory.powerCharts')}</Link>
-    <Link className="button secondary" to="/initiatives">{t('territory.initiatives')}</Link>
-    <Link className="button secondary" to="/use-cases">{t('territory.useCases')}</Link>
-    <Link className="button secondary" to="/cross-account">{t('territory.crossAccount')}</Link>
-  </div></Section></>;
 }
 
 function OpportunityDetail({ dataset, opportunitiesV2, upsertOpportunityV2, setOverride, meetingNotes, saveMeetingNote, tasks, addTask, toggleTask }: { dataset: typeof sourceDataset; opportunitiesV2: OpportunityV2[]; upsertOpportunityV2: (opportunity: OpportunityV2) => void; setOverride: (id: string, path: string, value: unknown) => void; meetingNotes: MeetingNote[]; saveMeetingNote: (note: MeetingNote) => void; tasks: Task[]; addTask: (task: Task) => void; toggleTask: (id: string) => void }) {
@@ -274,17 +274,18 @@ function NotFound() { const { t } = useI18n(); return <div className="empty-stat
 
 export default function App() {
   const { overrides, setOverride: setBaseOverride, meetingNotes, saveMeetingNote, tasks: storedTasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, opportunitiesV2, upsertOpportunityV2, compPlan, setCompPlan, upsertPg, addPg, addOpportunity, reset: resetBase } = useOverrides();
-  const mapfrePeople = useMapfrePeople();
+  const chartPeopleByAccount = useAllAccountPeople();
   const tasks = useMemo(
     () => storedTasks.map((t) => (t.stakeholderId ? { ...t, stakeholderId: LEGACY_ID_ALIAS[t.stakeholderId] ?? t.stakeholderId } : t)),
     [storedTasks],
   );
   const setOverride = useCallback((entityId: string, path: string, value: unknown) => {
-    const patch = isMapfreChartId(entityId, mapfrePeople) ? appOverrideToChartPatch(path, value) : null;
-    if (patch) updateMapfrePerson(entityId, patch);
+    const accountId = Object.keys(chartPeopleByAccount).find((id) => chartPeopleByAccount[id].some((person) => person.id === entityId));
+    const patch = accountId ? appOverrideToChartPatch(path, value) : null;
+    if (accountId && patch) updateAccountPerson(accountId, entityId, patch);
     else setBaseOverride(entityId, path, value);
-  }, [mapfrePeople, setBaseOverride]);
-  const reset = useCallback(() => { resetBase(); resetMapfre(); }, [resetBase]);
+  }, [chartPeopleByAccount, setBaseOverride]);
+  const reset = useCallback(() => { resetBase(); resetAllAccounts(); }, [resetBase]);
   const [commandOpen, setCommandOpen] = useState(false); const [toast, setToast] = useState('');
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -296,12 +297,15 @@ export default function App() {
     window.addEventListener('keydown', handleShortcut);
     return () => window.removeEventListener('keydown', handleShortcut);
   }, []);
-  const dataset = useMemo(() => unifyMapfre(mergeDataset(sourceDataset, overrides, pgEdits, pgCustom, customOpportunities), mapfrePeople), [overrides, pgEdits, pgCustom, customOpportunities, mapfrePeople]);
+  const dataset = useMemo(
+    () => unifyAccountStakeholders(mergeDataset(registryDataset, overrides, pgEdits, pgCustom, customOpportunities), chartPeopleByAccount),
+    [overrides, pgEdits, pgCustom, customOpportunities, chartPeopleByAccount],
+  );
   const exportData = () => { const blob = new Blob([JSON.stringify({ ...dataset, meetingNotes, tasks, pgEdits, pgCustom, customOpportunities }, null, 2)], { type: 'application/json' }); const href = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = href; link.download = `cognition-pipeline-export-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(href); };
   return <Layout dataset={dataset} reset={reset} exportData={exportData} openCommand={() => setCommandOpen(true)}><Routes>
     <Route path="/" element={<TodayPage dataset={dataset} opportunities={opportunitiesV2} compPlan={compPlan} tasks={tasks} addTask={addTask} />} />
     <Route path="/prp" element={<PrpPage opportunities={opportunitiesV2} compPlan={compPlan} setCompPlan={setCompPlan} onToast={setToast} />} />
-    <Route path="/territory" element={<TerritoryPage dataset={dataset} />} />
+    <Route path="/territory" element={<TerritoryPage dataset={dataset} opportunitiesV2={opportunitiesV2} fxEurUsd={compPlan?.fxEurUsd || 1.16} />} />
     <Route path="/accounts" element={<AccountsPage dataset={dataset} />} />
     <Route path="/accounts/:id" element={<AccountDetail dataset={dataset} setOverride={setOverride} />} />
     <Route path="/initiatives" element={<InitiativesPage dataset={dataset} />} />

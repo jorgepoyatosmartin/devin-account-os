@@ -14,7 +14,7 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useSearchParams } from 'react-router-dom'
-import { ACCOUNT, MAPFRE } from './data/mapfre'
+import { getRegisteredAccount } from '../accounts/registry'
 import { LaneNode, type LaneNodeType } from './LaneNode'
 import { autoLayout, NODE_H, NODE_W } from './layout'
 import { PersonNode, type PersonNodeType } from './PersonNode'
@@ -22,11 +22,11 @@ import { PersonSheet } from './PersonSheet'
 import { ATTITUDE_COLOR, ATTITUDE_LABEL, computeGaps, descendants, isAncestor, ROLE_COLOR, ROLE_LABEL, SALES_PLAYS, daysSince, type Gap, type SalesPlay, type Stakeholder, todayISO } from './model'
 import { buildRepoSavePrompt } from './repoSave'
 import { DEVIN_URL } from './playbooks'
-import { getMapfreSnapshot, resetMapfre, setMapfreLayout, setMapfreSnapshot, subscribeMapfre, type Positions } from './store'
+import { getAccountSnapshot, resetAccount, setAccountLayout, setAccountSnapshot, useAccountPeople, type Positions } from './store'
 import { toYamlRecord, toYamlText } from './yaml'
 import './powerchart.css'
 
-type Group = 'none' | 'unit' | 'country'
+type Group = 'none' | 'unit' | 'country' | 'level'
 type View = { country: string | 'all' | '__none__'; unit: string | 'all'; group: Group }
 type ChartNode = PersonNodeType | LaneNodeType
 type HistoryEntry = { people: Stakeholder[]; viewKey: string; positions: Positions }
@@ -39,7 +39,9 @@ const viewKeyFor = (view: View) => `${view.country}|${view.unit}|${view.group}`
 
 function groupedLayout(people: Stakeholder[], group: Group): Positions {
   if (group === 'none') return autoLayout(people)
-  const keyFor = (p: Stakeholder) => group === 'unit' ? (p.businessUnit || p.unit || 'Sin asignar') : (p.country || 'Sin país')
+  const keyFor = (p: Stakeholder) => group === 'unit'
+    ? (p.businessUnit || p.unit || 'Sin asignar')
+    : group === 'country' ? (p.country || 'Sin país') : p.level
   const groups = new Map<string, Stakeholder[]>()
   for (const p of people) groups.set(keyFor(p), [...(groups.get(keyFor(p)) ?? []), p])
   const positions: Positions = {}
@@ -56,20 +58,25 @@ function groupedLayout(people: Stakeholder[], group: Group): Positions {
   return positions
 }
 
-function Chart() {
+function Chart({ accountId }: { accountId: string }) {
   const [params, setParams] = useSearchParams()
-  const snapshot = getMapfreSnapshot()
-  const [people, setPeople] = useState<Stakeholder[]>(snapshot.people)
+  const source = getRegisteredAccount(accountId)
+  const accountName = source?.account.name ?? accountId
+  const people = useAccountPeople(accountId)
+  const snapshot = getAccountSnapshot(accountId)
+  const hasReports = people.some((person) => person.reportsTo)
   const allCountries = useMemo(() => sorted(people.flatMap((p) => p.country ? [p.country] : [])), [people])
   const allUnits = useMemo(() => sorted(people.map((p) => p.businessUnit || p.unit).filter(Boolean)), [people])
   const hasNoCountry = people.some((p) => !p.country)
   const requestedCountry = params.get('pcCountry') ?? 'all'
   const requestedUnit = params.get('pcUnit') ?? 'all'
-  const requestedGroup = params.get('pcGroup') ?? 'none'
+  const requestedGroup = params.get('pcGroup')
   const view: View = {
     country: requestedCountry === 'all' || (requestedCountry === '__none__' && hasNoCountry) || allCountries.includes(requestedCountry) ? requestedCountry : 'all',
     unit: requestedUnit === 'all' || allUnits.includes(requestedUnit) ? requestedUnit : 'all',
-    group: requestedGroup === 'unit' || requestedGroup === 'country' ? requestedGroup : 'none',
+    group: requestedGroup === 'unit' || requestedGroup === 'country' || requestedGroup === 'level' || requestedGroup === 'none'
+      ? requestedGroup
+      : hasReports ? 'none' : 'level',
   }
   const viewKey = viewKeyFor(view)
   const viewPeople = useMemo(
@@ -97,19 +104,20 @@ function Chart() {
   const { fitView, getIntersectingNodes } = useReactFlow()
   const selected = people.find((p) => p.id === selectedId) ?? null
   const dirty = Boolean(draftTouched && selected && draft && JSON.stringify(selected) !== JSON.stringify(draft))
-  const pending = useMemo(() => pendingPeople(people), [people])
+  const bundled = source?.stakeholders ?? []
+  const pending = useMemo(() => pendingPeople(people, bundled), [people, bundled])
 
   const updateSearch = useCallback((next: Partial<View>) => {
     setParams((previous) => {
       const currentCountry = previous.get('pcCountry') ?? 'all'
       const currentUnit = previous.get('pcUnit') ?? 'all'
-      const currentGroup = previous.get('pcGroup') ?? 'none'
+      const currentGroup = previous.get('pcGroup') ?? (hasReports ? 'none' : 'level')
       previous.set('pcCountry', String(next.country ?? currentCountry))
       previous.set('pcUnit', String(next.unit ?? currentUnit))
       previous.set('pcGroup', String(next.group ?? currentGroup))
       return previous
     }, { replace: true })
-  }, [setParams])
+  }, [hasReports, setParams])
 
   const dismissHover = useCallback(() => {
     if (hoverTimer.current) clearTimeout(hoverTimer.current)
@@ -119,23 +127,17 @@ function Chart() {
 
   const commit = useCallback((nextPeople: Stakeholder[], nextPositions: Positions = positions, record = true, targetViewKey = viewKey) => {
     if (record) setHistory((h) => [...h.slice(-30), { people, viewKey: targetViewKey, positions }])
-    setMapfreSnapshot(nextPeople, { ...getMapfreSnapshot().layouts, [targetViewKey]: nextPositions })
-    setPeople(nextPeople)
+    setAccountSnapshot(accountId, nextPeople, { ...getAccountSnapshot(accountId).layouts, [targetViewKey]: nextPositions })
     if (targetViewKey === viewKey) setPositions(nextPositions)
-  }, [people, positions, viewKey])
+  }, [accountId, people, positions, viewKey])
 
   useEffect(() => {
-    const saved = getMapfreSnapshot().layouts[viewKey]
+    const saved = getAccountSnapshot(accountId).layouts[viewKey]
     const hasAll = Boolean(saved && viewPeople.every((p) => saved[p.id] !== undefined))
     const next = hasAll ? saved! : groupedLayout(viewPeople, view.group)
     setPositions(next)
-    if (!hasAll) setMapfreLayout(viewKey, next)
-  }, [viewKey, view.group, viewPeople])
-
-  useEffect(() => subscribeMapfre(() => {
-    const next = getMapfreSnapshot().people
-    setPeople((current) => current === next ? current : next)
-  }), [])
+    if (!hasAll) setAccountLayout(accountId, viewKey, next)
+  }, [accountId, viewKey, view.group, viewPeople])
 
   useEffect(() => {
     if (selected && !draftTouched) setDraft(selected)
@@ -178,9 +180,8 @@ function Chart() {
     const last = history[history.length - 1]
     if (!last) return
     setHistory((h) => h.slice(0, -1))
-    const layouts = { ...getMapfreSnapshot().layouts, [last.viewKey]: last.positions }
-    setMapfreSnapshot(last.people, layouts)
-    setPeople(last.people)
+    const layouts = { ...getAccountSnapshot(accountId).layouts, [last.viewKey]: last.positions }
+    setAccountSnapshot(accountId, last.people, layouts)
     if (last.viewKey === viewKey) setPositions(last.positions)
   }
 
@@ -188,22 +189,21 @@ function Chart() {
     const next = groupedLayout(viewPeople, view.group)
     setHistory((h) => [...h.slice(-30), { people, viewKey, positions }])
     setPositions(next)
-    setMapfreLayout(viewKey, next)
+    setAccountLayout(accountId, viewKey, next)
     setTimeout(() => fitView({ padding: 0.15, duration: 400 }), 30)
   }
 
   const reset = () => {
     if (!confirm('¿Restaurar los datos originales del Account Plan?')) return
-    resetMapfre()
-    setPeople(MAPFRE)
-    setPositions(groupedLayout(MAPFRE, view.group))
+    resetAccount(accountId)
+    setPositions(groupedLayout(bundled, view.group))
     setHistory([])
     setCollapsed(new Set())
   }
 
   const gapsAll = useMemo(() => computeGaps(people), [people])
   const visibleIds = useMemo(() => new Set(viewPeople.map((p) => p.id)), [viewPeople])
-  const isGlobal = view.country === 'all' && view.unit === 'all' && view.group === 'none'
+  const isGlobal = view.country === 'all' && view.unit === 'all' && (view.group === 'none' || view.group === 'level')
   const gaps = useMemo(
     () => gapsAll.filter((g) => g.nodeId ? visibleIds.has(g.nodeId) : isGlobal),
     [gapsAll, visibleIds, isGlobal],
@@ -238,7 +238,8 @@ function Chart() {
       (view.group === 'none' || laneFor(manager, view.group) === laneFor(p, view.group))
     const managerDimension = view.country !== 'all' ? manager?.country || 'Sin país' :
       view.unit !== 'all' ? manager?.businessUnit || manager?.unit || 'Sin asignar' :
-        view.group === 'country' ? manager?.country || 'Sin país' : manager?.businessUnit || manager?.unit || 'Sin asignar'
+        view.group === 'country' ? manager?.country || 'Sin país' :
+          view.group === 'level' ? manager?.level || 'Sin nivel' : manager?.businessUnit || manager?.unit || 'Sin asignar'
     return {
       id: p.id,
       type: 'person' as const,
@@ -336,8 +337,8 @@ function Chart() {
     setDraft(saved)
     setDraftTouched(false)
     confidenceExplicitRef.current = false
-    setToast(`Guardado en este navegador · ${pendingPeople(next).length} cambios pendientes de guardar en repo`)
-    if (parentChanged) setMapfreLayout(viewKey, nextPositions)
+    setToast(`Guardado en este navegador · ${pendingPeople(next, bundled).length} cambios pendientes de guardar en repo`)
+    if (parentChanged) setAccountLayout(accountId, viewKey, nextPositions)
   }
 
   const cancelDraft = () => {
@@ -401,7 +402,7 @@ function Chart() {
     }
     const next = { ...positions, [node.id]: node.position }
     setPositions(next)
-    setMapfreLayout(viewKey, next)
+    setAccountLayout(accountId, viewKey, next)
   }
 
   const reparentFromDrag = (childId: string, parentId: string) => {
@@ -470,7 +471,7 @@ function Chart() {
 
   const copyRepoPrompt = async () => {
     const summary = pending.map((p) => `- ${p.person.name} (${p.person.id}): ${p.label}`).join('\n')
-    const prompt = buildRepoSavePrompt(ACCOUNT, pending.map((x) => x.person), summary)
+    const prompt = buildRepoSavePrompt(accountId, pending.map((x) => x.person), summary)
     try {
       await navigator.clipboard.writeText(prompt)
       window.open(DEVIN_URL, '_blank', 'noopener')
@@ -481,10 +482,10 @@ function Chart() {
   }
 
   const downloadYaml = () => {
-    const blob = new Blob([toYamlText(people, ACCOUNT)], { type: 'text/yaml' })
+    const blob = new Blob([toYamlText(people, accountId)], { type: 'text/yaml' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
-    a.download = 'stakeholders.yaml'
+    a.download = `${accountId}-stakeholders.yaml`
     a.click()
     URL.revokeObjectURL(a.href)
   }
@@ -495,7 +496,7 @@ function Chart() {
         <div className="pc-brand">
           <span className="logo">◆</span>
           <div>
-            <div className="acct">MAPFRE · Power Chart</div>
+            <div className="acct">{accountName} · Power Chart</div>
             <div className="sub">{viewName}</div>
             <div className="sub">{viewPeople.length} personas · {covered} con contacto · {gaps.length} gaps ({critical} críticos)</div>
           </div>
@@ -510,7 +511,7 @@ function Chart() {
             <select aria-label="Unidad" value={view.unit} onChange={(e) => updateSearch({ unit: e.target.value })}>
               <option value="all">Todas las unidades</option>{allUnits.map((x) => <option key={x} value={x}>{x}</option>)}
             </select>
-            <div className="pc-group-control"><span>Agrupar:</span>{(['none', 'unit', 'country'] as const).map((x) => <button key={x} className={view.group === x ? 'pc-group-active' : ''} onClick={() => updateSearch({ group: x })}>{x === 'none' ? 'Ninguno' : x === 'unit' ? 'Unidad' : 'País'}</button>)}</div>
+            <div className="pc-group-control"><span>Agrupar:</span>{(['none', 'unit', 'country', 'level'] as const).map((x) => <button key={x} className={view.group === x ? 'pc-group-active' : ''} onClick={() => updateSearch({ group: x })}>{x === 'none' ? 'Ninguno' : x === 'unit' ? 'Unidad' : x === 'country' ? 'País' : 'Nivel'}</button>)}</div>
             <button onClick={() => updateSearch({ country: 'all', unit: 'all', group: 'none' })}>Global consolidado</button>
           </div>
           <div className="pc-toolbar-row">
@@ -567,7 +568,7 @@ function Chart() {
             <HoverCard person={hoverPerson} people={people} gaps={gapsAll.filter((g) => g.nodeId === hoverPerson.id)} style={{ left: hoverCard.left, top: hoverCard.top }} />
           )}
           {toast && <div className="pc-toast">{toast}</div>}
-          {repoOpen && <RepoSaveDialog pending={pending} onClose={() => setRepoOpen(false)} onCopy={copyRepoPrompt} onDownload={downloadYaml} />}
+          {repoOpen && <RepoSaveDialog accountId={accountId} pending={pending} onClose={() => setRepoOpen(false)} onCopy={copyRepoPrompt} onDownload={downloadYaml} />}
           {countryOpen && <CountryImportDialog
             text={countryText}
             result={countryResult}
@@ -577,10 +578,10 @@ function Chart() {
             onClose={() => setCountryOpen(false)}
           />}
         </div>
-        <aside className="side"><GapsPanel gaps={gaps} onFocus={requestOpen} people={viewPeople} /></aside>
+        <aside className="side"><GapsPanel accountId={accountId} gaps={gaps} onFocus={requestOpen} people={viewPeople} /></aside>
         {selected && draft && (
           <PersonSheet
-            account={ACCOUNT}
+            account={accountId}
             person={selected}
             draft={draft}
             people={people}
@@ -604,7 +605,8 @@ function Chart() {
 }
 
 function laneFor(person: Stakeholder, group: Group) {
-  return group === 'country' ? (person.country || 'Sin país') : (person.businessUnit || person.unit || 'Sin asignar')
+  return group === 'country' ? (person.country || 'Sin país')
+    : group === 'level' ? person.level : (person.businessUnit || person.unit || 'Sin asignar')
 }
 
 function getViewName(view: View) {
@@ -615,14 +617,15 @@ function getViewName(view: View) {
   else name = `${view.country === '__none__' ? 'Sin país' : view.country} · ${view.unit}`
   if (view.group === 'unit') name += ' · por unidad'
   if (view.group === 'country') name += ' · por país'
+  if (view.group === 'level') name += ' · por nivel'
   return name
 }
 
-function pendingPeople(people: Stakeholder[]) {
-  const bundled = new Map(MAPFRE.map((p) => [p.id, JSON.stringify(toYamlRecord(p))]))
+function pendingPeople(people: Stakeholder[], bundledPeople: Stakeholder[]) {
+  const bundled = new Map(bundledPeople.map((p) => [p.id, JSON.stringify(toYamlRecord(p))]))
   return people.flatMap((person) => {
     const record = toYamlRecord(person)
-    const original = MAPFRE.find((p) => p.id === person.id)
+    const original = bundledPeople.find((p) => p.id === person.id)
     const originalRecord = original ? toYamlRecord(original) : null
     if (original && JSON.stringify(record) === bundled.get(person.id)) return []
     const label = !original ? 'Nueva persona' : person.departed && !original.departed ? 'Baja' : changedYamlFields(originalRecord ?? {}, record)
@@ -642,7 +645,8 @@ function compact(value: unknown) {
   return text.length > 88 ? `${text.slice(0, 85)}…` : text
 }
 
-function RepoSaveDialog({ pending, onClose, onCopy, onDownload }: {
+function RepoSaveDialog({ accountId, pending, onClose, onCopy, onDownload }: {
+  accountId: string
   pending: ReturnType<typeof pendingPeople>
   onClose: () => void
   onCopy: () => void
@@ -660,7 +664,7 @@ function RepoSaveDialog({ pending, onClose, onCopy, onDownload }: {
             </article>
           ))}
         </div>
-        <p className="pc-modal-note">Devin abrirá un PR que actualiza accounts/mapfre/stakeholders.yaml. Hasta que se mergee y se vuelva a publicar la app, los cambios siguen solo en este navegador.</p>
+        <p className="pc-modal-note">Devin abrirá un PR que actualiza accounts/{accountId}/stakeholders.yaml. Hasta que se mergee y se vuelva a publicar la app, los cambios siguen solo en este navegador.</p>
         <footer><button className="primary" onClick={onCopy}>Copiar prompt y abrir Devin</button><button onClick={onDownload}>Descargar YAML completo</button></footer>
       </section>
     </div>
@@ -734,7 +738,7 @@ function HoverCard({ person: p, people, gaps, style }: { person: Stakeholder; pe
   )
 }
 
-function GapsPanel({ gaps, onFocus, people }: { gaps: Gap[]; onFocus: (id: string) => void; people: Stakeholder[] }) {
+function GapsPanel({ accountId, gaps, onFocus, people }: { accountId: string; gaps: Gap[]; onFocus: (id: string) => void; people: Stakeholder[] }) {
   const byRole = (role: Stakeholder['role']) => people.filter((p) => p.role === role).length
   return (
     <div className="panel">
@@ -747,7 +751,7 @@ function GapsPanel({ gaps, onFocus, people }: { gaps: Gap[]; onFocus: (id: strin
       </ul>
       <h3>Cómo se conecta con Devin</h3>
       <ul className="devin">
-        <li><b>Guardar en repo</b> → PR que actualiza accounts/mapfre/stakeholders.yaml.</li>
+        <li><b>Guardar en repo</b> → PR que actualiza accounts/{accountId}/stakeholders.yaml.</li>
         <li>Skill <b>power-map-review</b>: lee este YAML y propone el camino al EB.</li>
         <li>Desde una persona: <i>Generar cadencia</i> / <i>Brief</i> / <i>Buscar equipo</i> copian el prompt del playbook con su contexto y abren Devin.</li>
       </ul>
@@ -755,6 +759,6 @@ function GapsPanel({ gaps, onFocus, people }: { gaps: Gap[]; onFocus: (id: strin
   )
 }
 
-export default function PowerChartMapfre() {
-  return <ReactFlowProvider><Chart /></ReactFlowProvider>
+export default function PowerChart({ accountId }: { accountId: string }) {
+  return <ReactFlowProvider><Chart accountId={accountId} /></ReactFlowProvider>
 }

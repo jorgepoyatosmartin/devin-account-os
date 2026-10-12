@@ -125,6 +125,16 @@ export interface Account {
   name: string;
   sector: string;
   headquarters: string;
+  country?: string | null;
+  territory?: {
+    tier: string | null;
+    potentialEur: number | null;
+    effortPct: number | null;
+    segment: string | null;
+    priority: number | null;
+    rationale: string;
+    evidence: string[];
+  };
   overview: string;
   revenue: string;
   employees: string;
@@ -183,6 +193,7 @@ export interface Stakeholder {
   roleIsHypothesis?: boolean; // true => show 'HYPOTHESIS — VALIDATION REQUIRED'
   level?: Level;
   businessUnit?: string;
+  country?: string | null;
   influence?: Influence;
   lastTouch?: string | null;
   championPotential?: 'High' | 'Medium' | 'Low' | 'Unknown';
