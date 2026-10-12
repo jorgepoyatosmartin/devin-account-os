@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { products, pgScoreConfig, salesPlays } from '../config'
 import { useI18n } from '../i18n'
@@ -27,7 +27,17 @@ export function DiscoveryWorkflow({
   const [draft, setDraft] = useState<Hypothesis | null>(null)
   const [signalAccountId, setSignalAccountId] = useState('')
   const [expandedSignalId, setExpandedSignalId] = useState<string | null>(null)
+  const hypothesisFormRef = useRef<HTMLFormElement>(null)
   const label = (es: string, en: string) => lang === 'es' ? es : en
+  const isHypothesisFormOpen = draft !== null
+  useEffect(() => {
+    if (!isHypothesisFormOpen) return
+    const frame = requestAnimationFrame(() => {
+      hypothesisFormRef.current?.scrollIntoView({ block: 'center' })
+      hypothesisFormRef.current?.querySelector<HTMLInputElement>('input:not([type="checkbox"])')?.focus()
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [isHypothesisFormOpen])
   const signalScore = (signal: Signal) => pgScore(signal.scoreInputs || {}, pgScoreConfig.weights)
   const scoredSignals = [...dataset.signals]
     .filter((signal) => !signalAccountId || signal.accountId === signalAccountId)
@@ -88,7 +98,7 @@ export function DiscoveryWorkflow({
       {grouped.map((accountId) => <div className="hypothesis-account" key={accountId}>
         <h3>{dataset.accounts.find((account) => account.id === accountId)?.name || accountId} · {label('score máx.', 'max score')} {accountScore[accountId] || 0}</h3>
         {hypotheses.filter((hypothesis) => hypothesis.accountId === accountId).map((hypothesis) => <article className="hypothesis-card" key={hypothesis.id}>
-          <div><strong>{hypothesis.title}</strong><Badge>{hypothesis.status === 'validated' ? label('Validada', 'Validated') : label('Hipótesis', 'Hypothesis')}</Badge><p>{hypothesis.whyChange} · {hypothesis.whyNow}</p>{hypothesis.signalIds.map((signalId) => <small key={signalId}>{dataset.signals.find((signal) => signal.id === signalId)?.signal || signalId}</small>)}</div>
+          <div><strong>{hypothesis.title}</strong><Badge>{hypothesis.status === 'converted' ? label('Convertida', 'Converted') : hypothesis.status === 'validated' ? label('Validada', 'Validated') : hypothesis.status === 'discarded' ? label('Descartada', 'Discarded') : label('Hipótesis', 'Hypothesis')}</Badge><p>{hypothesis.whyChange} · {hypothesis.whyNow}</p>{hypothesis.signalIds.map((signalId) => <small key={signalId}>{dataset.signals.find((signal) => signal.id === signalId)?.signal || signalId}</small>)}{hypothesis.status === 'converted' && <Link to={`/opportunities/opp-${hypothesis.id}?tab=Origin`}>{label('Abrir oportunidad', 'Open opportunity')} →</Link>}</div>
           <div className="context-actions"><button className="button secondary" onClick={() => setDraft(hypothesis)}>{label('Editar', 'Edit')}</button>{hypothesis.status === 'hypothesis' && <button className="button secondary" onClick={() => upsertHypothesis({ ...hypothesis, status: 'validated', verifiedAt: new Date().toISOString() })}>{label('Validar', 'Validate')}</button>}{hypothesis.status === 'validated' && <button className="button primary" onClick={() => convert(hypothesis)}>{label('Convertir en oportunidad', 'Convert to opportunity')}</button>}</div>
         </article>)}
       </div>)}
@@ -132,8 +142,9 @@ export function DiscoveryWorkflow({
       })}</tbody></table></div>
     </Section>
 
-    {draft && <div className="modal-backdrop"><form className="modal-card hypothesis-form" onSubmit={saveHypothesis}>
-      <h2>{label('Crear hipótesis', 'Create hypothesis')}</h2>
+    {draft && <div className="hypothesis-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setDraft(null) }}>
+      <form ref={hypothesisFormRef} className="hypothesis-form" role="dialog" aria-modal="true" aria-labelledby="hypothesis-form-title" onSubmit={saveHypothesis}>
+      <h2 id="hypothesis-form-title">{label('Crear hipótesis', 'Create hypothesis')}</h2>
       <p>{dataset.accounts.find((account) => account.id === draft.accountId)?.name || draft.accountId} · {draft.signalIds.map((signalId) => dataset.signals.find((signal) => signal.id === signalId)?.signal || signalId).join(', ')}</p>
       <label>{label('Título', 'Title')}<input value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} /></label>
       <label>Why Change<textarea value={draft.whyChange} onChange={(event) => setDraft({ ...draft, whyChange: event.target.value })} /></label>
@@ -148,6 +159,7 @@ export function DiscoveryWorkflow({
       <label>{label('Próxima mejor acción', 'Next best action')}<textarea value={draft.nextBestAction} onChange={(event) => setDraft({ ...draft, nextBestAction: event.target.value })} /></label>
       <label>{label('Estado', 'Status')}<select value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value as Hypothesis['status'] })}><option value="hypothesis">Hypothesis</option><option value="validated">Validated</option><option value="discarded">Discarded</option></select></label>
       <div className="context-actions"><button type="button" className="button secondary" onClick={() => setDraft(null)}>{label('Cancelar', 'Cancel')}</button><button className="button primary" type="submit">{label('Guardar hipótesis', 'Save hypothesis')}</button></div>
-    </form></div>}
+      </form>
+    </div>}
   </>
 }

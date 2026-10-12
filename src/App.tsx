@@ -313,6 +313,16 @@ export default function App() {
     window.addEventListener('keydown', handleShortcut);
     return () => window.removeEventListener('keydown', handleShortcut);
   }, []);
+  useEffect(() => {
+    const blurNumberInputOnWheel = (event: WheelEvent) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement && target.type === 'number' && document.activeElement === target) {
+        target.blur();
+      }
+    };
+    document.addEventListener('wheel', blurNumberInputOnWheel, true);
+    return () => document.removeEventListener('wheel', blurNumberInputOnWheel, true);
+  }, []);
   const dataset = useMemo(() => {
     const merged = mergeDataset(registryDataset, overrides, pgEdits, pgCustom, customOpportunities);
     const existing = new Set(merged.opportunities.map((opportunity) => opportunity.id));

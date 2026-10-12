@@ -1,9 +1,12 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { dataset } from './data'
 import {
+  HYPOTHESES_KEY,
   migrateOpportunitySnapshot,
   OPPORTUNITIES_V2_SNAPSHOT_VERSION,
+  persistHypothesisUpdate,
 } from './store'
+import type { Hypothesis } from './types'
 
 describe('migrateOpportunitySnapshot', () => {
   it('migrates legacy and custom opportunities and overlays saved edits after a schema bump', () => {
@@ -36,5 +39,38 @@ describe('migrateOpportunitySnapshot', () => {
       closeDate: '2027-08-12',
       productIds: ['devin-cloud'],
     })
+  })
+})
+
+describe('persistHypothesisUpdate', () => {
+  it('persists the converted status in the hypotheses store', () => {
+    let storedValue = ''
+    vi.stubGlobal('localStorage', { setItem: (_key: string, value: string) => { storedValue = value } })
+    try {
+      const hypothesis: Hypothesis = {
+        id: 'hyp-store-test',
+        accountId: 'acciona',
+        title: 'Synthetic hypothesis',
+        whyChange: '',
+        whyNow: '',
+        whyUs: '',
+        valueEstimate: { amount: null, assumptions: '' },
+        stakeholderIds: [],
+        routeToMarket: 'direct',
+        nextBestAction: '',
+        status: 'converted',
+        signalIds: [],
+        source: 'test',
+        verifiedAt: null,
+        productIds: [],
+      }
+      const result = persistHypothesisUpdate([], hypothesis)
+
+      expect(result).toEqual([hypothesis])
+      expect(JSON.parse(storedValue)).toMatchObject([{ id: hypothesis.id, status: 'converted' }])
+      expect(HYPOTHESES_KEY).toBe('cognition-pipeline-hypotheses')
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 })

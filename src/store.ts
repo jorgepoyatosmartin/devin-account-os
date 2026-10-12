@@ -33,6 +33,12 @@ const load = <T,>(key: string, fallback: T): T => {
 
 export const overrideKey = (entityId: string, path: string) => `${entityId}.${path}`;
 
+export function persistHypothesisUpdate(current: Hypothesis[], hypothesis: Hypothesis): Hypothesis[] {
+  const next = [hypothesis, ...current.filter((item) => item.id !== hypothesis.id)];
+  localStorage.setItem(HYPOTHESES_KEY, JSON.stringify(next));
+  return next;
+}
+
 export function mergeOverrides<T extends object>(entity: T, entityId: string, overrides: OverrideMap): T {
   const result = structuredClone(entity);
   Object.entries(overrides).forEach(([key, value]) => {
@@ -232,11 +238,7 @@ export function useOverrides() {
     });
   }, []);
   const upsertHypothesis = useCallback((hypothesis: Hypothesis) => {
-    setHypotheses((current) => {
-      const next = [hypothesis, ...current.filter((item) => item.id !== hypothesis.id)];
-      localStorage.setItem(HYPOTHESES_KEY, JSON.stringify(next));
-      return next;
-    });
+    setHypotheses((current) => persistHypothesisUpdate(current, hypothesis));
   }, []);
   const addOpportunity = useCallback((opportunity: Opportunity) => {
     setCustomOpportunities((current) => {
