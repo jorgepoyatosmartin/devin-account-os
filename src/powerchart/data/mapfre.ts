@@ -24,7 +24,7 @@ type YamlStakeholder = {
   reports_to: string | null
   reports_to_confidence: Stakeholder['reportsToConfidence']
   influences?: string[]
-  source?: 'research' | 'account-plan'
+  source?: 'research' | 'account-plan' | 'import'
   notes?: string
   departed?: boolean
 }

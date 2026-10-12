@@ -2,7 +2,7 @@ export type Level = 'C Level' | '2nd' | '3rd' | '4th'
 export type Role = 'EB' | 'Champion' | 'Coach' | 'Influencer' | 'Blocker' | 'None'
 export type Attitude = 'positive' | 'neutral' | 'negative' | 'unknown'
 export type Status = 'No contact' | 'In contact' | 'In process' | 'Opportunity'
-export type SalesPlay = 'Agentic Readiness' | 'Security AI Governance' | 'API + AI Monetization'
+export type SalesPlay = 'Agentic Readiness' | 'Security AI Governance' | 'API + AI Monetization' | 'Unassigned'
 export type Confidence = 'confirmed' | 'hypothesis'
 
 export interface Stakeholder {
@@ -29,6 +29,10 @@ export interface Stakeholder {
   external?: boolean
   departed?: boolean
   appStatus?: string
+  source?: 'research' | 'account-plan' | 'import'
+  email?: string
+  phone?: string
+  linkedinUrl?: string
 }
 
 export interface Gap {
@@ -73,7 +77,7 @@ export const LEVELS: Level[] = ['C Level', '2nd', '3rd', '4th']
 export const ROLES: Role[] = ['EB', 'Champion', 'Coach', 'Influencer', 'Blocker', 'None']
 export const ATTITUDES: Attitude[] = ['positive', 'neutral', 'negative', 'unknown']
 export const STATUSES: Status[] = ['No contact', 'In contact', 'In process', 'Opportunity']
-export const SALES_PLAYS: SalesPlay[] = ['Agentic Readiness', 'Security AI Governance', 'API + AI Monetization']
+export const SALES_PLAYS: SalesPlay[] = ['Agentic Readiness', 'Security AI Governance', 'API + AI Monetization', 'Unassigned']
 
 export function todayISO(): string {
   return new Date().toISOString().slice(0, 10)

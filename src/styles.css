@@ -117,6 +117,9 @@ td .badge { margin: 0 4px 4px 0; }
 select, input, textarea { width: 100%; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); padding: 9px 10px; outline: none; }
 select:focus, input:focus, textarea:focus { border-color: var(--color-accent); }
 textarea { min-height: 78px; resize: vertical; }
+.csv-paste-label { display: grid; gap: 6px; margin-top: 12px; }
+.csv-paste { min-height: 170px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.csv-preview-table mark { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 5px; border-radius: 4px; background: var(--color-warning-tint); color: var(--color-text-primary); }
 .account-grid { display: grid; gap: 13px; }
 .account-card { display: grid; grid-template-columns: 46px 1fr auto; gap: 16px; align-items: center; padding: 20px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
 .account-card:hover, .opportunity-row:hover { border-color: var(--color-border); background: var(--color-surface-tint); }

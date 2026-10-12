@@ -34,7 +34,7 @@ type StakeholderYaml = {
   reports_to_confidence?: ChartStakeholder['reportsToConfidence']
   influences?: string[]
   notes?: string
-  source?: 'research' | 'account-plan'
+  source?: 'research' | 'account-plan' | 'import'
   departed?: boolean
 }
 type StakeholderDocument = { account?: string; stakeholders?: StakeholderYaml[] }
@@ -190,6 +190,7 @@ export function buildAccountRegistry(
       influences: person.influences ?? [],
       notes: person.notes ?? '',
       external: person.source === 'research',
+      source: person.source,
       departed: person.departed === true,
     }))
     const account = {

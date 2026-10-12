@@ -247,6 +247,24 @@ export interface Stakeholder {
   excel?: { person: string; title: string; level: string; businessUnit: string; salesPlay: string; action: string; whyHighTarget: string };
 }
 
+export interface EnrichmentPersonRef {
+  id: string;
+  accountId: string;
+  name: string;
+  title: string;
+  companyName: string;
+  email: string;
+  phone: string;
+  linkedinUrl: string;
+  location: string;
+  department: string;
+}
+
+export interface EnrichmentProvider {
+  findPeople(accountId: string, query: string): EnrichmentPersonRef[];
+  enrich(personRef: EnrichmentPersonRef): EnrichmentPersonRef | null;
+}
+
 export interface ValidationRow {
   status: ValidationStatus;
   evidence: string;

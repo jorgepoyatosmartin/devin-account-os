@@ -21,6 +21,7 @@ import PgPage from './pages/PgPage';
 import PrpPage from './pages/PrpPage';
 import TodayPage from './pages/TodayPage';
 import TerritoryPage from './pages/TerritoryPage';
+import ImportPage from './pages/ImportPage';
 import OpportunityCommercialFields from './components/OpportunityCommercialFields';
 import { AccountPartnersTab, OpportunityBusinessCaseTab, OpportunityDecisionPlanTab, OpportunityEngagementTab, OpportunityOriginTab, OpportunityPeopleTab, OpportunityStageGatesTab, OpportunityTechnicalValidationTab } from './pages/OpportunityDiscoveryTabs';
 import { useI18n } from './i18n';
@@ -73,6 +74,7 @@ function Layout({ children, dataset, reset, exportData, openCommand }: { childre
       <nav>{groups.map((group) => <div className="nav-group" key={group.name}><div className="nav-heading">{group.name}</div>{group.links.map(([to, label, icon]) => <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => isActive ? 'active' : ''}><span className="nav-icon">{icon}</span>{label}</NavLink>)}</div>)}</nav>
       <div className="sidebar-bottom">
         <div className="data-status"><span className="status-dot" />{dataset.accounts.length === 1 ? t('common.accountLoaded', { count: dataset.accounts.length }) : t('common.accountLoadedPlural', { count: dataset.accounts.length })}</div>
+        <Link className="sidebar-button" to="/import">⇧ {t('import.title')}</Link>
         <button className="sidebar-button" onClick={exportData}>⇩ {t('common.export')}</button>
         <button className="sidebar-button muted-button" onClick={reset}>↺ {t('common.reset')}</button>
         <div className="version">v0.2 • {t('common.localFirst')}</div>
@@ -341,6 +343,7 @@ export default function App() {
     <Route path="/" element={<TodayPage dataset={dataset} opportunities={opportunitiesV2} compPlan={compPlan} tasks={tasks} addTask={addTask} hypotheses={hypotheses} />} />
     <Route path="/prp" element={<PrpPage opportunities={opportunitiesV2} compPlan={compPlan} setCompPlan={setCompPlan} onToast={setToast} />} />
     <Route path="/territory" element={<TerritoryPage dataset={dataset} opportunitiesV2={opportunitiesV2} fxEurUsd={compPlan?.fxEurUsd || 1.16} />} />
+    <Route path="/import" element={<ImportPage accounts={dataset.accounts} peopleByAccount={chartPeopleByAccount} opportunities={opportunitiesV2} upsertOpportunityV2={upsertOpportunityV2} onToast={setToast} />} />
     <Route path="/accounts" element={<AccountsPage dataset={dataset} />} />
     <Route path="/accounts/:id" element={<AccountDetail dataset={dataset} setOverride={setOverride} />} />
     <Route path="/initiatives" element={<InitiativesPage dataset={dataset} />} />

@@ -21,7 +21,7 @@ export function toYamlRecord(p: Stakeholder): Record<string, unknown> {
     reports_to: p.reportsTo,
     reports_to_confidence: p.reportsToConfidence,
     influences: p.influences,
-    ...(p.external ? { source: 'research' } : {}),
+    ...(p.source ? { source: p.source } : p.external ? { source: 'research' } : {}),
     ...(p.departed ? { departed: true } : {}),
     ...(p.responsibilities ? { responsibilities: p.responsibilities } : {}),
     ...(p.priorities ? { priorities: p.priorities } : {}),

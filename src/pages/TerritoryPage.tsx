@@ -144,6 +144,7 @@ export default function TerritoryPage({
       <div><span>Cuentas sin champion</span><strong>{accountsWithoutChampion}</strong></div>
     </div>
     <div className="context-actions territory-links">
+      <Link className="button primary" to="/import">{t('import.importCsv')}</Link>
       <Link className="button secondary" to="/stakeholders">{t('territory.stakeholders')}</Link>
       <Link className="button secondary" to="/power-charts">{t('territory.powerCharts')}</Link>
       <Link className="button secondary" to="/initiatives">{t('territory.initiatives')}</Link>

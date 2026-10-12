@@ -112,3 +112,11 @@ MVP: repo files + localStorage edits + "Guardar en repo" PR prompt (existing pat
 ### Hoy commission actions
 
 `buildToday(data, today, plan?)` retains the existing computed actions. When a compensation plan is supplied, open opportunities closing from today through the next 90 days can add up to three acceleration actions, ranked by estimated net commission from `commissionByOpportunity`.
+
+## Fase 3a — Importación
+
+`src/import/csv.ts` exposes `parseCsv(text)`, which parses quoted RFC 4180 fields (including escaped quotes and embedded newlines), strips a BOM, detects comma/semicolon/tab delimiters from the header, and trims header names. `src/import/providers.ts` defines stakeholder/opportunity presets and header aliases resolved without case or accent sensitivity. `CsvImportProvider` implements the `EnrichmentProvider` seam using local CSV data. Lusha enrichment is described by the `playbooks/lusha-enrich.md` Devin Playbook; no API credentials are required or stored by the MVP.
+
+`planStakeholderImport(rows, preset, accountId, existing)` returns local stakeholder creates, safe updates, and skipped rows. Matching is prioritized by normalized email, LinkedIn URL, then normalized name; duplicate input rows are consolidated. Departed stakeholders remain departed and receive notes only. Contact fields such as email and phone are retained only in the browser overlay and excluded from repository YAML prompts.
+
+`planOpportunityImport(rows, preset, opportunities, accounts)` matches existing opportunities by ID or normalized name plus account, and plans amount/currency/date/stage/forecast updates. Ambiguous dates and unmatched opportunities are skipped; unknown stages are preserved with a warning. The `/import` page previews creates, updates, skips, changed fields and warnings. Nothing is written until Apply, which persists stakeholders through the Power Chart account snapshot and opportunities through the existing OpportunityV2 store. `LushaApiProvider` (backend) and OpenAI/LlmProvider remain pending.

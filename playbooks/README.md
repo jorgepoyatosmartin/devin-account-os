@@ -9,5 +9,6 @@ Trabajos completos que encadenan Skills. Cada fichero es el contenido del Playbo
 | `meeting-brief.md` | Antes de una reunión | power-map-review (+ research) |
 | `meeting-debrief.md` | Después de una reunión | stakeholder-mapping → meddpicc-plan → power-map-review → deal-risk-review |
 | `weekly-deal-review.md` | Semanal / pre-forecast (Automation) | signal-sweep → deal-risk-review → power-map-review |
+| `lusha-enrich.md` | Enriquecer contactos mediante Lusha MCP | Importación CSV → validación humana → actualización del Power Chart |
 
 Sin integraciones por ahora: nada envía emails ni escribe en el CRM; toda salida es un PR y, opcionalmente, un mensaje en Slack.
