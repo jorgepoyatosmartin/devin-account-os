@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import type { Dataset, PgRecord, PgStatus, SalesPlay, Task } from '../types';
-import { convertToOpportunity, generateMessage, relevantUseCases, resolvePg, suggestPlay } from '../lib/pg';
+import type { Dataset, Hypothesis, OpportunityV2, PgRecord, PgScoreInputs, PgStatus, SalesPlay, Task } from '../types';
+import { generateMessage, relevantUseCases, resolvePg, suggestPlay } from '../lib/pg';
 import { AiBlock, Badge, PageHeader, Section } from '../components/ui';
 import { useI18n } from '../i18n';
+import { DiscoveryWorkflow } from '../pg/DiscoveryWorkflow';
+import { convertDiscoveryToOpportunity } from '../pg/convert';
+import { DEVIN_URL } from '../powerchart/playbooks';
 
 const statusOrder: PgStatus[] = ['TARGET', 'READY', 'OUTREACH', 'ENGAGED', 'MEETING', 'QUALIFIED', 'CONVERTED', 'NURTURE', 'DISQUALIFIED'];
 const plays: SalesPlay[] = ['Developer Productivity', 'AI Engineering', 'Legacy Modernization', 'Cloud Migration', 'Quality & Regulatory Delivery', 'Data & AI Product Engineering', 'UNKNOWN'];
@@ -15,9 +18,12 @@ type Props = {
   dataset: Dataset;
   upsertPg: (id: string, patch: Partial<PgRecord>) => void;
   addPg: (record: PgRecord) => void;
-  addOpportunity: (opportunity: import('../types').Opportunity) => void;
   addTask: (task: Task) => void;
   onToast: (message: string) => void;
+  hypotheses: Hypothesis[];
+  upsertHypothesis: (hypothesis: Hypothesis) => void;
+  upsertSignalMeta: (id: string, patch: { productIds?: string[]; salesPlayId?: string; scoreInputs?: PgScoreInputs }) => void;
+  upsertOpportunityV2: (opportunity: OpportunityV2) => void;
 };
 
 function ResolvedBadge({ value }: { value: string }) {
@@ -36,7 +42,7 @@ export default function PgPage(props: Props) {
   return id ? <PgDetail {...props} id={id} /> : <PgDashboard {...props} />;
 }
 
-function PgDashboard({ dataset, upsertPg, addPg, addOpportunity, onToast }: Props) {
+function PgDashboard({ dataset, addPg, onToast, hypotheses, upsertHypothesis, upsertSignalMeta, upsertOpportunityV2 }: Props) {
   const { lang, t, tv } = useI18n();
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -64,13 +70,9 @@ function PgDashboard({ dataset, upsertPg, addPg, addOpportunity, onToast }: Prop
       (!owner || record.owner === owner) && (!personSearch || personText.includes(personSearch.toLowerCase()));
   });
   const prioritiesToday = records.filter((record) => !['CONVERTED', 'DISQUALIFIED', 'NURTURE'].includes(record.status)).sort(prioritySort).slice(0, 5);
-  const send = async (record: ReturnType<typeof resolvePg>) => {
-    try { await navigator.clipboard?.writeText(record.message); } catch { /* clipboard may be unavailable in local browser */ }
-    upsertPg(record.id, { message: record.message, messageSentAt: new Date().toISOString(), status: 'OUTREACH' });
-    onToast(`${t('toast.messageCopied')} · ${tv('OUTREACH')}`);
-  };
   return <>
     <PageHeader eyebrow={t('pg.eyebrow')} title={t('pg.title')} subtitle={t('pg.subtitle')} action={<div className="context-actions"><Link className="button secondary" to="/signals">{t('pg.signalsLink')}</Link><button className="button primary" onClick={() => setShowComposer((value) => !value)}>{t('pg.newTarget')}</button></div>} />
+    <DiscoveryWorkflow dataset={dataset} hypotheses={hypotheses} upsertSignalMeta={upsertSignalMeta} upsertHypothesis={upsertHypothesis} upsertOpportunityV2={upsertOpportunityV2} />
     <div className="pipeline-kpis pg-kpis">{[
       [t('pg.total'), records.length], [t('pg.highPriority'), records.filter((r) => r.priority === 'HIGH').length], [t('pg.ready'), records.filter((r) => r.status === 'READY').length],
       [t('pg.outreach'), records.filter((r) => r.status === 'OUTREACH').length], [t('pg.engaged'), records.filter((r) => r.status === 'ENGAGED').length],
@@ -86,7 +88,7 @@ function PgDashboard({ dataset, upsertPg, addPg, addOpportunity, onToast }: Prop
         <div className="pg-copy"><span>{t('pg.meetingPath')}</span><p>{record.howGetMeeting}</p></div>
         <div className="pg-copy ai-block"><span className="ai-block-label">{t('ai.hypothesis')}</span><span>{t('pg.action')}</span><p>{record.action}</p></div>
         <div className="card-top"><ResolvedBadge value={record.status} /><span className="muted">{record.message ? t('common.messageReady') : t('common.generateMessage')}</span></div>
-        <div className="context-actions"><button onClick={(event) => { event.stopPropagation(); navigate(`/pg/${record.id}`); }}>{t('pg.contextGenerate')}</button><button onClick={(event) => { event.stopPropagation(); void send(record); }}>{t('pg.contextSend')}</button></div>
+        <div className="context-actions"><button onClick={(event) => { event.stopPropagation(); navigate(`/pg/${record.id}`); }}>{t('pg.contextGenerate')}</button></div>
       </article>)}</div>
     </Section>
     <div className="filters pg-filters">
@@ -141,7 +143,7 @@ function PgComposer({ dataset, initialStakeholderId, addPg }: { dataset: Dataset
   </form></Section>;
 }
 
-function PgDetail({ dataset, id, upsertPg, addOpportunity, addTask, onToast }: Props & { id: string }) {
+function PgDetail({ dataset, id, upsertPg, addTask, onToast, hypotheses, upsertOpportunityV2 }: Props & { id: string }) {
   const { lang, t, tv } = useI18n();
   const navigate = useNavigate();
   const raw = dataset.pg.find((x) => x.id === id);
@@ -151,9 +153,45 @@ function PgDetail({ dataset, id, upsertPg, addOpportunity, addTask, onToast }: P
   const via = view.accessViaStakeholderId ? dataset.stakeholders.find((x) => x.id === view.accessViaStakeholderId) : undefined;
   const linkedOps = dataset.opportunities.filter((x) => x.stakeholderIds.includes(view.stakeholderId));
   const set = (patch: Partial<PgRecord>) => upsertPg(raw.id, { ...patch, updatedAt: new Date().toISOString() });
-  const generate = () => set({ message: generateMessage(view, { initiative: view.initiative, signal: view.signals[0], useCase: view.useCases[0], via }, language), messageLang: language });
-  const markSent = () => { set({ messageSentAt: new Date().toISOString(), status: ['TARGET', 'READY'].includes(raw.status) ? 'OUTREACH' : raw.status }); onToast(t('toast.messageSent')); };
-  const convert = () => { const opportunity = convertToOpportunity(view, dataset, lang); addOpportunity(opportunity); set({ status: 'CONVERTED', opportunityId: opportunity.id }); onToast(t('toast.opportunityCreated')); navigate(`/opportunities/${opportunity.id}?tab=3%20WHYS`); };
+  const generate = () => { const message = generateMessage(view, { initiative: view.initiative, signal: view.signals[0], useCase: view.useCases[0], via }, language); set({ message, messageDraft: message, messageLang: language, messageStatus: 'draft' }); };
+  const messageStatus = raw.messageStatus || (raw.messageSentAt ? 'sent' : 'draft');
+  const approveMessage = () => { if (raw.message.trim()) { set({ messageStatus: 'approved' }); onToast(lang === 'es' ? 'Mensaje aprobado; no se ha enviado.' : 'Message approved; it has not been sent.'); } };
+  const markSent = () => { if (messageStatus !== 'approved') return; set({ messageStatus: 'sent', messageSentAt: new Date().toISOString(), status: ['TARGET', 'READY'].includes(raw.status) ? 'OUTREACH' : raw.status }); onToast(lang === 'es' ? 'Marcado como enviado manualmente.' : 'Manually marked as sent.'); };
+  const promptForDevin = async () => {
+    const linkedHypothesis = hypotheses.find((hypothesis) => hypothesis.signalIds.some((signalId) => raw.signalIds.includes(signalId)));
+    const prompt = [
+      '!pg_activation',
+      'Redacta un borrador de contacto para revisión humana. No envíes nada.',
+      `Cuenta: ${view.account.name} (${view.account.id})`,
+      `Persona: ${view.stakeholder.name} — ${view.stakeholder.title}`,
+      `Hipótesis: ${linkedHypothesis?.title || 'No vinculada'}`,
+      `Señales: ${view.signals.map((signal) => signal.signal).join(' | ') || 'No vinculadas'}`,
+      `Sales play: ${view.salesPlay}`,
+    ].join('\n');
+    try { await navigator.clipboard.writeText(prompt); window.open(DEVIN_URL, '_blank', 'noopener'); onToast(t('toast.messageCopied')); }
+    catch { onToast(lang === 'es' ? 'No se pudo copiar el prompt.' : 'Could not copy the prompt.'); }
+  };
+  const convert = () => {
+    if (!['MEETING', 'QUALIFIED'].includes(raw.status)) return;
+    const relatedHypothesis = hypotheses.find((hypothesis) => hypothesis.signalIds.some((signalId) => raw.signalIds.includes(signalId)));
+    const source = convertDiscoveryToOpportunity({
+      id: raw.id, accountId: raw.accountId, name: `${view.account.name} · ${view.stakeholder.name}`,
+      amount: linkedAmount(), stakeholderIds: [raw.stakeholderId], signalIds: raw.signalIds,
+      productIds: [...new Set(raw.signalIds.flatMap((signalId) => dataset.signals.find((signal) => signal.id === signalId)?.productIds || []))],
+      salesPlayId: raw.signalIds.map((signalId) => dataset.signals.find((signal) => signal.id === signalId)?.salesPlayId).find(Boolean),
+      pgId: raw.id,
+      hypothesisId: relatedHypothesis?.id,
+      today: new Date().toISOString().slice(0, 10),
+    }, dataset.stakeholders);
+    upsertOpportunityV2(source);
+    set({ status: 'CONVERTED', opportunityId: source.id });
+    onToast(t('toast.opportunityCreated'));
+    navigate(`/opportunities/${source.id}?tab=Origin`);
+  };
+  const linkedAmount = () => {
+    const hypothesis = hypotheses.find((item) => item.signalIds.some((signalId) => raw.signalIds.includes(signalId)));
+    return hypothesis?.valueEstimate.amount ?? null;
+  };
   const selectedInitiative = view.account.initiatives.find((x) => x.id === raw.initiativeId);
   return <>
     <PageHeader eyebrow={`${t('pg.target')} / ${view.account.name}`} title={view.stakeholder.name} subtitle={`${view.stakeholder.title} · ${tv(view.salesPlay)}`} action={<Link className="button secondary" to="/pg">← {t('pg.title')}</Link>} />
@@ -168,10 +206,10 @@ function PgDetail({ dataset, id, upsertPg, addOpportunity, addTask, onToast }: P
     <Section title={t('pg.detail.whyHigh')} eyebrow={t('pg.qualification')}>{raw.whyHighTarget ? <div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.whyHighTarget}</div> : <AiBlock kind="hypothesis"><div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.whyHighTarget}</div></AiBlock>}<textarea value={raw.whyHighTarget} placeholder={t('pg.autoInference')} onChange={(e) => set({ whyHighTarget: e.target.value })} /><button className="button secondary" onClick={() => set({ whyHighTarget: '' })}>{t('pg.detail.resetAuto')}</button></Section>
     <Section title={t('pg.detail.whyMeet')} eyebrow={t('pg.qualification')}>{raw.whyMeet ? <div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.whyMeet}</div> : <AiBlock kind="hypothesis"><div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.whyMeet}</div></AiBlock>}<textarea value={raw.whyMeet} placeholder={t('pg.autoInference')} onChange={(e) => set({ whyMeet: e.target.value })} /><button className="button secondary" onClick={() => set({ whyMeet: '' })}>{t('pg.detail.resetAuto')}</button></Section>
     <Section title={t('pg.detail.howMeeting')} eyebrow={t('pg.access')}>{raw.howGetMeeting ? <div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.howGetMeeting}</div> : <AiBlock kind="hypothesis"><div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.howGetMeeting}</div></AiBlock>}<select value={view.accessRoute} onChange={(e) => set({ accessRoute: e.target.value as PgRecord['accessRoute'] })}>{['Direct outreach', 'Internal introduction', 'Champion introduction', 'Executive introduction', 'Partner introduction', 'Event', 'Existing opportunity', 'Existing customer relationship'].map((x) => <option key={x} value={x}>{tv(x)}</option>)}</select></Section>
-    <Section title={t('pg.detail.message')} eyebrow={t('pg.outreach')}><div className={raw.message ? '' : 'ai-block'}>{!raw.message && <span className="ai-block-label">{t('ai.generated')}</span>}<div className="language-toggle"><button className={language === 'es' ? 'selected' : ''} onClick={() => setLanguage('es')}>ES</button><button className={language === 'en' ? 'selected' : ''} onClick={() => setLanguage('en')}>EN</button><button className="button secondary" onClick={generate}>{t('pg.detail.generate')}</button><button className="button secondary" onClick={async () => { try { await navigator.clipboard?.writeText(view.message); onToast(t('toast.messageCopied')); } catch { onToast(t('pg.messageReady')); } }}>{t('pg.detail.copy')}</button><button className="button primary" onClick={markSent}>{t('pg.detail.markSent')}</button></div><textarea value={raw.message} placeholder={t('pg.detail.generatePlaceholder')} onChange={(e) => set({ message: e.target.value, messageLang: language })} /></div></Section>
+    <Section title={t('pg.detail.message')} eyebrow={t('pg.outreach')}><div className={raw.message ? '' : 'ai-block'}>{!raw.message && <span className="ai-block-label">{t('ai.generated')}</span>}<div className="language-toggle"><button className={language === 'es' ? 'selected' : ''} onClick={() => setLanguage('es')}>ES</button><button className={language === 'en' ? 'selected' : ''} onClick={() => setLanguage('en')}>EN</button><button className="button secondary" onClick={generate}>{t('pg.detail.generate')}</button><button className="button secondary" onClick={promptForDevin}>{lang === 'es' ? 'Generar borrador con Devin' : 'Generate draft with Devin'}</button><button className="button secondary" onClick={async () => { try { await navigator.clipboard?.writeText(view.message); onToast(t('toast.messageCopied')); } catch { onToast(t('pg.messageReady')); } }}>{t('pg.detail.copy')}</button>{messageStatus === 'draft' && <button className="button primary" disabled={!raw.message.trim()} onClick={approveMessage}>{lang === 'es' ? 'Aprobar mensaje' : 'Approve message'}</button>}{messageStatus === 'approved' && <button className="button primary" onClick={markSent}>{lang === 'es' ? 'Marcar como enviado' : 'Mark as sent'}</button>}<Badge>{messageStatus}</Badge></div><textarea value={raw.messageDraft ?? raw.message} placeholder={t('pg.detail.generatePlaceholder')} onChange={(e) => set({ message: e.target.value, messageDraft: e.target.value, messageLang: language })} /></div><div className="detail-grid compact-detail"><label>{lang === 'es' ? 'Canal del touch' : 'Touch channel'}<select id="touch-channel"><option value="email">email</option><option value="linkedin">linkedin</option><option value="call">call</option><option value="meeting">meeting</option><option value="event">event</option></select></label><label>{lang === 'es' ? 'Resultado' : 'Outcome'}<input id="touch-outcome" /></label><button className="button secondary" onClick={() => { const channel = document.getElementById('touch-channel') as HTMLSelectElement; const outcome = document.getElementById('touch-outcome') as HTMLInputElement; set({ touches: [...(raw.touches || []), { date: new Date().toISOString().slice(0, 10), channel: channel.value as NonNullable<PgRecord['touches']>[number]['channel'], outcome: outcome.value }] }); }}>{lang === 'es' ? 'Registrar touch' : 'Log touch'}</button></div></Section>
     <Section title={t('pg.detail.action')} eyebrow={t('pg.nextMove')}>{raw.action ? <div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.action}</div> : <AiBlock kind="hypothesis"><div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.action}</div></AiBlock>}<input value={raw.action} placeholder={t('pg.autoInference')} onChange={(e) => set({ action: e.target.value })} /><button className="button secondary" onClick={() => { addTask({ id: `task-${Date.now()}`, title: view.action, accountId: view.accountId, stakeholderId: view.stakeholderId, status: 'Open', createdAt: new Date().toISOString(), source: 'pg' }); onToast(t('toast.actionAdded')); }}>{t('pg.detail.addTask')}</button></Section>
     <Section title={t('pg.detail.signalsEngagement')} eyebrow={t('pg.operatingState')}><div className="checkbox-grid">{dataset.signals.filter((x) => x.accountId === view.accountId).map((signal) => <label key={signal.id}><input type="checkbox" checked={raw.signalIds.includes(signal.id)} onChange={() => set({ signalIds: raw.signalIds.includes(signal.id) ? raw.signalIds.filter((sid) => sid !== signal.id) : [...raw.signalIds, signal.id] })} />{signal.signal}<small>{signal.cognitionRelevance} → {signal.salesAction}</small></label>)}</div><div className="detail-grid compact-detail"><label>{t('common.status')}<select value={raw.status} onChange={(e) => set({ status: e.target.value as PgStatus })}>{statusOrder.map((x) => <option key={x} value={x}>{tv(x)}</option>)}</select></label><label>{t('common.owner')}<input value={raw.owner} onChange={(e) => set({ owner: e.target.value })} /></label><label>{t('common.comments')}<textarea value={raw.comments} onChange={(e) => set({ comments: e.target.value })} /></label></div></Section>
-    <Section title={t('pg.detail.conversion')} eyebrow={t('pg.pipeline')}><div className="conversion-row"><label>{t('pg.detail.priority')} {raw.priorityIsAuto && <Badge>{t('pg.detail.auto')}</Badge>}<select value={raw.priority} onChange={(e) => set({ priority: e.target.value as PgRecord['priority'], priorityIsAuto: false })}>{priorities.map((x) => <option key={x} value={x}>{tv(x)}</option>)}</select></label>{raw.opportunityId ? <Link className="button secondary" to={`/opportunities/${raw.opportunityId}?tab=3%20WHYS`}>{t('common.open')} {t('common.opportunity')} →</Link> : <button className="button primary" onClick={convert}>{t('pg.detail.convert')}</button>}</div></Section>
+    <Section title={t('pg.detail.conversion')} eyebrow={t('pg.pipeline')}><div className="conversion-row"><label>{t('pg.detail.priority')} {raw.priorityIsAuto && <Badge>{t('pg.detail.auto')}</Badge>}<select value={raw.priority} onChange={(e) => set({ priority: e.target.value as PgRecord['priority'], priorityIsAuto: false })}>{priorities.map((x) => <option key={x} value={x}>{tv(x)}</option>)}</select></label>{raw.opportunityId ? <Link className="button secondary" to={`/opportunities/${raw.opportunityId}?tab=Origin`}>{t('common.open')} {t('common.opportunity')} →</Link> : <button className="button primary" disabled={!['MEETING', 'QUALIFIED'].includes(raw.status)} onClick={convert}>{t('pg.detail.convert')}</button>}</div></Section>
     {view.stakeholder.excel && <Section title={t('pg.originalExcel')} eyebrow={t('pg.sourceRegister')}><div className="table-wrap"><table><thead><tr>{(['common.excelPerson', 'common.excelTitle', 'common.excelLevel', 'common.excelBusinessUnit', 'common.excelSalesPlay', 'common.excelAction', 'common.excelWhyHighTarget'] as const).map((key) => <th key={key}>{t(key)}</th>)}</tr></thead><tbody><tr>{Object.values(view.stakeholder.excel).map((x, index) => <td key={index}>{x || tv('UNKNOWN')}</td>)}</tr></tbody></table></div></Section>}
   </>;
 }

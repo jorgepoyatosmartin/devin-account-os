@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { CompPlan, Dataset, MeetingNote, Opportunity, OpportunityV2, PgRecord, Stakeholder, Task } from './types';
+import type { CompPlan, Dataset, Hypothesis, MeetingNote, Opportunity, OpportunityV2, PgRecord, PgScoreInputs, Stakeholder, Task } from './types';
 import { dataset as sourceDataset } from './data';
 import { migrateOpportunity } from './prp/migrate';
 import { isCompPlan } from './lib/compPlan';
@@ -13,6 +13,8 @@ const PG_CUSTOM_KEY = 'cognition-pipeline-pg-custom';
 const CUSTOM_OPPORTUNITIES_KEY = 'cognition-pipeline-custom-opps';
 export const OPPORTUNITIES_V2_KEY = 'cognition-pipeline-opps-v2';
 export const COMP_PLAN_KEY = 'cognition-pipeline-comp-plan';
+export const SIGNAL_META_KEY = 'cognition-pipeline-signal-meta';
+export const HYPOTHESES_KEY = 'cognition-pipeline-hypotheses';
 export const OPPORTUNITIES_V2_SNAPSHOT_VERSION = 1;
 
 export interface OpportunityV2Snapshot {
@@ -102,6 +104,8 @@ export function useOverrides() {
   const [tasks, setTasks] = useState<Task[]>(() => load(TASKS_KEY, []));
   const [pgEdits, setPgEdits] = useState<Record<string, Partial<PgRecord>>>(() => load(PG_EDITS_KEY, {}));
   const [pgCustom, setPgCustom] = useState<PgRecord[]>(() => load(PG_CUSTOM_KEY, []));
+  const [signalMeta, setSignalMeta] = useState<Record<string, Partial<Pick<Dataset['signals'][number], 'productIds' | 'salesPlayId' | 'scoreInputs'>>>>(() => load(SIGNAL_META_KEY, {}));
+  const [hypotheses, setHypotheses] = useState<Hypothesis[]>(() => load(HYPOTHESES_KEY, []));
   const [customOpportunities, setCustomOpportunities] = useState<Opportunity[]>(() => load(CUSTOM_OPPORTUNITIES_KEY, []));
   const [opportunitiesV2, setOpportunitiesV2] = useState<OpportunityV2[]>(() => {
     const legacyOpportunities = sourceDataset.opportunities.map((item) => mergeOverrides(item, item.id, overrides));
@@ -153,6 +157,8 @@ export function useOverrides() {
     localStorage.removeItem(TASKS_KEY);
     localStorage.removeItem(PG_EDITS_KEY);
     localStorage.removeItem(PG_CUSTOM_KEY);
+    localStorage.removeItem(SIGNAL_META_KEY);
+    localStorage.removeItem(HYPOTHESES_KEY);
     localStorage.removeItem(CUSTOM_OPPORTUNITIES_KEY);
     localStorage.removeItem(OPPORTUNITIES_V2_KEY);
     localStorage.removeItem(COMP_PLAN_KEY);
@@ -161,6 +167,8 @@ export function useOverrides() {
     setTasks([]);
     setPgEdits({});
     setPgCustom([]);
+    setSignalMeta({});
+    setHypotheses([]);
     setCustomOpportunities([]);
     setOpportunitiesV2(migrateOpportunitySnapshot(
       sourceDataset.opportunities,
@@ -216,6 +224,20 @@ export function useOverrides() {
       return next;
     });
   }, []);
+  const upsertSignalMeta = useCallback((id: string, patch: { productIds?: string[]; salesPlayId?: string; scoreInputs?: PgScoreInputs }) => {
+    setSignalMeta((current) => {
+      const next = { ...current, [id]: { ...(current[id] || {}), ...patch } };
+      localStorage.setItem(SIGNAL_META_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+  const upsertHypothesis = useCallback((hypothesis: Hypothesis) => {
+    setHypotheses((current) => {
+      const next = [hypothesis, ...current.filter((item) => item.id !== hypothesis.id)];
+      localStorage.setItem(HYPOTHESES_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
   const addOpportunity = useCallback((opportunity: Opportunity) => {
     setCustomOpportunities((current) => {
       const next = [opportunity, ...current];
@@ -236,6 +258,10 @@ export function useOverrides() {
     deleteTask,
     pgEdits,
     pgCustom,
+    signalMeta,
+    upsertSignalMeta,
+    hypotheses,
+    upsertHypothesis,
     customOpportunities,
     opportunitiesV2,
     upsertOpportunityV2,

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import type { Account, Evidence, MeetingNote, Opportunity, OpportunityV2, Stakeholder, Task, ValidationStatus } from './types';
+import type { Account, Evidence, Hypothesis, MeetingNote, Opportunity, OpportunityV2, Stakeholder, Task, ValidationStatus } from './types';
+import { fiscalConfig, stagesConfig } from './config';
 import { accountById, dataset as sourceDataset, opportunitiesForAccount, signalsForAccount } from './data';
 import { discoveryQuestionTemplates, isFullyQualified, threeWhysStatus, validationKeys, weakWhys } from './lib/threeWhys';
 import { singleThreaded } from './lib/coverage';
@@ -21,10 +22,11 @@ import PrpPage from './pages/PrpPage';
 import TodayPage from './pages/TodayPage';
 import TerritoryPage from './pages/TerritoryPage';
 import OpportunityCommercialFields from './components/OpportunityCommercialFields';
+import { OpportunityEngagementTab, OpportunityOriginTab, OpportunityPeopleTab, OpportunityStageGatesTab } from './pages/OpportunityDiscoveryTabs';
 import { useI18n } from './i18n';
 import en from './i18n/en';
 
-const tabs = ['Overview', '3 WHYS', 'MEDDPICC', 'Stakeholders', 'Activity', 'Next Actions', 'Meeting Prep', 'Post-Meeting Update'];
+const tabs = ['Overview', '3 WHYS', 'MEDDPICC', 'Stakeholders', 'Activity', 'Next Actions', 'Meeting Prep', 'Post-Meeting Update', 'People and roles', 'Engagement', 'Stage gates', 'Origin'];
 const statusOptions: ValidationStatus[] = ['Confirmed', 'Validated', 'Partially validated', 'Hypothesis', 'Unknown'];
 const registryDataset = { ...sourceDataset, accounts: registeredAccounts.map(({ account }) => account) };
 
@@ -33,7 +35,7 @@ function Badge({ children, tone = '' }: { children: React.ReactNode; tone?: stri
 }
 
 function EvidenceList({ evidence }: { evidence: Evidence[] }) {
-  const { t, tv } = useI18n();
+  const { lang, t, tv } = useI18n();
   if (!evidence.length) return <div className="muted">{t('common.noEvidence')}</div>;
   return <div className="evidence-list">{evidence.map((item, index) => (
     <div className="evidence-row" key={`${item.claim}-${index}`}>
@@ -176,15 +178,25 @@ function StakeholderTable({ stakeholders, setOverride }: { stakeholders: Stakeho
 
 function OpportunitiesPage({ dataset, opportunitiesV2, fxEurUsd }: { dataset: typeof sourceDataset; opportunitiesV2: OpportunityV2[]; fxEurUsd: number }) {
   const { t, tv } = useI18n();
-  return <><PageHeader eyebrow={`OPPORTUNITIES / ${t('nav.pipeline')}`} title={t('opportunities.title')} subtitle={t('opportunities.subtitle')} action={<div className="context-actions"><Link className="button secondary" to="/pipeline">{t('opportunities.pipelineLink')}</Link><Link className="button secondary" to="/tasks">{t('opportunities.tasksLink')}</Link></div>} /><div className="pipeline-kpis"><div><span>{t('opportunities.identified')}</span><strong>{dataset.opportunities.filter((x) => x.stage === 'Identified').length}</strong></div><div><span>{t('opportunities.inDiscovery')}</span><strong>{dataset.opportunities.filter((x) => x.stage === 'Discovery').length}</strong></div><div><span>{t('opportunities.qualifiedPlus')}</span><strong>{dataset.opportunities.filter((x) => ['Qualified', 'Proposal', 'Negotiation'].includes(x.stage)).length}</strong></div><div><span>{t('opportunities.greenWhys')}</span><strong>{dataset.opportunities.filter(isFullyQualified).length}</strong></div></div><Section title={t('opportunities.pipelineRegister')} eyebrow={t('opportunities.activeDeals')}><PipelineTable opportunities={dataset.opportunities} dataset={dataset} opportunitiesV2={opportunitiesV2} fxEurUsd={fxEurUsd} /></Section></>;
+  const [accountFilter, setAccountFilter] = useState('');
+  const [stageFilter, setStageFilter] = useState('');
+  const ids = new Set(dataset.opportunities.filter((op) => (!accountFilter || op.accountId === accountFilter) && (!stageFilter || opportunitiesV2.find((item) => item.id === op.id)?.stageId === stageFilter)).map((op) => op.id));
+  const rows = dataset.opportunities.filter((op) => ids.has(op.id));
+  const money = (opportunity?: OpportunityV2) => opportunity?.amount == null ? '—' : `${new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(opportunity.currency === 'USD' ? opportunity.amount / fxEurUsd : opportunity.amount)} €`;
+  const quarter = (date: string | null | undefined) => {
+    if (!date) return '—';
+    const month = new Date(`${date}T00:00:00`).getMonth() + 1;
+    return `Q${Math.floor(((month - fiscalConfig.fyStartMonth + 12) % 12) / 3) + 1}`;
+  };
+  return <><PageHeader eyebrow={`OPPORTUNITIES / ${t('nav.pipeline')}`} title={t('opportunities.title')} subtitle={t('opportunities.subtitle')} action={<div className="context-actions"><Link className="button secondary" to="/pipeline">{t('opportunities.pipelineLink')}</Link><Link className="button secondary" to="/tasks">{t('opportunities.tasksLink')}</Link></div>} /><div className="pipeline-kpis"><div><span>{t('opportunities.identified')}</span><strong>{rows.filter((x) => x.stage === 'Identified').length}</strong></div><div><span>{t('opportunities.inDiscovery')}</span><strong>{rows.filter((x) => x.stage === 'Discovery').length}</strong></div><div><span>{t('opportunities.qualifiedPlus')}</span><strong>{rows.filter((x) => ['Qualified', 'Proposal', 'Negotiation'].includes(x.stage)).length}</strong></div><div><span>{t('opportunities.greenWhys')}</span><strong>{rows.filter(isFullyQualified).length}</strong></div></div><Section title={t('opportunities.pipelineRegister')} eyebrow={t('opportunities.activeDeals')}><div className="filters"><label>{t('nav.accounts')}<select value={accountFilter} onChange={(event) => setAccountFilter(event.target.value)}><option value="">{t('common.all')}</option>{dataset.accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}</select></label><label>{t('common.stage')}<select value={stageFilter} onChange={(event) => setStageFilter(event.target.value)}><option value="">{t('common.all')}</option>{stagesConfig.map((stage) => <option key={stage.id} value={stage.id}>{stage.label}</option>)}</select></label></div><div className="table-wrap"><table><thead><tr><th>{t('nav.accounts')}</th><th>{t('common.opportunity')}</th><th>{t('common.potentialValue')}</th><th>{t('opportunity.closeDate')}</th><th>{t('common.stage')}</th><th>Forecast</th><th>{t('opportunity.origin')}</th></tr></thead><tbody>{rows.map((op) => { const v2 = opportunitiesV2.find((item) => item.id === op.id); return <tr key={op.id}><td>{dataset.accounts.find((account) => account.id === op.accountId)?.name}</td><td><Link to={`/opportunities/${op.id}`}>{op.name}</Link></td><td>{money(v2)}</td><td>{quarter(v2?.closeDate)}</td><td>{v2 ? stageDisplayLabel(v2.stageId, t) : tv(op.stage)}</td><td>{v2?.forecastCategory || '—'}</td><td>{v2?.origin.pgId || v2?.origin.hypothesisId ? '◈ PG' : '—'}</td></tr> })}</tbody></table></div></Section></>;
 }
 
-function OpportunityDetail({ dataset, opportunitiesV2, upsertOpportunityV2, setOverride, meetingNotes, saveMeetingNote, tasks, addTask, toggleTask }: { dataset: typeof sourceDataset; opportunitiesV2: OpportunityV2[]; upsertOpportunityV2: (opportunity: OpportunityV2) => void; setOverride: (id: string, path: string, value: unknown) => void; meetingNotes: MeetingNote[]; saveMeetingNote: (note: MeetingNote) => void; tasks: Task[]; addTask: (task: Task) => void; toggleTask: (id: string) => void }) {
+function OpportunityDetail({ dataset, opportunitiesV2, upsertOpportunityV2, setOverride, meetingNotes, saveMeetingNote, tasks, addTask, toggleTask, hypotheses }: { dataset: typeof sourceDataset; opportunitiesV2: OpportunityV2[]; upsertOpportunityV2: (opportunity: OpportunityV2) => void; setOverride: (id: string, path: string, value: unknown) => void; meetingNotes: MeetingNote[]; saveMeetingNote: (note: MeetingNote) => void; tasks: Task[]; addTask: (task: Task) => void; toggleTask: (id: string) => void; hypotheses: Hypothesis[] }) {
   const { t, tv } = useI18n();
   const { id = '' } = useParams(); const raw = dataset.opportunities.find((item) => item.id === id); const commercialOpportunity = opportunitiesV2.find((item) => item.id === id); const [params, setParams] = useSearchParams(); const requested = params.get('tab') || ''; const tab = tabs.includes(requested) ? requested : 'Overview';
   if (!raw || !commercialOpportunity) return <NotFound />; const op = raw; const account = dataset.accounts.find((item) => item.id === op.accountId)!; const people = op.stakeholderIds.map((sid) => dataset.stakeholders.find((item) => item.id === sid)).filter(Boolean) as Stakeholder[];
   const selectTab = (next: string) => setParams({ tab: next }, { replace: true });
-  const tabLabels: Record<string, string> = { Overview: t('common.overview'), '3 WHYS': '3 WHYS', MEDDPICC: 'MEDDPICC', Stakeholders: t('nav.stakeholders'), Activity: t('intelligence.activity'), 'Next Actions': t('nav.tasks'), 'Meeting Prep': t('nav.meetingPrep'), 'Post-Meeting Update': t('nav.postMeeting') };
+  const tabLabels: Record<string, string> = { Overview: t('common.overview'), '3 WHYS': '3 WHYS', MEDDPICC: 'MEDDPICC', Stakeholders: t('nav.stakeholders'), Activity: t('intelligence.activity'), 'Next Actions': t('nav.tasks'), 'Meeting Prep': t('nav.meetingPrep'), 'Post-Meeting Update': t('nav.postMeeting'), 'People and roles': t('opportunity.peopleRoles'), Engagement: t('opportunity.engagement'), 'Stage gates': t('opportunity.stageGates'), Origin: t('opportunity.origin') };
   return <><PageHeader eyebrow={`${t('common.opportunity')} / ${tv(op.stage).toUpperCase()}`} title={op.name} subtitle={`${account.name} · ${op.businessUnit} · ${op.useCase}`} action={<Link className="button secondary" to="/opportunities">← {t('common.pipeline')}</Link>} /><div className="op-header-strip"><Badge>{tv(op.stage)}</Badge><Traffic op={op} /><Inconsistent op={op} /><span className="confidence">{t('common.confidence')}: {tv(op.confidence)}</span></div><div className="tab-bar opportunity-tabs">{tabs.map((item) => <button className={tab === item ? 'selected' : ''} onClick={() => selectTab(item)} key={item}>{tabLabels[item]}</button>)}</div>
     {tab === 'Overview' && <OpportunityOverview op={op} commercialOpportunity={commercialOpportunity} upsertOpportunityV2={upsertOpportunityV2} people={people} setOverride={setOverride} dataset={dataset} />}
     {tab === '3 WHYS' && <ThreeWhysPanel op={op} setOverride={setOverride} />}
@@ -194,6 +206,10 @@ function OpportunityDetail({ dataset, opportunitiesV2, upsertOpportunityV2, setO
     {tab === 'Next Actions' && <OpportunityNextActions op={op} tasks={tasks} setOverride={setOverride} addTask={addTask} dataset={dataset} />}
     {tab === 'Meeting Prep' && <MeetingPrep op={op} account={account} people={people} dataset={dataset} />}
     {tab === 'Post-Meeting Update' && <PostMeeting op={op} meetingNotes={meetingNotes} saveMeetingNote={saveMeetingNote} setOverride={setOverride} />}
+    {tab === 'People and roles' && <OpportunityPeopleTab opportunity={commercialOpportunity} dataset={dataset} save={upsertOpportunityV2} />}
+    {tab === 'Engagement' && <OpportunityEngagementTab opportunity={commercialOpportunity} save={upsertOpportunityV2} />}
+    {tab === 'Stage gates' && <OpportunityStageGatesTab opportunity={commercialOpportunity} save={upsertOpportunityV2} setLegacyStage={(stage) => setOverride(op.id, 'stage', stage)} />}
+    {tab === 'Origin' && <OpportunityOriginTab opportunity={commercialOpportunity} dataset={dataset} hypotheses={hypotheses} />}
   </>;
 }
 
@@ -273,7 +289,7 @@ function WeeklyReview({ dataset }: { dataset: typeof sourceDataset }) {
 function NotFound() { const { t } = useI18n(); return <div className="empty-state"><h1>{t('notFound.title')}</h1><Link to="/">{t('notFound.back')}</Link></div>; }
 
 export default function App() {
-  const { overrides, setOverride: setBaseOverride, meetingNotes, saveMeetingNote, tasks: storedTasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, opportunitiesV2, upsertOpportunityV2, compPlan, setCompPlan, upsertPg, addPg, addOpportunity, reset: resetBase } = useOverrides();
+  const { overrides, setOverride: setBaseOverride, meetingNotes, saveMeetingNote, tasks: storedTasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, opportunitiesV2, upsertOpportunityV2, compPlan, setCompPlan, upsertPg, addPg, signalMeta, upsertSignalMeta, hypotheses, upsertHypothesis, reset: resetBase } = useOverrides();
   const chartPeopleByAccount = useAllAccountPeople();
   const tasks = useMemo(
     () => storedTasks.map((t) => (t.stakeholderId ? { ...t, stakeholderId: LEGACY_ID_ALIAS[t.stakeholderId] ?? t.stakeholderId } : t)),
@@ -297,13 +313,18 @@ export default function App() {
     window.addEventListener('keydown', handleShortcut);
     return () => window.removeEventListener('keydown', handleShortcut);
   }, []);
-  const dataset = useMemo(
-    () => unifyAccountStakeholders(mergeDataset(registryDataset, overrides, pgEdits, pgCustom, customOpportunities), chartPeopleByAccount),
-    [overrides, pgEdits, pgCustom, customOpportunities, chartPeopleByAccount],
-  );
+  const dataset = useMemo(() => {
+    const merged = mergeDataset(registryDataset, overrides, pgEdits, pgCustom, customOpportunities);
+    const existing = new Set(merged.opportunities.map((opportunity) => opportunity.id));
+    return unifyAccountStakeholders({
+      ...merged,
+      opportunities: [...merged.opportunities, ...opportunitiesV2.filter((opportunity) => !existing.has(opportunity.id))],
+      signals: merged.signals.map((signal) => ({ ...signal, ...signalMeta[signal.id] })),
+    }, chartPeopleByAccount);
+  }, [overrides, pgEdits, pgCustom, customOpportunities, chartPeopleByAccount, opportunitiesV2, signalMeta]);
   const exportData = () => { const blob = new Blob([JSON.stringify({ ...dataset, meetingNotes, tasks, pgEdits, pgCustom, customOpportunities }, null, 2)], { type: 'application/json' }); const href = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = href; link.download = `cognition-pipeline-export-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(href); };
   return <Layout dataset={dataset} reset={reset} exportData={exportData} openCommand={() => setCommandOpen(true)}><Routes>
-    <Route path="/" element={<TodayPage dataset={dataset} opportunities={opportunitiesV2} compPlan={compPlan} tasks={tasks} addTask={addTask} />} />
+    <Route path="/" element={<TodayPage dataset={dataset} opportunities={opportunitiesV2} compPlan={compPlan} tasks={tasks} addTask={addTask} hypotheses={hypotheses} />} />
     <Route path="/prp" element={<PrpPage opportunities={opportunitiesV2} compPlan={compPlan} setCompPlan={setCompPlan} onToast={setToast} />} />
     <Route path="/territory" element={<TerritoryPage dataset={dataset} opportunitiesV2={opportunitiesV2} fxEurUsd={compPlan?.fxEurUsd || 1.16} />} />
     <Route path="/accounts" element={<AccountsPage dataset={dataset} />} />
@@ -313,10 +334,10 @@ export default function App() {
     <Route path="/stakeholders" element={<StakeholdersPage dataset={dataset} setOverride={setOverride} />} />
     <Route path="/stakeholders/:id" element={<StakeholderProfilePage dataset={dataset} setOverride={setOverride} addTask={addTask} onToast={setToast} />} />
     <Route path="/use-cases" element={<UseCasesPage dataset={dataset} />} />
-    <Route path="/pg" element={<PgPage dataset={dataset} upsertPg={upsertPg} addPg={addPg} addOpportunity={addOpportunity} addTask={addTask} onToast={setToast} />} />
-    <Route path="/pg/:id" element={<PgPage dataset={dataset} upsertPg={upsertPg} addPg={addPg} addOpportunity={addOpportunity} addTask={addTask} onToast={setToast} />} />
+    <Route path="/pg" element={<PgPage dataset={dataset} upsertPg={upsertPg} addPg={addPg} addTask={addTask} onToast={setToast} hypotheses={hypotheses} upsertHypothesis={upsertHypothesis} upsertSignalMeta={upsertSignalMeta} upsertOpportunityV2={upsertOpportunityV2} />} />
+    <Route path="/pg/:id" element={<PgPage dataset={dataset} upsertPg={upsertPg} addPg={addPg} addTask={addTask} onToast={setToast} hypotheses={hypotheses} upsertHypothesis={upsertHypothesis} upsertSignalMeta={upsertSignalMeta} upsertOpportunityV2={upsertOpportunityV2} />} />
     <Route path="/opportunities" element={<OpportunitiesPage dataset={dataset} opportunitiesV2={opportunitiesV2} fxEurUsd={compPlan?.fxEurUsd || 1.16} />} />
-    <Route path="/opportunities/:id" element={<OpportunityDetail dataset={dataset} opportunitiesV2={opportunitiesV2} upsertOpportunityV2={upsertOpportunityV2} setOverride={setOverride} meetingNotes={meetingNotes} saveMeetingNote={saveMeetingNote} tasks={tasks} addTask={addTask} toggleTask={toggleTask} />} />
+    <Route path="/opportunities/:id" element={<OpportunityDetail dataset={dataset} opportunitiesV2={opportunitiesV2} upsertOpportunityV2={upsertOpportunityV2} setOverride={setOverride} meetingNotes={meetingNotes} saveMeetingNote={saveMeetingNote} tasks={tasks} addTask={addTask} toggleTask={toggleTask} hypotheses={hypotheses} />} />
     <Route path="/signals" element={<SignalsPage dataset={dataset} />} />
     <Route path="/pipeline" element={<PipelinePage dataset={dataset} />} />
     <Route path="/tasks" element={<TasksPage dataset={dataset} tasks={tasks} addTask={addTask} toggleTask={toggleTask} deleteTask={deleteTask} />} />

@@ -38,8 +38,20 @@ describe('buildToday', () => {
     ])
   })
 
-  it('keeps the PG-score action stub empty until score data is available', () => {
-    expect(buildTodayPgScoreTargetActions()).toEqual([])
+  it('includes high-score PG targets and hypotheses only when untouched', () => {
+    const data: TodayData = {
+      opportunities: [], tasks: [], stakeholders: [], signals: [],
+      pg: [
+        { id: 'target-a', accountId: 'account-a', signalIds: ['signal-high'], status: 'TARGET', touches: [] },
+        { id: 'target-touched', accountId: 'account-a', signalIds: ['signal-high'], status: 'TARGET', touches: [{ date: today }] },
+      ],
+      hypotheses: [{ id: 'hyp-a', accountId: 'account-b', signalIds: ['signal-high'], status: 'validated' }],
+      signalScores: [{ id: 'signal-high', score: 75 }],
+    }
+    expect(buildTodayPgScoreTargetActions(data).map((action) => action.id)).toEqual([
+      'pg-score:target-a',
+      'pg-score-hypothesis:hyp-a',
+    ])
   })
 
   it('lists champions and economic buyers without a touch in the last 30 days', () => {
@@ -71,7 +83,7 @@ describe('buildToday', () => {
         { id: 'signal-linked', accountId: 'account-a', date: '2026-10-02', signal: 'Linked' },
         { id: 'signal-old', accountId: 'account-a', date: '2026-09-20', signal: 'Old' },
       ],
-      pg: [{ signalIds: ['signal-linked'], status: 'TARGET' }],
+      pg: [{ id: 'target-a', accountId: 'account-a', signalIds: ['signal-linked'], status: 'TARGET' }],
     }
 
     expect(buildToday(data, today).map((item) => item.id)).toEqual(['unlinked-signal:signal-recent'])

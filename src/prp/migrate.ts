@@ -50,6 +50,7 @@ export function migrateOpportunity(legacy: Opportunity, stakeholders: Stakeholde
     countsForQuota: true,
     commissionType: 'new',
     stageHistory: [],
+    exitChecks: {},
     people: personIds.map((id) => toOpportunityPerson(id, legacy, stakeholdersById.get(id))),
     engagement: [],
     origin: { signalIds: [] },

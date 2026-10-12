@@ -40,9 +40,20 @@ export interface TodayData {
     signal: string
   }[]
   pg: {
+    id: string
+    accountId: string
     signalIds: string[]
     status: string
+    touches?: unknown[]
   }[]
+  hypotheses?: {
+    id: string
+    accountId: string
+    signalIds: string[]
+    status: string
+    pgId?: string
+  }[]
+  signalScores?: { id: string; score: number | null }[]
 }
 
 function timestamp(date: string | null | undefined): number | null {
@@ -51,8 +62,24 @@ function timestamp(date: string | null | undefined): number | null {
   return Number.isNaN(value) ? null : value
 }
 
-export function buildTodayPgScoreTargetActions(): TodayAction[] {
-  return []
+export function buildTodayPgScoreTargetActions(data: Pick<TodayData, 'pg' | 'hypotheses' | 'signalScores'>): TodayAction[] {
+  const scores = new Map((data.signalScores || []).map((signal) => [signal.id, signal.score]))
+  const actions: TodayAction[] = []
+  data.pg.forEach((target) => {
+    if (['CONVERTED', 'DISQUALIFIED', 'NURTURE'].includes(target.status) || (target.touches?.length || 0) > 0) return
+    const score = Math.max(0, ...target.signalIds.map((signalId) => scores.get(signalId) || 0))
+    if (score < 70) return
+    actions.push({ id: `pg-score:${target.id}`, kind: 'pg-score-target', reason: `PG target score ${score.toFixed(1)} without touches.`, href: `/pg/${target.id}`, accountId: target.accountId })
+  })
+  data.hypotheses?.forEach((hypothesis) => {
+    if (!['hypothesis', 'validated'].includes(hypothesis.status)) return
+    const relatedPg = hypothesis.pgId ? data.pg.find((target) => target.id === hypothesis.pgId) : undefined
+    if ((relatedPg?.touches?.length || 0) > 0) return
+    const score = Math.max(0, ...hypothesis.signalIds.map((signalId) => scores.get(signalId) || 0))
+    if (score < 70) return
+    actions.push({ id: `pg-score-hypothesis:${hypothesis.id}`, kind: 'pg-score-hypothesis', reason: `Hypothesis score ${score.toFixed(1)} without touches.`, href: `/pg?hypothesis=${hypothesis.id}`, accountId: hypothesis.accountId })
+  })
+  return actions
 }
 
 export function buildToday(data: TodayData, today: string): TodayAction[] {
@@ -101,7 +128,7 @@ export function buildToday(data: TodayData, today: string): TodayAction[] {
     })
   })
 
-  actions.push(...buildTodayPgScoreTargetActions())
+  actions.push(...buildTodayPgScoreTargetActions(data))
 
   data.stakeholders.forEach((person) => {
     const champion = person.relationshipStatus === 'Champion'

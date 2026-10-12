@@ -36,8 +36,8 @@ function isChampion(person: Dataset['stakeholders'][number]) {
   return [person.powerRole, person.buyingRole].some((role) => role?.toLowerCase().includes('champion'))
 }
 
-function toEur(opportunity: OpportunityV2, fxEurUsd: number) {
-  if (opportunity.amount == null) return 0
+function toEur(opportunity: OpportunityV2, fxEurUsd: number): number | null {
+  if (opportunity.amount == null) return null
   return opportunity.currency === 'USD' ? opportunity.amount / fxEurUsd : opportunity.amount
 }
 
@@ -73,7 +73,13 @@ export default function TerritoryPage({
       hasEconomicBuyer: people.some(isEconomicBuyer),
       hasChampion: people.some(isChampion),
       openOpps,
-      pipelineEur: openOpps.reduce((sum, opportunity) => sum + toEur(opportunity, fxEurUsd), 0),
+      pipelineEur: (() => {
+        const values = openOpps.flatMap((opportunity) => {
+        const amount = toEur(opportunity, fxEurUsd)
+        return amount === null ? [] : [amount]
+        })
+        return values.length ? values.reduce((sum, amount) => sum + amount, 0) : null
+      })(),
       lastTouch: lastTouchFor(people),
       coverage: people.length ? Math.round((reported / people.length) * 100) : 0,
     }
@@ -99,8 +105,10 @@ export default function TerritoryPage({
     (businessUnitFilter === 'all' || account.businessUnits.includes(businessUnitFilter))
   ))
 
-  const totalPotential = rows.reduce((sum, row) => sum + (row.territory.potentialEur ?? 0), 0)
-  const totalPipeline = rows.reduce((sum, row) => sum + row.pipelineEur, 0)
+  const potentialValues = rows.flatMap((row) => row.territory.potentialEur == null ? [] : [row.territory.potentialEur])
+  const pipelineValues = rows.flatMap((row) => row.pipelineEur == null ? [] : [row.pipelineEur])
+  const totalPotential = potentialValues.length ? potentialValues.reduce((sum, value) => sum + value, 0) : null
+  const totalPipeline = pipelineValues.length ? pipelineValues.reduce((sum, value) => sum + value, 0) : null
   const accountsWithoutEconomicBuyer = rows.filter((row) => !row.hasEconomicBuyer).length
   const accountsWithoutChampion = rows.filter((row) => !row.hasChampion).length
 

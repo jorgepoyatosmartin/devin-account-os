@@ -38,6 +38,7 @@ interface OpportunityV2 extends Opportunity {
   countsForQuota: boolean;             // false e.g. renewals
   commissionType: 'new' | 'renewal';
   stageHistory: { stageId: string; date: string; note?: string }[];
+  exitChecks: Record<stageId, string[]>; // completed exit-criteria labels by stage
   people: OpportunityPerson[];         // MEDDPICC role per opportunity, not per person
   engagement: { phase: string; date: string | null; evidence: string }[];
   origin: { signalIds: string[]; pgId?: string; hypothesisId?: string };
@@ -80,7 +81,7 @@ Legacy routes (`/stakeholders`, `/signals`, `/use-cases`, `/initiatives`, `/powe
 Ranked list from rules, each item with `reason` and link: (1) opps with overdue next step or closeDate in past; (2) open opps missing amount/closeDate (blocks PRP); (3) PG targets with score ≥ 70 not yet contacted; (4) champions/EBs without touch > 30 days; (5) signals < 14 days not linked to a PG target. Header shows PRP gap and weekly pace when a comp plan exists, else a CTA to enter it.
 
 ## 7. PG flow
-`Signal` (+ `productIds`, `salesPlayId`, `scoreInputs`) → `Hypothesis` { id, accountId, title, whyChange, whyNow, whyUs, valueEstimate {amount|null, assumptions}, stakeholderIds, routeToMarket: direct|partner|hyperscaler, nextBestAction, status: hypothesis|validated|converted|discarded, signalIds, source, verifiedAt } → `PgRecord` (existing) with `messageStatus: draft|approved|sent` and `touches[] {date, channel, outcome}` → convert to OpportunityV2 carrying `origin`.
+`Signal` (+ `productIds`, `salesPlayId`, `scoreInputs`) → `Hypothesis` { id, accountId, title, whyChange, whyNow, whyUs, valueEstimate {amount|null, assumptions}, stakeholderIds, routeToMarket: direct|partner|hyperscaler, nextBestAction, status: hypothesis|validated|converted|discarded, signalIds, source, verifiedAt, productIds, salesPlayId?, pgId? } → `PgRecord` (existing) with `messageStatus: draft|approved|sent`, `messageDraft`, and `touches[] {date, channel, outcome}` → convert to OpportunityV2 carrying `origin`.
 
 ## 8. Integration seams (interfaces only in the MVP)
 `EnrichmentProvider { findPeople(accountId, query), enrich(personRef) }` → impl `CsvImportProvider` now; `LushaApiProvider` (backend) and Lusha MCP (Devin) later. `LlmProvider` → not implemented in MVP (Skills generate content).

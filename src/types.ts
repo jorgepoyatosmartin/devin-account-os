@@ -169,6 +169,45 @@ export interface Signal {
   category: Category;
   source: string;
   url?: string;
+  productIds?: string[];
+  salesPlayId?: string;
+  scoreInputs?: PgScoreInputs;
+}
+
+export interface PgScoreInputs {
+  fit?: number;
+  signals?: number;
+  access?: number;
+  economic?: number;
+  urgency?: number;
+}
+
+export type PgTouch = {
+  date: string;
+  channel: 'email' | 'linkedin' | 'call' | 'meeting' | 'event';
+  outcome: string;
+};
+
+export type PgMessageStatus = 'draft' | 'approved' | 'sent';
+
+export interface Hypothesis {
+  id: string;
+  accountId: string;
+  title: string;
+  whyChange: string;
+  whyNow: string;
+  whyUs: string;
+  valueEstimate: { amount: number | null; assumptions: string };
+  stakeholderIds: string[];
+  routeToMarket: 'direct' | 'partner' | 'hyperscaler';
+  nextBestAction: string;
+  status: 'hypothesis' | 'validated' | 'converted' | 'discarded';
+  signalIds: string[];
+  source: string;
+  verifiedAt: string | null;
+  productIds: string[];
+  salesPlayId?: string;
+  pgId?: string;
 }
 
 export interface Stakeholder {
@@ -295,6 +334,7 @@ export interface OpportunityV2 extends Opportunity {
   countsForQuota: boolean;
   commissionType: 'new' | 'renewal';
   stageHistory: { stageId: string; date: string; note?: string }[];
+  exitChecks: Record<string, string[]>;
   people: OpportunityPerson[];
   engagement: { phase: string; date: string | null; evidence: string }[];
   origin: { signalIds: string[]; pgId?: string; hypothesisId?: string };
@@ -423,6 +463,9 @@ export interface PgRecord {
   message: string;
   messageLang: 'es' | 'en';
   messageSentAt?: string;
+  messageStatus?: PgMessageStatus;
+  messageDraft?: string;
+  touches?: PgTouch[];
   status: PgStatus;
   priority: PgPriority;
   priorityIsAuto: boolean;

@@ -5,7 +5,9 @@ import { stagesConfig } from '../config'
 import { useI18n } from '../i18n'
 import { buildToday, type TodayAction } from '../lib/today'
 import { prp } from '../prp/engine'
-import type { CompPlan, Dataset, OpportunityV2, Task } from '../types'
+import type { CompPlan, Dataset, Hypothesis, OpportunityV2, Task } from '../types'
+import { pgScore } from '../pg/score'
+import { pgScoreConfig } from '../config'
 import './today.css'
 
 export default function TodayPage({
@@ -14,12 +16,14 @@ export default function TodayPage({
   compPlan,
   tasks,
   addTask,
+  hypotheses,
 }: {
   dataset: Dataset
   opportunities: OpportunityV2[]
   compPlan: CompPlan | null
   tasks: Task[]
   addTask: (task: Task) => void
+  hypotheses: Hypothesis[]
 }) {
   const { lang, t } = useI18n()
   const today = new Date().toISOString().slice(0, 10)
@@ -29,7 +33,9 @@ export default function TodayPage({
     stakeholders: dataset.stakeholders,
     signals: dataset.signals,
     pg: dataset.pg,
-  }), [dataset, opportunities, tasks])
+    hypotheses,
+    signalScores: dataset.signals.map((signal) => ({ id: signal.id, score: pgScore(signal.scoreInputs || {}, pgScoreConfig.weights) })),
+  }), [dataset, opportunities, tasks, hypotheses])
   const actions = useMemo(() => buildToday(data, today), [data, today])
   const forecast = useMemo(() => compPlan
     ? prp(opportunities, compPlan, Object.fromEntries(stagesConfig.map((stage) => [stage.id, stage.probability])), today)
