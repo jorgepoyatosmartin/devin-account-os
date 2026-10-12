@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildToday, buildTodayPgScoreTargetActions, type TodayData } from './today'
+import synthetic from '../prp/__fixtures__/synthetic.json'
+import type { CompPlan, OpportunityV2 } from '../types'
 
 const today = '2026-10-12'
 
@@ -87,5 +89,40 @@ describe('buildToday', () => {
     }
 
     expect(buildToday(data, today).map((item) => item.id)).toEqual(['unlinked-signal:signal-recent'])
+  })
+
+  it('adds up to three open opportunities ranked by net commission within 90 days', () => {
+    const plan = synthetic.plan as CompPlan
+    const base = {
+      ...synthetic.opportunities[1],
+      stageId: '7-negotiate',
+      status: 'open' as const,
+      currency: 'EUR' as const,
+      commissionType: 'new' as const,
+      countsForQuota: true,
+      forecastCategory: 'Commit' as const,
+    } as unknown as OpportunityV2
+    const commissionOpportunities = [
+      { ...base, id: 'accelerate-low', name: 'Synthetic low', accountId: 'account-a', amount: 10000, closeDate: '2027-04-20' },
+      { ...base, id: 'accelerate-high', name: 'Synthetic high', accountId: 'account-b', amount: 100000, closeDate: '2027-05-10' },
+      { ...base, id: 'accelerate-mid', name: 'Synthetic mid', accountId: 'account-c', amount: 50000, closeDate: '2027-06-01' },
+      { ...base, id: 'accelerate-outside', name: 'Outside window', amount: 900000, closeDate: '2027-07-01' },
+    ] as OpportunityV2[]
+    const data: TodayData = {
+      opportunities: [],
+      commissionOpportunities,
+      tasks: [],
+      stakeholders: [],
+      signals: [],
+      pg: [],
+    }
+
+    const actions = buildToday(data, '2027-04-01', plan).filter((action) => action.kind === 'accelerate')
+    expect(actions.map((action) => action.id)).toEqual([
+      'accelerate:accelerate-high',
+      'accelerate:accelerate-mid',
+      'accelerate:accelerate-low',
+    ])
+    expect(actions[0].reason).toContain('Synthetic high')
   })
 })

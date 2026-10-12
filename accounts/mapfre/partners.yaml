@@ -1,0 +1,37 @@
+partners:
+  - id: ntt-data
+    name: NTT Data
+    type: SI
+    relationship: Oportunista
+    projects:
+      - POC → propuesta final → RFP
+    notes: Firma debe ocurrir en enero para arrancar en febrero.
+    source: accounts/mapfre/profile.md; accounts/mapfre/plan.md
+    verifiedAt: null
+  - id: inetum
+    name: Inetum
+    type: SI
+    relationship: Estratégico
+    projects:
+      - RFP
+    notes: Opción preferente de reventa junto a Accenture y NTT Data.
+    source: accounts/mapfre/profile.md; accounts/mapfre/plan.md
+    verifiedAt: null
+  - id: aws
+    name: AWS
+    type: hyperscaler
+    relationship: Estratégico
+    projects:
+      - RFP
+    notes: Ruta alternativa de reventa.
+    source: accounts/mapfre/profile.md; accounts/mapfre/plan.md
+    verifiedAt: null
+  - id: accenture
+    name: Accenture
+    type: SI
+    relationship: Estratégico
+    projects:
+      - RFP
+    notes: Opción preferente de reventa junto a Inetum y NTT Data.
+    source: accounts/mapfre/profile.md; accounts/mapfre/plan.md
+    verifiedAt: null

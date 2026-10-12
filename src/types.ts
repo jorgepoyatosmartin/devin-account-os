@@ -186,6 +186,7 @@ export type PgTouch = {
   date: string;
   channel: 'email' | 'linkedin' | 'call' | 'meeting' | 'event';
   outcome: string;
+  response?: 'positive' | 'neutral' | 'negative' | 'none';
 };
 
 export type PgMessageStatus = 'draft' | 'approved' | 'sent';
@@ -340,6 +341,32 @@ export interface OpportunityV2 extends Opportunity {
   origin: { signalIds: string[]; pgId?: string; hypothesisId?: string };
   productIds: string[];
   salesPlayId?: string;
+  businessCase?: {
+    levers: {
+      id: string;
+      label: string;
+      formula: string;
+      valueEur: number | null;
+      source: string;
+      type: 'customer' | 'benchmark' | 'assumption';
+    }[];
+    notes: string;
+  };
+  technicalValidation?: {
+    pocPlan: string;
+    criteria: {
+      id: string;
+      criterion: string;
+      owner: string;
+      result: 'pending' | 'pass' | 'fail';
+      evidence: string;
+    }[];
+    acceptedAt: string | null;
+  };
+  decisionPlan?: {
+    steps: { id: string; step: string; owner: string; date: string | null; done: boolean }[];
+    partnerIds: string[];
+  };
 }
 
 export interface CompPlan {

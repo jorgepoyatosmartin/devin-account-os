@@ -29,6 +29,7 @@ export default function TodayPage({
   const today = new Date().toISOString().slice(0, 10)
   const data = useMemo(() => ({
     opportunities,
+    commissionOpportunities: opportunities,
     tasks,
     stakeholders: dataset.stakeholders,
     signals: dataset.signals,
@@ -36,7 +37,7 @@ export default function TodayPage({
     hypotheses,
     signalScores: dataset.signals.map((signal) => ({ id: signal.id, score: pgScore(signal.scoreInputs || {}, pgScoreConfig.weights) })),
   }), [dataset, opportunities, tasks, hypotheses])
-  const actions = useMemo(() => buildToday(data, today), [data, today])
+  const actions = useMemo(() => buildToday(data, today, compPlan), [data, today, compPlan])
   const forecast = useMemo(() => compPlan
     ? prp(opportunities, compPlan, Object.fromEntries(stagesConfig.map((stage) => [stage.id, stage.probability])), today)
     : null, [compPlan, opportunities, today])
@@ -64,11 +65,14 @@ export default function TodayPage({
     const stakeholderId = action.kind === 'stakeholder-no-recent-touch'
       ? action.id.slice('stale-touch:'.length)
       : existingTask?.stakeholderId
+    const opportunityId = action.kind === 'accelerate'
+      ? action.id.slice('accelerate:'.length)
+      : existingTask?.opportunityId
     addTask({
       id: `task-${Date.now()}`,
       title: action.reason,
       accountId: action.accountId,
-      opportunityId: existingTask?.opportunityId,
+      opportunityId,
       stakeholderId,
       status: 'Open',
       createdAt: new Date().toISOString(),

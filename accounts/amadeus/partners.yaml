@@ -1,0 +1,19 @@
+partners:
+  - id: microsoft
+    name: Microsoft
+    type: hyperscaler
+    relationship: Strategic partnership renewed (Feb 2025)
+    projects:
+      - Move to the Cloud
+    notes: More than 50% of applications migrated to public cloud; renewed partnership noted in account evidence.
+    source: src/data/accounts.json:914
+    verifiedAt: null
+  - id: google
+    name: Google
+    type: hyperscaler
+    relationship: Named in cloud strategy and partnership context
+    projects:
+      - Move to the Cloud
+    notes: Named in the account's multi-cloud strategy and partnership context.
+    source: src/data/accounts.json:867,882
+    verifiedAt: null

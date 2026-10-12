@@ -1,0 +1,23 @@
+# PRP scenarios. probabilityFactor multiplies each open opportunity's stage probability (capped at 1).
+# slipDays pushes the close date of open opportunities whose stage order <= slipMaxStageOrder;
+# a slipped date beyond the fiscal year end drops the opportunity out of the year.
+# coverageMultiple null = use the comp plan's coverageMultiple.
+scenarios:
+  - id: conservative
+    label: Conservador
+    probabilityFactor: 0.7
+    slipDays: 90
+    slipMaxStageOrder: 3
+    coverageMultiple: 5
+  - id: base
+    label: Base
+    probabilityFactor: 1
+    slipDays: 0
+    slipMaxStageOrder: 0
+    coverageMultiple: null
+  - id: ambitious
+    label: Ambicioso
+    probabilityFactor: 1.2
+    slipDays: 0
+    slipMaxStageOrder: 0
+    coverageMultiple: 3

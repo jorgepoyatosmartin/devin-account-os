@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import type { Dataset, Hypothesis, OpportunityV2, PgRecord, PgScoreInputs, PgStatus, SalesPlay, Task } from '../types';
+import type { CompPlan, Dataset, Hypothesis, OpportunityV2, PgRecord, PgScoreInputs, PgStatus, SalesPlay, Task } from '../types';
 import { generateMessage, relevantUseCases, resolvePg, suggestPlay } from '../lib/pg';
 import { AiBlock, Badge, PageHeader, Section } from '../components/ui';
 import { useI18n } from '../i18n';
 import { DiscoveryWorkflow } from '../pg/DiscoveryWorkflow';
 import { convertDiscoveryToOpportunity } from '../pg/convert';
 import { DEVIN_URL } from '../powerchart/playbooks';
+import { pgMetrics } from '../pg/metrics';
 
 const statusOrder: PgStatus[] = ['TARGET', 'READY', 'OUTREACH', 'ENGAGED', 'MEETING', 'QUALIFIED', 'CONVERTED', 'NURTURE', 'DISQUALIFIED'];
 const plays: SalesPlay[] = ['Developer Productivity', 'AI Engineering', 'Legacy Modernization', 'Cloud Migration', 'Quality & Regulatory Delivery', 'Data & AI Product Engineering', 'UNKNOWN'];
@@ -24,6 +25,8 @@ type Props = {
   upsertHypothesis: (hypothesis: Hypothesis) => void;
   upsertSignalMeta: (id: string, patch: { productIds?: string[]; salesPlayId?: string; scoreInputs?: PgScoreInputs }) => void;
   upsertOpportunityV2: (opportunity: OpportunityV2) => void;
+  opportunitiesV2: OpportunityV2[];
+  compPlan: CompPlan | null;
 };
 
 function ResolvedBadge({ value }: { value: string }) {
@@ -42,7 +45,7 @@ export default function PgPage(props: Props) {
   return id ? <PgDetail {...props} id={id} /> : <PgDashboard {...props} />;
 }
 
-function PgDashboard({ dataset, addPg, onToast, hypotheses, upsertHypothesis, upsertSignalMeta, upsertOpportunityV2 }: Props) {
+function PgDashboard({ dataset, addPg, onToast, hypotheses, upsertHypothesis, upsertSignalMeta, upsertOpportunityV2, opportunitiesV2, compPlan }: Props) {
   const { lang, t, tv } = useI18n();
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -58,6 +61,20 @@ function PgDashboard({ dataset, addPg, onToast, hypotheses, upsertHypothesis, up
   const [owner, setOwner] = useState('');
   const [personSearch, setPersonSearch] = useState('');
   const [showComposer, setShowComposer] = useState(Boolean(params.get('new')));
+  const [metricsGroupBy, setMetricsGroupBy] = useState<'account' | 'salesPlay' | 'channel'>('account');
+  const fxEurUsd = compPlan?.fxEurUsd ?? 1.16;
+  const metrics = pgMetrics(dataset.pg, opportunitiesV2, metricsGroupBy, fxEurUsd);
+  const totalMetrics = pgMetrics(dataset.pg, opportunitiesV2, 'account', fxEurUsd).reduce((total, row) => ({
+    targets: total.targets + row.targets,
+    touched: total.touched + row.touched,
+    touches: total.touches + row.touches,
+    responses: total.responses + row.responses,
+    positive: total.positive + row.positive,
+    meetings: total.meetings + row.meetings,
+    opportunities: total.opportunities + row.opportunities,
+    pipelineEur: total.pipelineEur + row.pipelineEur,
+    wonEur: total.wonEur + row.wonEur,
+  }), { targets: 0, touched: 0, touches: 0, responses: 0, positive: 0, meetings: 0, opportunities: 0, pipelineEur: 0, wonEur: 0 });
   const records = useMemo(() => dataset.pg.map((record) => resolvePg(record, dataset, lang)), [dataset, lang]);
   const filtered = records.filter((record) => {
     const personText = `${record.stakeholder.name} ${record.stakeholder.title}`.toLowerCase();
@@ -78,6 +95,22 @@ function PgDashboard({ dataset, addPg, onToast, hypotheses, upsertHypothesis, up
       [t('pg.meetings'), records.filter((r) => r.status === 'MEETING').length], [t('pg.converted'), records.filter((r) => r.status === 'CONVERTED').length],
       [t('pg.pipelineGenerated'), `${records.filter((r) => r.status === 'CONVERTED').length} · € TBD`],
     ].map(([label, value]) => <div key={String(label)}><span>{label}</span><strong>{value}</strong></div>)}</div>
+    <details className="section pg-metrics-section">
+      <summary>{t('pg.metrics')}</summary>
+      <label>{t('pg.metricsGroupBy')}<select value={metricsGroupBy} onChange={(event) => setMetricsGroupBy(event.target.value as typeof metricsGroupBy)}>
+        <option value="account">{t('pg.metrics.account')}</option><option value="salesPlay">{t('pg.metrics.salesPlay')}</option><option value="channel">{t('pg.metrics.channel')}</option>
+      </select></label>
+      <div className="table-wrap"><table><thead><tr>
+        <th>{t('pg.metricsGroupBy')}</th><th>{t('pg.metrics.targets')}</th><th>{t('pg.metrics.touched')}</th><th>{t('pg.metrics.touches')}</th>
+        <th>{t('pg.metrics.responses')}</th><th>{t('pg.metrics.positive')}</th><th>{t('pg.metrics.meetings')}</th><th>{t('pg.metrics.opportunities')}</th>
+        <th>{t('pg.metrics.pipeline')}</th><th>{t('pg.metrics.won')}</th>
+      </tr></thead><tbody>{metrics.map((row) => <tr key={row.key}>
+        <td>{metricsGroupBy === 'account' ? dataset.accounts.find((account) => account.id === row.key)?.name || row.key : row.key === 'none' ? t('pg.metrics.none') : row.key}</td>
+        <td>{row.targets}</td><td>{row.touched}</td><td>{row.touches}</td><td>{row.responses}</td><td>{row.positive}</td><td>{row.meetings}</td><td>{row.opportunities}</td>
+        <td>{row.pipelineEur.toLocaleString(lang === 'es' ? 'es-ES' : 'en-US', { maximumFractionDigits: 2 })} €</td><td>{row.wonEur.toLocaleString(lang === 'es' ? 'es-ES' : 'en-US', { maximumFractionDigits: 2 })} €</td>
+      </tr>)}<tr><th>{t('pg.metrics.total')}</th><th>{totalMetrics.targets}</th><th>{totalMetrics.touched}</th><th>{totalMetrics.touches}</th><th>{totalMetrics.responses}</th><th>{totalMetrics.positive}</th><th>{totalMetrics.meetings}</th><th>{totalMetrics.opportunities}</th>
+        <th>{totalMetrics.pipelineEur.toLocaleString(lang === 'es' ? 'es-ES' : 'en-US', { maximumFractionDigits: 2 })} €</th><th>{totalMetrics.wonEur.toLocaleString(lang === 'es' ? 'es-ES' : 'en-US', { maximumFractionDigits: 2 })} €</th></tr></tbody></table></div>
+    </details>
     {showComposer && <PgComposer dataset={dataset} initialStakeholderId={params.get('new') || ''} addPg={(record) => { addPg(record); setShowComposer(false); onToast(t('toast.pgCreated')); }} />}
     <Section title={t('pg.todayPriorities')} eyebrow={t('pg.topNextMoves')}>
       <div className="pg-priority-grid">{prioritiesToday.map((record) => <article className="pg-priority-card" key={record.id} onClick={() => navigate(`/pg/${record.id}`)}>
@@ -224,7 +257,8 @@ function PgDetail({ dataset, id, upsertPg, addTask, onToast, hypotheses, upsertO
       <div className="detail-grid compact-detail">
         <label>{lang === 'es' ? 'Canal del touch' : 'Touch channel'}<select id="touch-channel"><option value="email">email</option><option value="linkedin">linkedin</option><option value="call">call</option><option value="meeting">meeting</option><option value="event">event</option></select></label>
         <label>{lang === 'es' ? 'Resultado' : 'Outcome'}<input id="touch-outcome" /></label>
-        <button className="button secondary" onClick={() => { const channel = document.getElementById('touch-channel') as HTMLSelectElement; const outcome = document.getElementById('touch-outcome') as HTMLInputElement; set({ touches: [...(raw.touches || []), { date: new Date().toISOString().slice(0, 10), channel: channel.value as NonNullable<PgRecord['touches']>[number]['channel'], outcome: outcome.value }] }); }}>{lang === 'es' ? 'Registrar touch' : 'Log touch'}</button>
+        <label>{t('pg.touchResponse')}<select id="touch-response"><option value="none">{t('pg.response.none')}</option><option value="positive">{t('pg.response.positive')}</option><option value="neutral">{t('pg.response.neutral')}</option><option value="negative">{t('pg.response.negative')}</option></select></label>
+        <button className="button secondary" onClick={() => { const channel = document.getElementById('touch-channel') as HTMLSelectElement; const outcome = document.getElementById('touch-outcome') as HTMLInputElement; const response = document.getElementById('touch-response') as HTMLSelectElement; set({ touches: [...(raw.touches || []), { date: new Date().toISOString().slice(0, 10), channel: channel.value as NonNullable<PgRecord['touches']>[number]['channel'], outcome: outcome.value, response: response.value as NonNullable<PgRecord['touches']>[number]['response'] }] }); }}>{lang === 'es' ? 'Registrar touch' : 'Log touch'}</button>
       </div>
     </Section>
     <Section title={t('pg.detail.action')} eyebrow={t('pg.nextMove')}>{raw.action ? <div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.action}</div> : <AiBlock kind="hypothesis"><div className="auto-line"><Badge>{t('pg.detail.auto')}</Badge>{view.action}</div></AiBlock>}<input value={raw.action} placeholder={t('pg.autoInference')} onChange={(e) => set({ action: e.target.value })} /><button className="button secondary" onClick={() => { addTask({ id: `task-${Date.now()}`, title: view.action, accountId: view.accountId, stakeholderId: view.stakeholderId, status: 'Open', createdAt: new Date().toISOString(), source: 'pg' }); onToast(t('toast.actionAdded')); }}>{t('pg.detail.addTask')}</button></Section>

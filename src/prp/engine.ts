@@ -49,6 +49,21 @@ function parseIsoDate(value: string | null): number | null {
   return Number.isNaN(timestamp) ? null : timestamp
 }
 
+export function isCloseDateInFiscalYear(closeDate: string | null, plan: CompPlan): boolean {
+  const closeTimestamp = parseIsoDate(closeDate)
+  if (closeTimestamp === null) return false
+  const fiscalYearStart = Date.UTC(plan.fiscalYear, fiscalConfig.fyStartMonth - 1, 1)
+  const fiscalYearEnd = Date.UTC(plan.fiscalYear + 1, fiscalConfig.fyStartMonth - 1, 1) - DAY_MS
+  return closeTimestamp >= fiscalYearStart && closeTimestamp <= fiscalYearEnd
+}
+
+export function opportunityAmountEur(
+  opportunity: Pick<OpportunityV2, 'amount' | 'currency'>,
+  plan: CompPlan,
+): number | null {
+  return opportunity.amount === null ? null : toEur(opportunity.amount, opportunity.currency, plan)
+}
+
 function quarterIndex(date: number, fiscalYearStart: number): number {
   const dateValue = new Date(date)
   const fiscalStart = new Date(fiscalYearStart)
@@ -88,15 +103,14 @@ export function prp(
 
   for (const opp of opps) {
     const closeTimestamp = parseIsoDate(opp.closeDate)
-    const inFiscalYear = closeTimestamp !== null
-      && closeTimestamp >= fiscalYearStart
-      && closeTimestamp <= fiscalYearEnd
+    const inFiscalYear = isCloseDateInFiscalYear(opp.closeDate, plan)
 
     if (!inFiscalYear) oppsOutsideFiscalYear.push(opp.id)
     if (opp.amount === null) oppsMissingAmount.push(opp.id)
     if (!inFiscalYear || closeTimestamp === null || opp.amount === null) continue
 
-    const amount = toEur(opp.amount, opp.currency, plan)
+    const amount = opportunityAmountEur(opp, plan)
+    if (amount === null) continue
     const q = quarterIndex(closeTimestamp, fiscalYearStart)
 
     if (opp.status === 'won') {

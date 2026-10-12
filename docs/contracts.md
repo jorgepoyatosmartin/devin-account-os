@@ -88,3 +88,27 @@ Ranked list from rules, each item with `reason` and link: (1) opps with overdue 
 
 ## 9. Persistence
 MVP: repo files + localStorage edits + "Guardar en repo" PR prompt (existing pattern). New keys: `cognition-pipeline-comp-plan`, `cognition-pipeline-opps-v2`, `cognition-pipeline-hypotheses`, `cognition-pipeline-territory`. Snapshot versioning as in `power-chart:<id>`.
+
+## Fase 2 — Profundidad
+
+### Escenarios y atribución de comisión
+
+`config/scenarios.yaml` is loaded as `scenariosConfig: ScenarioDefinition[]`. Each definition contains `id`, `label`, `probabilityFactor`, `slipDays`, `slipMaxStageOrder`, and nullable `coverageMultiple`. `prpScenario(opps, plan, stages, today, scenario)` shifts close dates in UTC for open opportunities at or before the configured stage order, caps adjusted stage probabilities at 1, optionally overrides coverage, and delegates the forecast to `prp()`. Its `ScenarioResult` reports projected sales, quota and personal gaps, personal pipeline required, and gross/net commission.
+
+`isCloseDateInFiscalYear` and `opportunityAmountEur` are shared PRP eligibility and currency-conversion helpers. `commissionByOpportunity(opps, plan)` returns `OppCommission[]` for amount-bearing opportunities in the fiscal year. Eligible won new-business commission is attributed marginally in close-date/ID order; renewals receive renewal commission without quota credit; open new-business rows estimate incremental commission on top of closed quota sales.
+
+### Opportunity depth
+
+`OpportunityV2` may include optional `businessCase`, `technicalValidation`, and `decisionPlan` objects. Missing values are treated as empty. A business case stores its value levers and notes; technical validation stores a POC plan, criteria and acceptance date; a decision plan stores dated action steps and partner IDs. These fields are persisted through the existing OpportunityV2 store overlay and do not require a legacy migration.
+
+### Partners
+
+`accounts/<id>/partners.yaml` is optional and contains `partners[]` entries with `id`, `name`, `type` (`SI|hyperscaler|reseller|ISV|other`), `relationship`, `projects`, optional/null `doorOpenerStakeholderId`, `notes`, `source`, and nullable `verifiedAt`. Missing files produce an empty partner list. Entries must be grounded in the account's existing source material.
+
+### PG response metrics
+
+`PgTouch.response` is optional and one of `positive|neutral|negative|none`. `pgMetrics(pg, opps, groupBy, fxEurUsd)` groups target, touch, response, meeting, opportunity, pipeline and won counts/amounts by account, sales play, or channel. For channel grouping, targets and linked opportunities are attributed to each record's first touch channel; touch and response counts are attributed to their respective touch channels. USD amounts are converted to EUR using the supplied plan FX rate.
+
+### Hoy commission actions
+
+`buildToday(data, today, plan?)` retains the existing computed actions. When a compensation plan is supplied, open opportunities closing from today through the next 90 days can add up to three acceleration actions, ranked by estimated net commission from `commissionByOpportunity`.

@@ -22,6 +22,19 @@ describe('migrateOpportunitySnapshot', () => {
       amount: 12345,
       closeDate: '2027-08-12',
       productIds: ['devin-cloud'],
+      businessCase: {
+        levers: [{ id: 'lever-a', label: 'Synthetic lever', formula: 'a × b', valueEur: 10, source: 'test', type: 'customer' as const }],
+        notes: 'Business case note',
+      },
+      technicalValidation: {
+        pocPlan: 'Synthetic POC',
+        criteria: [{ id: 'criterion-a', criterion: 'Checks pass', owner: 'QA', result: 'pass' as const, evidence: 'test' }],
+        acceptedAt: '2027-08-12',
+      },
+      decisionPlan: {
+        steps: [{ id: 'step-a', step: 'Review', owner: 'EB', date: '2027-08-15', done: false }],
+        partnerIds: ['partner-a'],
+      },
     }
     const remigrated = migrateOpportunitySnapshot(
       dataset.opportunities,
@@ -38,6 +51,9 @@ describe('migrateOpportunitySnapshot', () => {
       amount: 12345,
       closeDate: '2027-08-12',
       productIds: ['devin-cloud'],
+      businessCase: editedOpportunity.businessCase,
+      technicalValidation: editedOpportunity.technicalValidation,
+      decisionPlan: editedOpportunity.decisionPlan,
     })
   })
 })

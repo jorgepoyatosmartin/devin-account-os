@@ -6,6 +6,7 @@ import {
   accountYamlFiles,
   buildAccountRegistry,
   registeredAccounts,
+  partnerYamlFiles,
   stakeholderYamlFiles,
   territoryYamlFiles,
 } from './registry'
@@ -43,6 +44,44 @@ describe('account registry', () => {
     expect(account?.account.initiatives).toEqual([])
     expect(account?.stakeholders.map((person) => person.id)).toEqual(['newco-ceo'])
     expect(account?.territory.potentialEur).toBeNull()
+    expect(account?.partners).toEqual([])
+  })
+
+  it('loads optional partner files while accounts without one have no partners', () => {
+    const files = {
+      '/accounts/newco/partners.yaml': [
+        'partners:',
+        '  - id: partner-a',
+        '    name: Partner A',
+        '    type: SI',
+        '    relationship: Existing',
+        '    projects: []',
+        '    notes: Source-backed test partner',
+        '    source: synthetic test',
+        '    verifiedAt: null',
+      ].join('\n'),
+    }
+    const withPartner = buildAccountRegistry(
+      accountsJson as unknown as Account[],
+      {
+        ...accountYamlFiles,
+        '/accounts/newco/account.yaml': 'id: newco\nname: NewCo\n',
+      },
+      stakeholderYamlFiles,
+      territoryYamlFiles,
+      { ...partnerYamlFiles, ...files },
+    ).find(({ account }) => account.id === 'newco')
+    const withoutPartner = buildAccountRegistry(
+      accountsJson as unknown as Account[],
+      {
+        ...accountYamlFiles,
+        '/accounts/newco/account.yaml': 'id: newco\nname: NewCo\n',
+      },
+      {},
+    ).find(({ account }) => account.id === 'newco')
+
+    expect(withPartner?.partners).toMatchObject([{ id: 'partner-a', type: 'SI' }])
+    expect(withoutPartner?.partners).toEqual([])
   })
 
   it('loads the requested bundled stakeholder counts', () => {

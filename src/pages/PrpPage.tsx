@@ -1,10 +1,12 @@
 import { useMemo, useRef, useState, type ChangeEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { PageHeader, Section } from '../components/ui'
-import { stagesConfig } from '../config'
+import { scenariosConfig, stagesConfig } from '../config'
 import { useI18n } from '../i18n'
 import { downloadCompPlan, isCompPlan, readCompPlanFile } from '../lib/compPlan'
+import { commissionByOpportunity } from '../prp/commission'
 import { prp } from '../prp/engine'
+import { prpScenario } from '../prp/scenarios'
 import type { CompPlan, OpportunityV2 } from '../types'
 import './prp.css'
 
@@ -178,6 +180,14 @@ export default function PrpPage({ opportunities, compPlan, setCompPlan, onToast 
     () => compPlan ? prp(opportunities, compPlan, stageProbabilities, today) : null,
     [compPlan, opportunities, stageProbabilities, today],
   )
+  const scenarioResults = useMemo(
+    () => compPlan ? scenariosConfig.map((scenario) => prpScenario(opportunities, compPlan, stagesConfig, today, scenario)) : [],
+    [compPlan, opportunities, today],
+  )
+  const opportunityCommissions = useMemo(
+    () => compPlan ? commissionByOpportunity(opportunities, compPlan) : [],
+    [compPlan, opportunities],
+  )
   const formatMoney = (value: number) => new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-US', {
     style: 'currency',
     currency: 'EUR',
@@ -258,6 +268,35 @@ export default function PrpPage({ opportunities, compPlan, setCompPlan, onToast 
         <Section title={t('prp.commissionClosed')}><div className="prp-commission-values"><div><span>{t('prp.gross')}</span><strong>{formatMoney(result.commissionGrossClosed)}</strong></div><div><span>{t('prp.net')}</span><strong>{formatMoney(result.commissionNetClosed)}</strong></div></div></Section>
         <Section title={t('prp.commissionCommit')}><div className="prp-commission-values"><div><span>{t('prp.gross')}</span><strong>{formatMoney(result.commissionGrossCommit)}</strong></div><div><span>{t('prp.net')}</span><strong>{formatMoney(result.commissionNetCommit)}</strong></div></div></Section>
       </div>
+      <Section title={t('prp.scenarios')}>
+        <div className="table-wrap"><table><thead><tr>
+          <th>{t('prp.scenarios')}</th><th>{t('prp.projectedSales')}</th><th>{t('prp.gapQuota')}</th><th>{t('prp.gapPersonal')}</th>
+          <th>{t('prp.pipelineRequiredPersonal')}</th><th>{t('prp.gross')}</th><th>{t('prp.net')}</th>
+        </tr></thead><tbody>{scenarioResults.map((scenario) => <tr key={scenario.id}>
+          <td>{scenario.label}</td><td>{formatMoney(scenario.projectedSales)}</td><td>{formatMoney(scenario.gapToQuota)}</td>
+          <td>{formatMoney(scenario.gapToPersonal)}</td><td>{formatMoney(scenario.pipelineRequiredPersonal)}</td>
+          <td>{formatMoney(scenario.commissionGross)}</td><td>{formatMoney(scenario.commissionNet)}</td>
+        </tr>)}</tbody></table></div>
+      </Section>
+      <Section title={t('prp.commissionByOpportunity')}>
+        <div className="table-wrap"><table><thead><tr>
+          <th>{t('common.opportunity')}</th><th>{t('common.status')}</th><th>{t('prp.quotaCredit')}</th><th>{t('prp.gross')}</th><th>{t('prp.net')}</th>
+        </tr></thead><tbody>{opportunityCommissions
+          .map((commission) => ({ commission, opportunity: opportunities.find((item) => item.id === commission.oppId) }))
+          .filter((row): row is typeof row & { opportunity: OpportunityV2 } => Boolean(row.opportunity))
+          .sort((a, b) => {
+            if (a.commission.status !== b.commission.status) return a.commission.status === 'won' ? -1 : 1
+            if (a.commission.status === 'open') return b.commission.commissionNet - a.commission.commissionNet
+            return (a.opportunity.closeDate || '').localeCompare(b.opportunity.closeDate || '')
+          })
+          .map(({ commission, opportunity }) => <tr key={commission.oppId}>
+            <td><Link to={`/opportunities/${opportunity.id}`}>{opportunity.name}</Link></td>
+            <td>{commission.status}</td>
+            <td>{formatMoney(commission.quotaCredit)}</td>
+            <td>{formatMoney(commission.commissionGross)}</td>
+            <td>{commission.status === 'open' ? t('prp.netIfWon', { amount: formatMoney(commission.commissionNet) }) : formatMoney(commission.commissionNet)}</td>
+          </tr>)}</tbody></table></div>
+      </Section>
       <Section title={t('prp.quarters')} eyebrow={t('prp.fiscalYearEnd', { year: result.year })}>
         <div className="table-wrap"><table><thead><tr><th>{t('prp.quarter')}</th><th>{t('prp.quota')}</th><th>{t('prp.closedWonQuota')}</th><th>{t('prp.personalTargetQuarter')}</th><th>{t('prp.quarterPipeline')}</th></tr></thead><tbody>{result.quarters.map((quarter) => <tr key={quarter.q}><td>Q{quarter.q}</td><td>{formatMoney(quarter.quota)}</td><td>{formatMoney(quarter.closedWonQuota)}</td><td>{formatMoney(quarter.personalTarget)}</td><td>{formatMoney(quarter.pipelineTotal)}</td></tr>)}</tbody></table></div>
       </Section>

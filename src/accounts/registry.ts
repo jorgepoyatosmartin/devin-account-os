@@ -39,10 +39,23 @@ type StakeholderYaml = {
 }
 type StakeholderDocument = { account?: string; stakeholders?: StakeholderYaml[] }
 type AccountFiles = Record<string, string>
+export type AccountPartner = {
+  id: string
+  name: string
+  type: 'SI' | 'hyperscaler' | 'reseller' | 'ISV' | 'other'
+  relationship: string
+  projects: string[]
+  doorOpenerStakeholderId?: string | null
+  notes: string
+  source: string
+  verifiedAt: string | null
+}
+type PartnerDocument = { partners?: AccountPartner[] }
 export type RegisteredAccount = {
   account: Account
   territory: TerritoryPlan
   stakeholders: ChartStakeholder[]
+  partners: AccountPartner[]
   stakeholdersYaml: string
   sourceVersion: string
 }
@@ -58,6 +71,11 @@ export const stakeholderYamlFiles = import.meta.glob('/accounts/*/stakeholders.y
   eager: true,
 }) as AccountFiles
 export const territoryYamlFiles = import.meta.glob('/accounts/*/territory.yaml', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as AccountFiles
+export const partnerYamlFiles = import.meta.glob('/accounts/*/partners.yaml', {
   query: '?raw',
   import: 'default',
   eager: true,
@@ -117,10 +135,12 @@ export function buildAccountRegistry(
   accountFiles: AccountFiles,
   stakeholderFiles: AccountFiles,
   territoryFiles: AccountFiles = {},
+  partnerFiles: AccountFiles = {},
 ): RegisteredAccount[] {
   const accountDocs = new Map<string, AccountYaml>()
   const stakeholderDocs = new Map<string, { raw: string; document: StakeholderDocument }>()
   const territoryDocs = new Map<string, string>()
+  const partnerDocs = new Map<string, string>()
   for (const [path, raw] of Object.entries(accountFiles)) {
     const id = accountIdFromPath(path)
     if (id !== '_template') accountDocs.set(id, (yamlLoad(raw) as AccountYaml) ?? {})
@@ -132,6 +152,10 @@ export function buildAccountRegistry(
   for (const [path, raw] of Object.entries(territoryFiles)) {
     const id = accountIdFromPath(path)
     if (id !== '_template') territoryDocs.set(id, raw)
+  }
+  for (const [path, raw] of Object.entries(partnerFiles)) {
+    const id = accountIdFromPath(path)
+    if (id !== '_template') partnerDocs.set(id, raw)
   }
 
   const ids = new Set([
@@ -176,10 +200,13 @@ export function buildAccountRegistry(
       country: yaml.country ?? (base as Account & { country?: string | null }).country ?? null,
     } as Account
     const territory = parseTerritory(territoryDocs.get(id))
+    const partnerRaw = partnerDocs.get(id)
+    const partners = partnerRaw ? (yamlLoad(partnerRaw) as PartnerDocument)?.partners ?? [] : []
     return {
       account: { ...account, territory } as Account,
       territory,
       stakeholders,
+      partners,
       stakeholdersYaml: stakeholderFile?.raw ?? '',
       sourceVersion: stakeholderFile ? hashRaw(stakeholderFile.raw) : '',
     }
@@ -191,6 +218,7 @@ export const registeredAccounts = buildAccountRegistry(
   accountYamlFiles,
   stakeholderYamlFiles,
   territoryYamlFiles,
+  partnerYamlFiles,
 )
 
 export function getRegisteredAccount(accountId: string): RegisteredAccount | undefined {

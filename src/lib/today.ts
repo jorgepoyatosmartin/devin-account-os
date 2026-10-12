@@ -1,3 +1,6 @@
+import { commissionByOpportunity } from '../prp/commission'
+import type { CompPlan, OpportunityV2 } from '../types'
+
 const DAY_MS = 24 * 60 * 60 * 1000
 
 export interface TodayAction {
@@ -16,6 +19,7 @@ export interface TodayData {
     amount: number | null
     closeDate: string | null
   }[]
+  commissionOpportunities?: OpportunityV2[]
   tasks: {
     id: string
     title: string
@@ -82,7 +86,38 @@ export function buildTodayPgScoreTargetActions(data: Pick<TodayData, 'pg' | 'hyp
   return actions
 }
 
-export function buildToday(data: TodayData, today: string): TodayAction[] {
+export function buildTodayCommissionAccelerateActions(
+  opportunities: OpportunityV2[],
+  plan: CompPlan,
+  today: string,
+): TodayAction[] {
+  const todayTimestamp = timestamp(today)
+  if (todayTimestamp === null) return []
+  const commissionById = new Map(
+    commissionByOpportunity(opportunities, plan).map((row) => [row.oppId, row]),
+  )
+  return opportunities
+    .filter((opportunity) => {
+      const closeTimestamp = timestamp(opportunity.closeDate)
+      return opportunity.status === 'open'
+        && closeTimestamp !== null
+        && closeTimestamp >= todayTimestamp
+        && closeTimestamp <= todayTimestamp + 90 * DAY_MS
+    })
+    .map((opportunity) => ({ opportunity, commission: commissionById.get(opportunity.id) }))
+    .filter((item) => item.commission)
+    .sort((a, b) => (b.commission?.commissionNet || 0) - (a.commission?.commissionNet || 0))
+    .slice(0, 3)
+    .map(({ opportunity, commission }) => ({
+      id: `accelerate:${opportunity.id}`,
+      kind: 'accelerate',
+      reason: `Acelerar ${opportunity.name}: +${new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(commission!.commissionNet)} € neto si se gana`,
+      href: `/opportunities/${opportunity.id}`,
+      accountId: opportunity.accountId,
+    }))
+}
+
+export function buildToday(data: TodayData, today: string, compPlan?: CompPlan | null): TodayAction[] {
   const todayTimestamp = timestamp(today)
   if (todayTimestamp === null) return []
   const actions: TodayAction[] = []
@@ -112,6 +147,10 @@ export function buildToday(data: TodayData, today: string): TodayAction[] {
       })
     }
   })
+
+  if (compPlan && data.commissionOpportunities) {
+    actions.push(...buildTodayCommissionAccelerateActions(data.commissionOpportunities, compPlan, today))
+  }
 
   data.opportunities.forEach((opportunity) => {
     if (opportunity.status !== 'open') return

@@ -1,0 +1,12 @@
+partners: []
+# Example:
+# partners:
+#   - id: example-si
+#     name: Example SI
+#     type: SI
+#     relationship: Source-backed relationship
+#     projects: []
+#     doorOpenerStakeholderId: null
+#     notes: ''
+#     source: accounts/<id>/plan.md
+#     verifiedAt: null
