@@ -1,4 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getImportPreset } from '../import/providers'
+import { planStakeholderImport } from '../import/dedupe'
+import { API_URL, AUTH_KEY, api, getHealth } from '../server/api'
+import { useI18n } from '../i18n'
 import {
   ATTITUDES,
   ATTITUDE_LABEL,
@@ -19,6 +23,7 @@ type Tab = 'Resumen' | 'Relaciones' | 'Notas y actividad' | 'Acciones'
 
 interface Props {
   account: string
+  companyName?: string
   person: Stakeholder
   draft: Stakeholder
   people: Stakeholder[]
@@ -37,11 +42,65 @@ interface Props {
 }
 
 export function PersonSheet({
-  account, person, draft: p, people, gaps, businessUnits, countries, dirty, onChange,
+  account, companyName, person, draft: p, people, gaps, businessUnits, countries, dirty, onChange,
   onConfidenceExplicit, onSave, onCancel, onClose, onMarkDeparted, onFocus, onLaunched,
 }: Props) {
+  const { t } = useI18n()
   const [tab, setTab] = useState<Tab>('Resumen')
   const [addInfluence, setAddInfluence] = useState('')
+  const [lushaEnabled, setLushaEnabled] = useState(false)
+  const [lushaBusy, setLushaBusy] = useState(false)
+  const [lushaError, setLushaError] = useState('')
+  const [lushaResult, setLushaResult] = useState<{ person: Record<string, string | null>; creditsUsedToday: number; dailyCap: number } | null>(null)
+  const [credits, setLushaCredits] = useState<{ used: number; cap: number } | null>(null)
+  useEffect(() => {
+    if (!API_URL || !localStorage.getItem(AUTH_KEY)) return
+    getHealth().then((health) => setLushaEnabled(health.features.lusha)).catch(() => setLushaEnabled(false))
+  }, [])
+  const enrich = async () => {
+    setLushaBusy(true)
+    setLushaError('')
+    setLushaResult(null)
+    const [firstName, ...lastNames] = p.name.trim().split(/\s+/)
+    try {
+      const response = await api<{ found: boolean; person: Record<string, string | null> | null; creditsUsedToday: number; dailyCap: number }>('/lusha/person', {
+        method: 'POST',
+        body: JSON.stringify({
+          accountId: account,
+          firstName,
+          lastName: lastNames.join(' '),
+          companyName,
+          email: p.email,
+          linkedinUrl: p.linkedinUrl,
+        }),
+      })
+      if (response.found && response.person) setLushaResult({ person: response.person, creditsUsedToday: response.creditsUsedToday, dailyCap: response.dailyCap })
+      else setLushaError(t('server.lushaNotFound'))
+      setLushaCredits({ used: response.creditsUsedToday, cap: response.dailyCap })
+    } catch {
+      setLushaError(t('server.lushaError'))
+    } finally {
+      setLushaBusy(false)
+    }
+  }
+  const applyLusha = () => {
+    if (!lushaResult) return
+    const result = lushaResult.person
+    const row = {
+      'Full Name': p.name,
+      'Job Title': result.title || '',
+      'Company Name': result.company || companyName || '',
+      Email: result.email || '',
+      Phone: result.phone || '',
+      'LinkedIn URL': result.linkedinUrl || '',
+      Country: result.country || '',
+    }
+    const currentPeople = people.map((candidate) => candidate.id === p.id ? p : candidate)
+    const plan = planStakeholderImport([row], getImportPreset('lusha', 'stakeholders'), account, currentPeople)
+    const patch = plan.updates.find((update) => update.id === p.id)?.patch
+    if (patch) onChange(patch)
+    setLushaResult(null)
+  }
   const launch = (action: 'cadence' | 'brief' | 'team') => launchPlaybook(action, account, p).then((r) => onLaunched(r.copied))
   const reports = people.filter((x) => x.reportsTo === person.id)
   const manager = people.find((x) => x.id === p.reportsTo)
@@ -133,6 +192,15 @@ export function PersonSheet({
         )}
         {tab === 'Acciones' && (
           <div className="pc-sheet-section">
+            {API_URL && localStorage.getItem(AUTH_KEY) && lushaEnabled && !p.departed && <div className="lusha-enrichment">
+              <button className="primary" disabled={lushaBusy} onClick={enrich}>{lushaBusy ? t('server.lushaLoading') : t('server.lushaEnrich')}</button>
+              {credits && <small>{t('server.lushaCredits').replace('{used}', String(credits.used)).replace('{cap}', String(credits.cap))}</small>}
+              {lushaError && <p role="status">{lushaError}</p>}
+              {lushaResult && <div><strong>{t('server.lushaFound')}</strong><dl>{Object.entries(lushaResult.person).filter(([, value]) => value).map(([key, value]) => {
+                const current = ({ name: p.name, title: p.title, company: companyName, email: p.email, phone: p.phone, linkedinUrl: p.linkedinUrl, country: p.country } as Record<string, string | null | undefined>)[key]
+                return <div key={key}><dt>{key}</dt><dd>{current || '—'} → {value}</dd></div>
+              })}</dl><button onClick={applyLusha}>{t('server.lushaApply')}</button></div>}
+            </div>}
             <div className="pc-actions">
               <button className="primary" onClick={() => launch('cadence')}>Generar cadencia</button>
               <button onClick={() => launch('brief')}>Brief</button>

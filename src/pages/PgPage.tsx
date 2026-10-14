@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { CompPlan, Dataset, Hypothesis, OpportunityV2, PgRecord, PgScoreInputs, PgStatus, SalesPlay, Task } from '../types';
 import { generateMessage, relevantUseCases, resolvePg, suggestPlay } from '../lib/pg';
@@ -8,6 +8,7 @@ import { DiscoveryWorkflow } from '../pg/DiscoveryWorkflow';
 import { convertDiscoveryToOpportunity } from '../pg/convert';
 import { DEVIN_URL } from '../powerchart/playbooks';
 import { pgMetrics } from '../pg/metrics';
+import { API_URL, AUTH_KEY, api, getHealth } from '../server/api';
 
 const statusOrder: PgStatus[] = ['TARGET', 'READY', 'OUTREACH', 'ENGAGED', 'MEETING', 'QUALIFIED', 'CONVERTED', 'NURTURE', 'DISQUALIFIED'];
 const plays: SalesPlay[] = ['Developer Productivity', 'AI Engineering', 'Legacy Modernization', 'Cloud Migration', 'Quality & Regulatory Delivery', 'Data & AI Product Engineering', 'UNKNOWN'];
@@ -179,17 +180,44 @@ function PgComposer({ dataset, initialStakeholderId, addPg }: { dataset: Dataset
 function PgDetail({ dataset, id, upsertPg, addTask, onToast, hypotheses, upsertOpportunityV2 }: Props & { id: string }) {
   const { lang, t, tv } = useI18n();
   const navigate = useNavigate();
+  const [openAiEnabled, setOpenAiEnabled] = useState(false);
   const raw = dataset.pg.find((x) => x.id === id);
   const [language, setLanguage] = useState<'es' | 'en'>(raw?.messageLang || lang);
+  useEffect(() => {
+    if (!API_URL || !localStorage.getItem(AUTH_KEY)) return;
+    getHealth().then((health) => setOpenAiEnabled(health.features.openai)).catch(() => setOpenAiEnabled(false));
+  }, []);
   if (!raw) return <div className="empty-state"><h1>{t('notFound.title')}</h1><Link to="/pg">{t('common.back')} {t('pg.title')}</Link></div>;
   const view = resolvePg(raw, dataset, lang);
   const via = view.accessViaStakeholderId ? dataset.stakeholders.find((x) => x.id === view.accessViaStakeholderId) : undefined;
   const linkedOps = dataset.opportunities.filter((x) => x.stakeholderIds.includes(view.stakeholderId));
   const set = (patch: Partial<PgRecord>) => upsertPg(raw.id, { ...patch, updatedAt: new Date().toISOString() });
+  const linkedHypothesis = hypotheses.find((hypothesis) => hypothesis.signalIds.some((signalId) => raw.signalIds.includes(signalId)));
   const generate = () => { const message = generateMessage(view, { initiative: view.initiative, signal: view.signals[0], useCase: view.useCases[0], via }, language); set({ message, messageDraft: message, messageLang: language, messageStatus: 'draft' }); };
   const messageStatus = raw.messageStatus || (raw.messageSentAt ? 'sent' : 'draft');
   const approveMessage = () => { if (raw.message.trim()) { set({ messageStatus: 'approved' }); onToast(lang === 'es' ? 'Mensaje aprobado; no se ha enviado.' : 'Message approved; it has not been sent.'); } };
   const markSent = () => { if (messageStatus !== 'approved') return; set({ messageStatus: 'sent', messageSentAt: new Date().toISOString(), status: ['TARGET', 'READY'].includes(raw.status) ? 'OUTREACH' : raw.status }); onToast(lang === 'es' ? 'Marcado como enviado manualmente.' : 'Manually marked as sent.'); };
+  const draftWithAi = async () => {
+    if (!linkedHypothesis) return;
+    const channelSelect = document.getElementById('touch-channel') as HTMLSelectElement | null;
+    const selectedChannel = channelSelect?.value;
+    const channel = selectedChannel === 'email' || selectedChannel === 'linkedin' ? selectedChannel : 'call';
+    try {
+      const result = await api<{ subject: string; body: string; status: 'draft' }>('/llm/draft-message', {
+        method: 'POST',
+        body: JSON.stringify({
+          hypothesis: { whyChange: linkedHypothesis.whyChange, whyNow: linkedHypothesis.whyNow, whyUs: linkedHypothesis.whyUs },
+          person: { name: view.stakeholder.name, title: view.stakeholder.title, businessUnit: view.stakeholder.businessUnit, role: view.stakeholder.powerRole || view.stakeholder.buyingRole },
+          channel,
+          language,
+        }),
+      });
+      const message = [result.subject, result.body].filter(Boolean).join('\n\n');
+      set({ message, messageDraft: message, messageLang: language, messageStatus: 'draft' });
+    } catch {
+      onToast(lang === 'es' ? 'No se pudo redactar con IA.' : 'AI drafting failed.');
+    }
+  };
   const promptForDevin = async () => {
     const linkedHypothesis = hypotheses.find((hypothesis) => hypothesis.signalIds.some((signalId) => raw.signalIds.includes(signalId)));
     const prompt = [
@@ -246,6 +274,7 @@ function PgDetail({ dataset, id, upsertPg, addTask, onToast, hypotheses, upsertO
           <button className={language === 'es' ? 'selected' : ''} onClick={() => setLanguage('es')}>ES</button>
           <button className={language === 'en' ? 'selected' : ''} onClick={() => setLanguage('en')}>EN</button>
           <button className="button secondary" onClick={generate}>{t('pg.detail.generate')}</button>
+          {API_URL && localStorage.getItem(AUTH_KEY) && openAiEnabled && linkedHypothesis && <button className="button secondary" onClick={draftWithAi}>{t('server.draftWithAi')}</button>}
           <button className="button secondary" onClick={promptForDevin}>{lang === 'es' ? 'Generar borrador con Devin' : 'Generate draft with Devin'}</button>
           <button className="button secondary" onClick={async () => { try { await navigator.clipboard?.writeText(view.message); onToast(t('toast.messageCopied')); } catch { onToast(t('pg.messageReady')); } }}>{t('pg.detail.copy')}</button>
           {messageStatus === 'draft' && <button className="button primary" disabled={!raw.message.trim()} onClick={approveMessage}>{lang === 'es' ? 'Aprobar mensaje' : 'Approve message'}</button>}

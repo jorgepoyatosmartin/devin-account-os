@@ -26,6 +26,9 @@ import OpportunityCommercialFields from './components/OpportunityCommercialField
 import { AccountPartnersTab, OpportunityBusinessCaseTab, OpportunityDecisionPlanTab, OpportunityEngagementTab, OpportunityOriginTab, OpportunityPeopleTab, OpportunityStageGatesTab, OpportunityTechnicalValidationTab } from './pages/OpportunityDiscoveryTabs';
 import { useI18n } from './i18n';
 import en from './i18n/en';
+import LoginPage from './server/LoginPage';
+import { ServerControls } from './server/ServerControls';
+import { API_URL } from './server/api';
 
 const tabs = ['Overview', '3 WHYS', 'MEDDPICC', 'Stakeholders', 'Activity', 'Next Actions', 'Meeting Prep', 'Post-Meeting Update', 'People and roles', 'Engagement', 'Stage gates', 'Business case', 'Technical validation', 'Decision plan', 'Origin'];
 const statusOptions: ValidationStatus[] = ['Confirmed', 'Validated', 'Partially validated', 'Hypothesis', 'Unknown'];
@@ -80,7 +83,7 @@ function Layout({ children, dataset, reset, exportData, openCommand }: { childre
         <div className="version">v0.2 • {t('common.localFirst')}</div>
       </div>
     </aside>
-    <main className="main-content">{children}</main>
+    <main className="main-content">{API_URL && <div className="app-topbar"><ServerControls /></div>}{children}</main>
   </div>;
 }
 
@@ -295,6 +298,7 @@ function WeeklyReview({ dataset }: { dataset: typeof sourceDataset }) {
 function NotFound() { const { t } = useI18n(); return <div className="empty-state"><h1>{t('notFound.title')}</h1><Link to="/">{t('notFound.back')}</Link></div>; }
 
 export default function App() {
+  const { t } = useI18n();
   const { overrides, setOverride: setBaseOverride, meetingNotes, saveMeetingNote, tasks: storedTasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, opportunitiesV2, upsertOpportunityV2, compPlan, setCompPlan, upsertPg, addPg, signalMeta, upsertSignalMeta, hypotheses, upsertHypothesis, reset: resetBase } = useOverrides();
   const chartPeopleByAccount = useAllAccountPeople();
   const tasks = useMemo(
@@ -320,6 +324,19 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleShortcut);
   }, []);
   useEffect(() => {
+    const storedToast = sessionStorage.getItem('cognition-pipeline-sync-toast');
+    if (storedToast) {
+      setToast(storedToast === 'server.syncConflict' ? t('server.syncConflict') : storedToast);
+      sessionStorage.removeItem('cognition-pipeline-sync-toast');
+    }
+    const handleServerToast = (event: Event) => {
+      const message = (event as CustomEvent<string>).detail;
+      setToast(message === 'server.syncConflict' ? t('server.syncConflict') : message);
+    };
+    window.addEventListener('cognition-pipeline:toast', handleServerToast);
+    return () => window.removeEventListener('cognition-pipeline:toast', handleServerToast);
+  }, [t]);
+  useEffect(() => {
     const blurNumberInputOnWheel = (event: WheelEvent) => {
       const target = event.target;
       if (target instanceof HTMLInputElement && target.type === 'number' && document.activeElement === target) {
@@ -340,6 +357,7 @@ export default function App() {
   }, [overrides, pgEdits, pgCustom, customOpportunities, chartPeopleByAccount, opportunitiesV2, signalMeta]);
   const exportData = () => { const blob = new Blob([JSON.stringify({ ...dataset, meetingNotes, tasks, pgEdits, pgCustom, customOpportunities }, null, 2)], { type: 'application/json' }); const href = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = href; link.download = `cognition-pipeline-export-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(href); };
   return <Layout dataset={dataset} reset={reset} exportData={exportData} openCommand={() => setCommandOpen(true)}><Routes>
+    <Route path="/login" element={<LoginPage />} />
     <Route path="/" element={<TodayPage dataset={dataset} opportunities={opportunitiesV2} compPlan={compPlan} tasks={tasks} addTask={addTask} hypotheses={hypotheses} />} />
     <Route path="/prp" element={<PrpPage opportunities={opportunitiesV2} compPlan={compPlan} setCompPlan={setCompPlan} onToast={setToast} />} />
     <Route path="/territory" element={<TerritoryPage dataset={dataset} opportunitiesV2={opportunitiesV2} fxEurUsd={compPlan?.fxEurUsd || 1.16} />} />

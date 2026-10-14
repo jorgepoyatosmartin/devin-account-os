@@ -1,0 +1,14 @@
+.app-topbar {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 34px;
+  margin: -8px 0 10px;
+}
+.server-controls { display: flex; align-items: center; gap: 8px; }
+.sync-pill { border-radius: 999px; padding: 5px 10px; font-size: 12px; background: #dcfce7; color: #166534; }
+.sync-saving { background: #fef3c7; color: #92400e; }
+.sync-offline { background: #fee2e2; color: #991b1b; }
+.server-login { width: min(440px, 100%); margin: 12vh auto; padding: 28px; border: 1px solid var(--line, #dbe2ea); border-radius: 14px; background: var(--surface, white); }
+.server-login form { display: grid; gap: 16px; }
+.server-login label { display: grid; gap: 6px; }
+.server-error { color: #b91c1c; }

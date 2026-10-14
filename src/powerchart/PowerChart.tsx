@@ -582,6 +582,7 @@ function Chart({ accountId }: { accountId: string }) {
         {selected && draft && (
           <PersonSheet
             account={accountId}
+            companyName={getRegisteredAccount(accountId)?.account.name}
             person={selected}
             draft={draft}
             people={people}

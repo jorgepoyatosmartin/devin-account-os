@@ -6,6 +6,7 @@ import type { Dataset, Hypothesis, OpportunityV2, PgScoreInputs, Signal } from '
 import { Badge, Section } from '../components/ui'
 import { convertDiscoveryToOpportunity, hypothesisConversion } from './convert'
 import { pgScore } from './score'
+import { API_URL, AUTH_KEY, api, getHealth } from '../server/api'
 import './discovery.css'
 
 type SignalMeta = Partial<Pick<Signal, 'productIds' | 'salesPlayId' | 'scoreInputs'>>
@@ -27,9 +28,16 @@ export function DiscoveryWorkflow({
   const [draft, setDraft] = useState<Hypothesis | null>(null)
   const [signalAccountId, setSignalAccountId] = useState('')
   const [expandedSignalId, setExpandedSignalId] = useState<string | null>(null)
+  const [openAiEnabled, setOpenAiEnabled] = useState(false)
+  const [analysis, setAnalysis] = useState<{ signalId: string; result: { products: string[]; salesPlayId: string | null; relevance: number; rationale: string; hypothesis: { whyChange: string; whyNow: string; whyUs: string }; nextBestAction: { stakeholderId: string | null; action: string }; assumptions: string[] } } | null>(null)
+  const [analysisBusy, setAnalysisBusy] = useState(false)
   const hypothesisFormRef = useRef<HTMLFormElement>(null)
   const label = (es: string, en: string) => lang === 'es' ? es : en
   const isHypothesisFormOpen = draft !== null
+  useEffect(() => {
+    if (!API_URL || !localStorage.getItem(AUTH_KEY)) return
+    getHealth().then((health) => setOpenAiEnabled(health.features.openai)).catch(() => setOpenAiEnabled(false))
+  }, [])
   useEffect(() => {
     if (!isHypothesisFormOpen) return
     const frame = requestAnimationFrame(() => {
@@ -79,6 +87,54 @@ export function DiscoveryWorkflow({
     })
   }
 
+  const analyze = async (signal: Signal) => {
+    setAnalysisBusy(true)
+    setAnalysis(null)
+    try {
+      const result = await api<NonNullable<typeof analysis>['result']>('/llm/signal-analysis', {
+        method: 'POST',
+        body: JSON.stringify({
+          signal,
+          account: dataset.accounts.find((item) => item.id === signal.accountId),
+          stakeholders: dataset.stakeholders.filter((person) => person.accountId === signal.accountId).map((person) => ({
+            id: person.id,
+            name: person.name,
+            title: person.title,
+            businessUnit: person.businessUnit,
+            role: person.powerRole || person.buyingRole,
+          })),
+          catalog: {
+            products: products.map((product) => ({ id: product.id, name: product.id })),
+            salesPlays: salesPlays.map((play) => ({ id: play.id, name: play.id })),
+          },
+          language: lang,
+        }),
+      })
+      setAnalysis({ signalId: signal.id, result })
+    } catch {
+      setAnalysis(null)
+    } finally {
+      setAnalysisBusy(false)
+    }
+  }
+
+  const createAiHypothesis = (signal: Signal) => {
+    const result = analysis?.result
+    if (!result) return
+    beginHypothesis(signal)
+    setDraft((current) => current ? {
+      ...current,
+      whyChange: result.hypothesis.whyChange,
+      whyNow: result.hypothesis.whyNow,
+      whyUs: result.hypothesis.whyUs,
+      productIds: result.products,
+      salesPlayId: result.salesPlayId || undefined,
+      valueEstimate: { ...current.valueEstimate, assumptions: result.assumptions.join('\n') },
+      nextBestAction: result.nextBestAction.action,
+      stakeholderIds: result.nextBestAction.stakeholderId ? [result.nextBestAction.stakeholderId] : [],
+    } : current)
+  }
+
   const saveHypothesis = (event: React.FormEvent) => {
     event.preventDefault()
     if (draft) upsertHypothesis({
@@ -125,7 +181,7 @@ export function DiscoveryWorkflow({
             <td>{salesPlays.find((play) => play.id === signal.salesPlayId)?.id || signal.salesPlayId || '—'}</td>
             <td>{(signal.productIds || []).map((id) => products.find((product) => product.id === id)?.id || id).join(', ') || '—'}</td>
             <td><Badge>{score == null ? '—' : score.toFixed(1)}</Badge></td>
-            <td className="discovery-actions"><button className="button secondary" onClick={() => setExpandedSignalId(expandedSignalId === signal.id ? null : signal.id)}>{label('Puntuar', 'Score')}</button><button className="button secondary" onClick={() => beginHypothesis(signal)}>{label('Crear hipótesis', 'Create hypothesis')}</button></td>
+            <td className="discovery-actions"><button className="button secondary" onClick={() => setExpandedSignalId(expandedSignalId === signal.id ? null : signal.id)}>{label('Puntuar', 'Score')}</button><button className="button secondary" onClick={() => beginHypothesis(signal)}>{label('Crear hipótesis', 'Create hypothesis')}</button>{API_URL && localStorage.getItem(AUTH_KEY) && openAiEnabled && <button className="button secondary" disabled={analysisBusy} onClick={() => analyze(signal)}>{label('Analizar con IA', 'Analyze with AI')}</button>}</td>
           </tr>
           {expandedSignalId === signal.id && <tr className="discovery-editor-row"><td colSpan={7}><div className="discovery-editor">
             <div className="discovery-segments">{(['fit', 'signals', 'access', 'economic', 'urgency'] as const).map((key) => <div className="discovery-segment" key={key}>
@@ -138,6 +194,7 @@ export function DiscoveryWorkflow({
               <label>{label('Productos', 'Products')}<select multiple value={signal.productIds || []} onChange={(event) => upsertSignalMeta(signal.id, { productIds: [...event.currentTarget.selectedOptions].map((option) => option.value) })}>{products.map((product) => <option key={product.id} value={product.id}>{product.id}</option>)}</select></label>
             </div>
           </div></td></tr>}
+          {analysis?.signalId === signal.id && <tr><td colSpan={7}><div className="ai-block"><strong>{label('Análisis IA', 'AI analysis')} · {analysis.result.relevance}/5</strong><p>{analysis.result.rationale}</p><p>{analysis.result.hypothesis.whyChange} · {analysis.result.hypothesis.whyNow} · {analysis.result.hypothesis.whyUs}</p><p>{label('Productos', 'Products')}: {analysis.result.products.join(', ') || '—'} · {label('Sales play', 'Sales play')}: {analysis.result.salesPlayId || '—'}</p><p>{label('Próxima acción', 'Next best action')}: {analysis.result.nextBestAction.action}</p>{analysis.result.assumptions.length > 0 && <small>{label('Supuestos', 'Assumptions')}: {analysis.result.assumptions.join(' · ')}</small>}<div><button className="button secondary" onClick={() => createAiHypothesis(signal)}>{label('Crear hipótesis', 'Create hypothesis')}</button></div></div></td></tr>}
         </Fragment>
       })}</tbody></table></div>
     </Section>

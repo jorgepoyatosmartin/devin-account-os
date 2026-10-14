@@ -1,2 +1,6 @@
 node_modules
 dist
+server/.env
+server/data/
+server/**/__pycache__/
+server/.pytest_cache/

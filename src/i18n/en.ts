@@ -812,6 +812,23 @@ const en = {
   'import.apply': 'Apply',
   'import.importCsv': 'Import CSV',
   'import.applied': 'Applied: {creates} created, {updates} updated, {skipped} skipped.',
+  'server.connect': 'Connect',
+  'server.disconnect': 'Disconnect',
+  'server.username': 'Username',
+  'server.password': 'Password',
+  'server.loginError': 'Unable to connect. Check your credentials and API availability.',
+  'server.synced': 'Synced',
+  'server.saving': 'Saving…',
+  'server.offline': 'Offline',
+  'server.draftWithAi': 'Draft with AI',
+  'server.lushaEnrich': 'Enrich with Lusha',
+  'server.lushaLoading': 'Querying Lusha…',
+  'server.lushaCredits': 'Credits used today: {used}/{cap}',
+  'server.lushaFound': 'Enrichment preview',
+  'server.lushaNotFound': 'No person found.',
+  'server.lushaError': 'Could not enrich this contact.',
+  'server.lushaApply': 'Apply',
+  'server.syncConflict': 'Conflict: the server version has been loaded',
 } as const;
 
 export default en;
