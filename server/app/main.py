@@ -25,7 +25,11 @@ app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 bearer = HTTPBearer(auto_error=False)
 failed_logins: dict[str, deque[float]] = defaultdict(deque)
 STATE_KEY = re.compile(r"^(?:cognition-pipeline-[a-z0-9-]+|power-chart:[a-z0-9-]+)$")
-EXCLUDED_KEYS = {"cognition-pipeline-auth", "cognition-pipeline-api-url"}
+EXCLUDED_KEYS = {
+    "cognition-pipeline-auth",
+    "cognition-pipeline-api-url",
+    "cognition-pipeline-sync-versions",
+}
 MAX_STATE_BYTES = 2 * 1024 * 1024
 PROMPTS = Path(__file__).parent / "prompts"
 

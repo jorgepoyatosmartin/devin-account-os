@@ -37,7 +37,13 @@ def test_state_put_get_conflict_and_delete(client, auth):
 
 
 def test_state_key_validation_and_size_limit(client, auth):
-    for key in ("wrong", "cognition-pipeline-auth", "cognition-pipeline-api-url", "power-chart:UPPER"):
+    for key in (
+        "wrong",
+        "cognition-pipeline-auth",
+        "cognition-pipeline-api-url",
+        "cognition-pipeline-sync-versions",
+        "power-chart:UPPER",
+    ):
         assert client.put(f"/state/{key}", headers=auth, json={"value": 1, "baseVersion": 0}).status_code == 400
     oversized = "x" * (2 * 1024 * 1024 + 10)
     assert client.put("/state/cognition-pipeline-large", headers=auth, json={"value": oversized, "baseVersion": 0}).status_code == 413

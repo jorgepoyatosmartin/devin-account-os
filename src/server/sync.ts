@@ -5,7 +5,8 @@ type StateItem = { key: string; value: unknown; version: number; updatedAt: stri
 type StateResponse = { items: StateItem[] }
 type PendingValue = string | null
 
-const excluded = new Set([AUTH_KEY, 'cognition-pipeline-api-url', 'cognition-pipeline-lang'])
+const VERSIONS_KEY = 'cognition-pipeline-sync-versions'
+const excluded = new Set([AUTH_KEY, 'cognition-pipeline-api-url', 'cognition-pipeline-lang', VERSIONS_KEY])
 const versions = new Map<string, number>()
 const pending = new Map<string, PendingValue>()
 const timers = new Map<string, number>()
@@ -16,6 +17,37 @@ let status: SyncStatus = 'synced'
 let originalSet: Storage['setItem'] | undefined
 let originalRemove: Storage['removeItem'] | undefined
 let suppress = false
+
+function persistVersions() {
+  const setItem = originalSet ?? localStorage.setItem
+  setItem.call(localStorage, VERSIONS_KEY, JSON.stringify(Object.fromEntries(versions)))
+}
+
+function setVersion(key: string, version: number) {
+  versions.set(key, version)
+  persistVersions()
+}
+
+function deleteVersion(key: string) {
+  versions.delete(key)
+  persistVersions()
+}
+
+function loadVersions() {
+  versions.clear()
+  try {
+    const value: unknown = JSON.parse(localStorage.getItem(VERSIONS_KEY) || '{}')
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      Object.entries(value).forEach(([key, version]) => {
+        if (isSyncableKey(key) && typeof version === 'number' && Number.isSafeInteger(version) && version > 0) {
+          versions.set(key, version)
+        }
+      })
+    }
+  } catch {
+    persistVersions()
+  }
+}
 
 function setStatus(next: SyncStatus) {
   if (status === next) return
@@ -48,13 +80,13 @@ async function flush(key: string) {
     const baseVersion = versions.get(key) ?? 0
     if (value === null) {
       await api(`/state/${encodeURIComponent(key)}`, { method: 'DELETE', body: JSON.stringify({ baseVersion }) })
-      versions.delete(key)
+      deleteVersion(key)
     } else {
       const item = await api<StateItem>(`/state/${encodeURIComponent(key)}`, {
         method: 'PUT',
         body: JSON.stringify({ value: JSON.parse(value), baseVersion }),
       })
-      versions.set(key, item.version)
+      setVersion(key, item.version)
     }
     const timer = timers.get(key)
     if (timer !== undefined) window.clearTimeout(timer)
@@ -66,7 +98,7 @@ async function flush(key: string) {
       const payload = error.payload as { current?: StateItem; detail?: { current?: StateItem } }
       const current = payload.current || payload.detail?.current
       if (current) {
-        versions.set(key, current.version)
+        setVersion(key, current.version)
         localValue(key, JSON.stringify(current.value))
         pending.delete(key)
         const timer = timers.get(key)
@@ -99,11 +131,12 @@ function enqueue(key: string, value: PendingValue) {
 
 export async function syncInitialState() {
   versions.clear()
+  persistVersions()
   const response = await api<StateResponse>('/state')
   const serverKeys = new Set(response.items.map((item) => item.key))
   response.items.forEach((item) => {
     if (!isSyncableKey(item.key)) return
-    versions.set(item.key, item.version)
+    setVersion(item.key, item.version)
     localValue(item.key, JSON.stringify(item.value))
   })
   for (let index = 0; index < localStorage.length; index += 1) {
@@ -115,7 +148,7 @@ export async function syncInitialState() {
       method: 'PUT',
       body: JSON.stringify({ value: JSON.parse(raw), baseVersion: 0 }),
     })
-    versions.set(key, item.version)
+    setVersion(key, item.version)
   }
 }
 
@@ -126,6 +159,7 @@ export function startSync() {
   const removeItem = localStorage.removeItem
   originalSet = setItem
   originalRemove = removeItem
+  loadVersions()
   localStorage.setItem = function (key: string, value: string) {
     setItem.call(this, key, value)
     enqueue(key, value)
@@ -141,14 +175,17 @@ export function startSync() {
 }
 
 export function stopSync() {
-  if (!active) return
-  active = false
-  if (interval !== undefined) window.clearInterval(interval)
-  timers.forEach((timer) => window.clearTimeout(timer))
-  interval = undefined
-  timers.clear()
-  if (originalSet) localStorage.setItem = originalSet
-  if (originalRemove) localStorage.removeItem = originalRemove
+  if (active) {
+    active = false
+    if (interval !== undefined) window.clearInterval(interval)
+    timers.forEach((timer) => window.clearTimeout(timer))
+    interval = undefined
+    timers.clear()
+    if (originalSet) localStorage.setItem = originalSet
+    if (originalRemove) localStorage.removeItem = originalRemove
+  }
+  const removeItem = originalRemove ?? localStorage.removeItem
+  removeItem.call(localStorage, VERSIONS_KEY)
   originalSet = undefined
   originalRemove = undefined
   pending.clear()
