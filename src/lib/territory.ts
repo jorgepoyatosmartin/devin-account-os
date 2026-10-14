@@ -1,7 +1,7 @@
 import type { TerritoryPlan } from '../accounts/registry'
 
 export const TERRITORY_STORAGE_KEY = 'cognition-pipeline-territory'
-export type TerritoryOverlay = Record<string, Partial<Pick<TerritoryPlan, 'tier' | 'potentialEur' | 'effortPct' | 'priority'>>>
+export type TerritoryOverlay = Record<string, Partial<Pick<TerritoryPlan, 'tier' | 'potentialEur' | 'effortPct' | 'effortReason' | 'priority'>>>
 
 export function readTerritoryOverlays(): TerritoryOverlay {
   try {
@@ -21,6 +21,6 @@ export function saveTerritoryOverlays(overlays: TerritoryOverlay) {
   return true
 }
 
-export function territoryWithOverlay(accountId: string, base?: TerritoryPlan) {
+export function territoryWithOverlay(accountId: string, base?: Partial<TerritoryPlan>) {
   return { ...base, ...readTerritoryOverlays()[accountId] } as TerritoryPlan
 }

@@ -7,6 +7,7 @@ import stagesRaw from '../../config/stages.yaml?raw'
 import productsRaw from '../../catalog/products.yaml?raw'
 import salesPlaysRaw from '../../catalog/sales-plays.yaml?raw'
 import scenariosRaw from '../../config/scenarios.yaml?raw'
+import territoryEffortRaw from '../../config/territory-effort.yaml?raw'
 
 export interface StageDefinition {
   id: string
@@ -57,6 +58,15 @@ export interface ScenarioDefinition {
   coverageMultiple: number | null
 }
 
+export interface TerritoryEffortConfig {
+  tierWeights: Record<string, number>
+  defaultTierWeight: number
+  activityWindowDays: number
+  activityWeights: { touch: number; meeting: number }
+  deviationThresholdPp: number
+  keyRoles: string[]
+}
+
 export interface ProductDefinition {
   id: 'devin-cloud' | 'devin-desktop' | 'devin-cli' | 'devin-review'
   useCases: string[]
@@ -81,3 +91,4 @@ export const pgScoreConfig = parseYaml<PgScoreConfig>(pgScoreRaw)
 export const products = parseYaml<{ products: ProductDefinition[] }>(productsRaw).products
 export const salesPlays = parseYaml<{ salesPlays: SalesPlayDefinition[] }>(salesPlaysRaw).salesPlays
 export const scenariosConfig = parseYaml<{ scenarios: ScenarioDefinition[] }>(scenariosRaw).scenarios
+export const territoryEffortConfig = parseYaml<TerritoryEffortConfig>(territoryEffortRaw)

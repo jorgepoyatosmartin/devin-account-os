@@ -21,6 +21,10 @@ const APP_TO_STATUS: Record<RelationshipStatus, Status> = { 'No contact': 'No co
 const LEVEL_TO_APP: Record<ChartStakeholder['level'], AppLevel> = { 'C Level': 'Executive Committee', '2nd': 'Senior Leadership', '3rd': 'Director', '4th': 'Manager' }
 const INFLUENCE_TO_APP = { 1: 'Low', 2: 'Medium', 3: 'High' } as const
 
+function emptyLegacyPlaceholder(value: string) {
+  return value.trim().toLowerCase() === 'unknown' ? '' : value
+}
+
 export function toAppStakeholder(p: ChartStakeholder, legacy: AppStakeholder | undefined, accountId = 'mapfre'): AppStakeholder {
   const base: AppStakeholder = legacy ?? {
     id: p.id, accountId, name: p.name, title: p.title, functionArea: p.unit, responsibilities: '', strategicPriorities: '',
@@ -39,8 +43,12 @@ export function toAppStakeholder(p: ChartStakeholder, legacy: AppStakeholder | u
     level: LEVEL_TO_APP[p.level], influence: INFLUENCE_TO_APP[p.influence], reportsTo: p.reportsTo ?? undefined,
     dataOrigin: p.external ? 'PUBLIC RESEARCH' : 'TERRITORY PLAN', lastTouch: p.lastTouch, lastUpdated: p.lastTouch ?? base.lastUpdated,
     recentActivity: p.notes || base.recentActivity,
-    responsibilities: p.responsibilities || base.responsibilities,
-    strategicPriorities: p.priorities || base.strategicPriorities,
+    responsibilities: p.responsibilities || emptyLegacyPlaceholder(base.responsibilities),
+    strategicPriorities: p.priorities || emptyLegacyPlaceholder(base.strategicPriorities),
+    technologyPriorities: emptyLegacyPlaceholder(base.technologyPriorities),
+    potentialPain: emptyLegacyPlaceholder(base.potentialPain),
+    cognitionRelevance: emptyLegacyPlaceholder(base.cognitionRelevance),
+    departed: p.departed === true,
   }
 }
 

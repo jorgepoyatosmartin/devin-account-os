@@ -8,6 +8,7 @@ export type TerritoryPlan = {
   tier: string | null
   potentialEur: number | null
   effortPct: number | null
+  effortReason: string
   segment: string | null
   priority: number | null
   rationale: string
@@ -123,6 +124,7 @@ function parseTerritory(raw?: string): TerritoryPlan {
     tier: source.tier ?? null,
     potentialEur: source.potentialEur ?? null,
     effortPct: source.effortPct ?? null,
+    effortReason: source.effortReason ?? '',
     segment: source.segment ?? null,
     priority: source.priority ?? null,
     rationale: source.rationale ?? '',

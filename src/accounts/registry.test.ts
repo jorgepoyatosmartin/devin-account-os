@@ -44,6 +44,7 @@ describe('account registry', () => {
     expect(account?.account.initiatives).toEqual([])
     expect(account?.stakeholders.map((person) => person.id)).toEqual(['newco-ceo'])
     expect(account?.territory.potentialEur).toBeNull()
+    expect(account?.territory.effortReason).toBe('')
     expect(account?.partners).toEqual([])
   })
 

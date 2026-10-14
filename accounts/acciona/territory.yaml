@@ -1,6 +1,7 @@
 tier: null
 potentialEur: null
 effortPct: null
+effortReason: ''
 segment: null
 priority: null
 rationale: ''

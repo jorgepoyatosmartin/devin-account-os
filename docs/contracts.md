@@ -23,7 +23,7 @@ Frozen design for the MVP. Change only by PR that updates this file first.
 ## 2. Accounts without code
 - Account registry = existing `src/data/accounts.json` **plus** any folder `accounts/<id>/` discovered with `import.meta.glob('/accounts/*/account.yaml', { query: '?raw', import: 'default', eager: true })`.
 - `accounts/<id>/account.yaml` (minimal: `id, name, sector, headquarters, country, businessUnits[]`) and `accounts/<id>/stakeholders.yaml` (schema `stakeholders/v1`, same as MAPFRE).
-- `accounts/<id>/territory.yaml`: `tier: A|B|C`, `potentialEur: number|null`, `effortPct: number`, `segment`, `priority: 1..5`, `rationale`, `evidence[]`.
+- `accounts/<id>/territory.yaml`: `tier: A|B|C`, `potentialEur: number|null`, `effortPct: number`, `effortReason: string`, `segment`, `priority: 1..5`, `rationale`, `evidence[]`.
 - `accounts/_template/` holds empty copies of the three files. Adding an account = copy the template (or run `!onboard_account`).
 - All 5 current accounts get `stakeholders.yaml` generated once from `src/data/stakeholders.json` (reports_to null where unknown, `reports_to_confidence: hypothesis`).
 

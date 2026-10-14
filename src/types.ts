@@ -130,6 +130,7 @@ export interface Account {
     tier: string | null;
     potentialEur: number | null;
     effortPct: number | null;
+    effortReason?: string;
     segment: string | null;
     priority: number | null;
     rationale: string;
@@ -209,6 +210,7 @@ export interface Hypothesis {
   productIds: string[];
   salesPlayId?: string;
   pgId?: string;
+  touches?: PgTouch[];
 }
 
 export interface Stakeholder {
@@ -238,6 +240,7 @@ export interface Stakeholder {
   lastTouch?: string | null;
   championPotential?: 'High' | 'Medium' | 'Low' | 'Unknown';
   reportsTo?: string; // stakeholder id, only when sourced
+  departed?: boolean;
   dataOrigin?: DataOrigin;
   lastUpdated?: string;
   recommendedNextAction?: string;

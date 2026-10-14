@@ -1,0 +1,6 @@
+tierWeights: { "1": 1.0, A: 1.0, "2": 0.6, B: 0.6, "3": 0.3, C: 0.3 }
+defaultTierWeight: 0.5
+activityWindowDays: 90
+activityWeights: { touch: 1, meeting: 3 }
+deviationThresholdPp: 10
+keyRoles: [Economic Buyer, Champion, Coach, Influencer]
