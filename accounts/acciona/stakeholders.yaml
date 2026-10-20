@@ -1,0 +1,256 @@
+# Fuente de verdad de stakeholders de ACCIONA.
+account: acciona
+updated: '2026-10-12'
+schema: stakeholders/v1
+stakeholders:
+  - id: ana-rivero
+    name: Raúl Rivero
+    title: 'CIO · public: CIO, ACCIONA'
+    level: C Level
+    unit: CIO
+    business_unit: Global
+    sales_play: Agentic Readiness
+    role: EB
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    responsibilities: Group IT function within the Digital Transformation area; architectures, governance, methodologies, organisation.
+    priorities: Aligning business and technology strategy; digital transformation.
+    notes: CIO since 2018 (LinkedIn).
+  - id: ana-carballo
+    name: José Manuel Carballo Fernández
+    title: 'ACCIONA Infrastructure & Construction · public: CIO, ACCIONA Infrastructure & Construction'
+    level: C Level
+    unit: CIO (business unit)
+    business_unit: Infraestructura
+    sales_play: Agentic Readiness
+    role: Champion
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    responsibilities: Technology for the Infrastructure & Construction division (home of the MIRAI programme).
+    notes: Appointed divisional CIO Sep 2025 after leading the CIO Office & special projects (LinkedIn).
+  - id: ana-serrano
+    name: Marta Serrano Pardo
+    title: CDO, Head of Data & AI, ACCIONA Energía
+    level: 3rd
+    unit: AI/Data leadership
+    business_unit: AI/Data leadership
+    sales_play: Agentic Readiness
+    role: Influencer
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: >-
+      Data management, data-driven decisions, digital transformation of ACCIONA Energía; AI development, adoption and
+      scaling strategy.
+    priorities: Operational efficiency and innovation through data and AI.
+    notes: UNKNOWN — VALIDATION REQUIRED
+  - id: ana-javier-vizcaino
+    name: Javier Vizcaino
+    title: Director of Corporate Applications
+    level: 3rd
+    unit: Global
+    business_unit: Global
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-alfonso-prieto-regidor
+    name: Alfonso Prieto Regidor
+    title: IT International Coordination Director
+    level: C Level
+    unit: Global
+    business_unit: Global
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-jon-gabilondo
+    name: Jon Gabilondo
+    title: Director Arquitectura TIC
+    level: 3rd
+    unit: Global
+    business_unit: Global
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-fernando-fajardo-gerez
+    name: Fernando Fajardo Gerez
+    title: Chief Cost and Commercial Officer
+    level: C Level
+    unit: Energía
+    business_unit: Energía
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-carlos-manchado-martin
+    name: Carlos Manchado Martin
+    title: Global CISO | Corporate Cybersecurity Director
+    level: C Level
+    unit: Global
+    business_unit: Global
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-federico-garcia-guillen
+    name: Federico García Guillén
+    title: Head of Technology, Innovation & AI
+    level: C Level
+    unit: Global
+    business_unit: Global
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-frank-zamora
+    name: Frank Zamora
+    title: CIO Acciona Agua
+    level: C Level
+    unit: Agua
+    business_unit: Agua
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-jose-luis-rosell-de-celis
+    name: Jose Luis Rosell de Celis
+    title: CIO Acciona Construcción
+    level: C Level
+    unit: Trasportes y Concesiones
+    business_unit: Trasportes y Concesiones
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-juan-luis-blasco-salvador
+    name: Juan Luis Blasco Salvador
+    title: Director de Operaciones TIC
+    level: 3rd
+    unit: Global
+    business_unit: Global
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-ivan-lazaro
+    name: Ivan Lázaro
+    title: Director ICT Infrastructures
+    level: 3rd
+    unit: Infraestructura
+    business_unit: Infraestructura
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-noa-blanco-fernandez
+    name: Noa Blanco Fernández
+    title: Head of Cybersecurity Engineering
+    level: 3rd
+    unit: Global
+    business_unit: Global
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+  - id: ana-manuel-farinas-iglesias
+    name: Manuel Fariñas Iglesias
+    title: Director de Tecnología e I+D+i
+    level: 3rd
+    unit: Agua
+    business_unit: Agua
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []

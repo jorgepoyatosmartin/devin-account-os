@@ -1,0 +1,5 @@
+rates:
+  DM_to_NBM: 0.3
+  NBM_to_TFW: 0.5
+  TFW_to_BVA_TV: 0.5
+  BVA_TV_to_WON: 0.5

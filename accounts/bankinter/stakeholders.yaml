@@ -1,0 +1,87 @@
+# Fuente de verdad de stakeholders de BANKINTER.
+account: bankinter
+updated: '2026-10-12'
+schema: stakeholders/v1
+stakeholders:
+  - id: bkt-ortiz
+    name: Gloria Ortiz Portero
+    title: CEO, Bankinter
+    level: C Level
+    unit: CEO
+    business_unit: CEO
+    sales_play: Agentic Readiness
+    role: EB
+    attitude: unknown
+    influence: 3
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: Bank CEO; personally leads the 'IA First' programme.
+    priorities: Efficient, governed GenAI adoption aligned with business objectives; profitable diversified growth.
+    notes: Announced Microsoft 365 Copilot deployment for the entire workforce (Apr 2026); record FY2025 results.
+  - id: bkt-duran
+    name: José Miguel Durán Ruiz
+    title: >-
+      Director of Transformation & Artificial Intelligence (Chief AI Transformation Officer, CAITO); formerly CIO —
+      Director of Technology & Transformation (2021-2025)
+    level: 2nd
+    unit: AI/Data leadership / Digital transformation
+    business_unit: AI/Data leadership / Digital transformation
+    sales_play: Agentic Readiness
+    role: Champion
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: >-
+      Coordinate technology and business strategy for AI adoption at all levels of the organisation; maximise ROI of AI
+      investments; governance and compliance.
+    priorities: High-impact AI projects (customer, efficiency) and AI culture for employee productivity.
+    notes: Leading IA First; Copilot organisation-wide rollout (Apr 2026).
+  - id: bkt-villanueva
+    name: Rubén Villanueva
+    title: Director de Transformación Digital (Chief Digital Officer)
+    level: 2nd
+    unit: Chief Digital Officer
+    business_unit: Chief Digital Officer
+    sales_play: Agentic Readiness
+    role: Influencer
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: Digital transformation, digital assets and solutions development.
+    priorities: Efficient, sustainable growth through digital realities; talent development.
+    notes: UNKNOWN — VALIDATION REQUIRED
+  - id: bkt-cio-unknown
+    name: UNKNOWN — current CIO / Director of Technology
+    title: CIO (successor to J.M. Durán, since 2025) — IDENTITY UNKNOWN
+    level: 2nd
+    unit: CIO
+    business_unit: CIO
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: Technology & operations. UNKNOWN — VALIDATION REQUIRED

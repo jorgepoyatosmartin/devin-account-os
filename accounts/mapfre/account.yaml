@@ -1,0 +1,13 @@
+id: mapfre
+name: MAPFRE
+sector: Insurance
+headquarters: Majadahonda (Madrid), Spain
+country: Spain
+businessUnits:
+  - Insurance — Iberia
+  - Insurance — LATAM
+  - Insurance — North America
+  - Insurance — EMEA
+  - MAPFRE RE (Reinsurance & Global Risks)
+  - Corporate Technology & Data (Group)
+  - MAPFRE Open Innovation / Verti / InsureandGo (digital)

@@ -1,0 +1,26 @@
+phases:
+  - id: DM
+    label: Discovery meeting
+    evidenceRequired:
+      - Customer problem and desired outcome
+      - Attendees and roles
+  - id: NBM
+    label: New business meeting
+    evidenceRequired:
+      - Business objective and use case
+      - Decision participants and next step
+  - id: TFW
+    label: Technical feasibility workshop (deep dive)
+    evidenceRequired:
+      - Technical scope and environment
+      - Feasibility risks and dependencies
+  - id: BVA
+    label: Business Value Assessment
+    evidenceRequired:
+      - Baseline and success metrics
+      - Value assumptions and validation owner
+  - id: TV
+    label: Technical validation
+    evidenceRequired:
+      - Technical validation outcome
+      - Security and deployment fit

@@ -1,0 +1,384 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, NavLink, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import type { Account, Evidence, Hypothesis, MeetingNote, Opportunity, OpportunityV2, Stakeholder, Task, ValidationStatus } from './types';
+import { fiscalConfig, stagesConfig } from './config';
+import { accountById, dataset as sourceDataset, opportunitiesForAccount, signalsForAccount } from './data';
+import { discoveryQuestionTemplates, isFullyQualified, threeWhysStatus, validationKeys, weakWhys } from './lib/threeWhys';
+import { singleThreaded } from './lib/coverage';
+import { resolvePg } from './lib/pg';
+import { mergeDataset, mergeOverrides, useOverrides } from './store';
+import { stageDisplayLabel } from './lib/stageLabel';
+import { Badge as SharedBadge, EvidenceList as SharedEvidenceList, PageHeader as SharedPageHeader, Section as SharedSection, Toast } from './components/ui';
+import CommandBar from './components/CommandBar';
+import PowerChart from './powerchart/PowerChart';
+import { LEGACY_ID_ALIAS, appOverrideToChartPatch, unifyAccountStakeholders } from './powerchart/bridge';
+import { resetAllAccounts, updateAccountPerson, useAllAccountPeople } from './powerchart/store';
+import { registeredAccounts } from './accounts/registry';
+import { territoryWithOverlay } from './lib/territory';
+import InitiativeChain from './components/InitiativeChain';
+import { CrossAccountPage, InitiativesPage, OpportunityActivity, OpportunityNextActions, OpportunityStakeholders, PipelinePage, PowerChartsPage, StakeholderProfilePage, TasksPage, UseCasesPage } from './pages/IntelligencePages';
+import PgPage from './pages/PgPage';
+import PrpPage from './pages/PrpPage';
+import TodayPage from './pages/TodayPage';
+import TerritoryPage from './pages/TerritoryPage';
+import ImportPage from './pages/ImportPage';
+import OpportunityCommercialFields from './components/OpportunityCommercialFields';
+import { AccountPartnersTab, OpportunityBusinessCaseTab, OpportunityDecisionPlanTab, OpportunityEngagementTab, OpportunityOriginTab, OpportunityPeopleTab, OpportunityStageGatesTab, OpportunityTechnicalValidationTab } from './pages/OpportunityDiscoveryTabs';
+import { useI18n } from './i18n';
+import en from './i18n/en';
+import LoginPage from './server/LoginPage';
+import { ServerControls } from './server/ServerControls';
+import { API_URL } from './server/api';
+
+const tabs = ['Overview', '3 WHYS', 'MEDDPICC', 'Stakeholders', 'Activity', 'Next Actions', 'Meeting Prep', 'Post-Meeting Update', 'People and roles', 'Engagement', 'Stage gates', 'Business case', 'Technical validation', 'Decision plan', 'Origin'];
+const statusOptions: ValidationStatus[] = ['Confirmed', 'Validated', 'Partially validated', 'Hypothesis', 'Unknown'];
+const registryDataset = { ...sourceDataset, accounts: registeredAccounts.map(({ account }) => account) };
+
+function Badge({ children, tone = '' }: { children: React.ReactNode; tone?: string }) {
+  return <span className={`badge ${tone}`}>{children}</span>;
+}
+
+function EvidenceList({ evidence }: { evidence: Evidence[] }) {
+  const { lang, t, tv } = useI18n();
+  if (!evidence.length) return <div className="muted">{t('common.noEvidence')}</div>;
+  return <div className="evidence-list">{evidence.map((item, index) => (
+    <div className="evidence-row" key={`${item.claim}-${index}`}>
+      <div><strong>{item.claim}</strong><div className="muted">{item.source}</div></div>
+      <Badge tone={`category-${item.category}`}>{tv(item.category)}</Badge>
+      <span className="confidence">{tv(item.confidence)}</span>
+      <span>{item.date || '—'}</span>
+      {item.url ? <a href={item.url} target="_blank" rel="noreferrer">{t('common.open')}</a> : <span className="muted">{t('common.noUrl')}</span>}
+    </div>
+  ))}</div>;
+}
+
+function Section({ title, eyebrow, children, className = '' }: { title: string; eyebrow?: string; children: React.ReactNode; className?: string }) {
+  return <section className={`section ${className}`}>
+    {eyebrow && <div className="eyebrow">{eyebrow}</div>}<h2>{title}</h2>{children}
+  </section>;
+}
+
+function Editable({ value, onChange, multiline = false, placeholder = 'Add note…' }: { value: string; onChange: (value: string) => void; multiline?: boolean; placeholder?: string }) {
+  return multiline
+    ? <textarea value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
+    : <input value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />;
+}
+
+function Layout({ children, dataset, reset, exportData, openCommand }: { children: React.ReactNode; dataset: typeof sourceDataset; reset: () => void; exportData: () => void; openCommand: () => void }) {
+  const { lang, setLang, t } = useI18n();
+  const groups = [
+    { name: t('nav.workspace'), links: [['/', t('nav.today'), '⌂'], ['/prp', t('nav.prp'), '€'], ['/territory', t('nav.territory'), '▦'], ['/pg', t('nav.pg'), '◈'], ['/opportunities', t('nav.opportunities'), '◇'], ['/weekly-review', t('nav.weeklyReview'), '◷']] },
+  ];
+  return <div className="app-shell">
+    <aside className="sidebar">
+      <div className="brand"><div className="brand-mark">C</div><div><strong>COGNITION</strong><span>PIPELINE OS</span></div><div className="lang-switch" title={t('common.language')}><button title="English" className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>EN</button><span>|</span><button title="Español" className={lang === 'es' ? 'active' : ''} onClick={() => setLang('es')}>ES</button></div></div>
+      <div className="workspace"><span className="status-dot" /> {t('common.localWorkspace')} <span className="chevron">⌄</span></div>
+      <button className="command-trigger" onClick={openCommand}><span>⌕</span>{t('common.search')} <kbd>Ctrl K</kbd></button>
+      <nav>{groups.map((group) => <div className="nav-group" key={group.name}><div className="nav-heading">{group.name}</div>{group.links.map(([to, label, icon]) => <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => isActive ? 'active' : ''}><span className="nav-icon">{icon}</span>{label}</NavLink>)}</div>)}</nav>
+      <div className="sidebar-bottom">
+        <div className="data-status"><span className="status-dot" />{dataset.accounts.length === 1 ? t('common.accountLoaded', { count: dataset.accounts.length }) : t('common.accountLoadedPlural', { count: dataset.accounts.length })}</div>
+        <Link className="sidebar-button" to="/import">⇧ {t('import.title')}</Link>
+        <button className="sidebar-button" onClick={exportData}>⇩ {t('common.export')}</button>
+        <button className="sidebar-button muted-button" onClick={reset}>↺ {t('common.reset')}</button>
+        <div className="version">v0.2 • {t('common.localFirst')}</div>
+      </div>
+    </aside>
+    <main className="main-content">{API_URL && <div className="app-topbar"><ServerControls /></div>}{children}</main>
+  </div>;
+}
+
+function PageHeader({ eyebrow, title, subtitle, action }: { eyebrow: string; title: string; subtitle?: string; action?: React.ReactNode }) {
+  return <header className="page-header"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1>{subtitle && <p className="subtitle">{subtitle}</p>}</div>{action}</header>;
+}
+
+function Traffic({ op }: { op: Opportunity }) {
+  const { tv } = useI18n();
+  const status = threeWhysStatus(op);
+  return <Badge tone={`traffic-${status.tone}`}>{status.emoji} {tv(status.label)}</Badge>;
+}
+
+function Inconsistent({ op }: { op: Opportunity }) {
+  const { t } = useI18n();
+  return (['Qualified', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'] as string[]).includes(op.stage) && !isFullyQualified(op)
+    ? <Badge tone="warning">{t('common.stageInconsistent')}</Badge> : null;
+}
+
+function Cockpit({ dataset, addTask, onToast }: { dataset: typeof sourceDataset; addTask: (task: import('./types').Task) => void; onToast: (message: string) => void }) {
+  const { lang, t, tv } = useI18n();
+  const navigate = useNavigate();
+  const actions = [...dataset.cockpitActions].sort((a, b) => a.priority - b.priority).slice(0, 5);
+  return <><PageHeader eyebrow={t('cockpit.eyebrow')} title={t('cockpit.title')} subtitle={t('cockpit.subtitle')} />
+    <div className="metric-row"><div className="metric"><span>{t('cockpit.openPipeline')}</span><strong>{dataset.opportunities.length}</strong><small>{t('cockpit.activeOpportunities')}</small></div><div className="metric"><span>{t('cockpit.validationHealth')}</span><strong>{dataset.opportunities.filter(isFullyQualified).length}<em>/{dataset.opportunities.length}</em></strong><small>{t('cockpit.fullyQualified')}</small></div><div className="metric"><span>{t('cockpit.actionsDue')}</span><strong>{actions.length}</strong><small>{t('cockpit.prioritizedToday')}</small></div><div className="metric"><span>{t('cockpit.accounts')}</span><strong>{dataset.accounts.length}</strong><small>{t('cockpit.inWorkspace')}</small></div></div>
+    <Section eyebrow={t('cockpit.priorityQueue')} title={t('common.todayFocus')}>
+      <div className="action-grid">{actions.map((action) => {
+        const account = accountById(action.accountId); const op = action.opportunityId ? dataset.opportunities.find((item) => item.id === action.opportunityId) : undefined;
+        const stakeholder = action.stakeholderId ? dataset.stakeholders.find((item) => item.id === action.stakeholderId) : undefined;
+        return <article className="action-card" key={action.id}><div className="card-top"><Badge tone="priority">P{action.priority}</Badge><span className="muted">{account?.name}</span></div><h3>{op?.name || action.signal}</h3><div className="entity-line">{stakeholder?.name || t('cockpit.stakeholder')} <span>·</span> {action.signal}</div><div className="mini-label">{t('cockpit.threeWhys').toUpperCase()} {t('common.status').toUpperCase()}</div>{op && <Traffic op={op} />}<div className="action-block"><span>{t('cockpit.whyThisMatters')}</span><p>{action.whyThisMatters}</p></div><div className="action-block"><span>{t('cockpit.recommendedAction')}</span><p>{action.recommendedAction}</p></div><div className="ai-block"><span className="ai-block-label">{t('ai.generated')}</span><div className="message-block"><span>{t('cockpit.suggestedMessage')} <button onClick={async () => { await navigator.clipboard?.writeText(action.suggestedMessage); onToast(t('toast.messageCopied')); }}>{t('cockpit.copy')}</button></span><code>{action.suggestedMessage}</code></div></div><div className="action-outcome"><span>{t('cockpit.expectedOutcome')}</span><strong>{action.expectedOutcome}</strong></div><div className="context-actions">{op && <button onClick={() => navigate(`/opportunities/${op.id}?tab=3%20WHYS`)}>{t('cockpit.threeWhys')}</button>}<button onClick={() => navigate(`/power-charts?account=${action.accountId}`)}>{t('cockpit.powerChart')}</button>{stakeholder && <button onClick={() => navigate(`/stakeholders/${stakeholder.id}`)}>{t('cockpit.stakeholder')}</button>}{op && <button onClick={() => navigate(`/opportunities/${op.id}?tab=Meeting%20Prep`)}>{t('cockpit.meeting')}</button>}<button onClick={() => { addTask({ id: `task-${Date.now()}`, title: action.recommendedAction, accountId: action.accountId, opportunityId: action.opportunityId, stakeholderId: action.stakeholderId, status: 'Open', createdAt: new Date().toISOString(), source: 'cockpit' }); onToast(t('toast.actionAdded')); }}>{t('cockpit.task')}</button></div></article>;
+      })}</div>
+      <div className="weak-whys-panel"><div><span>{t('cockpit.weakNow')}</span>{dataset.opportunities.filter((item) => weakWhys(item).whyNow === 'weak').map((item) => <Link key={item.id} to={`/opportunities/${item.id}?tab=3%20WHYS`}>{item.name}</Link>)}</div><div><span>{t('cockpit.weakCognition')}</span>{dataset.opportunities.filter((item) => weakWhys(item).whyCognition === 'weak').map((item) => <Link key={item.id} to={`/opportunities/${item.id}?tab=3%20WHYS`}>{item.name}</Link>)}</div></div>
+      <Section eyebrow={t('common.pipelineGeneration')} title={t('cockpit.pgPriorities')}><div className="pg-cockpit-list">{dataset.pg.map((item) => resolvePg(item, dataset, lang)).filter((item) => !['CONVERTED', 'DISQUALIFIED', 'NURTURE'].includes(item.status)).sort((a, b) => ({ HIGH: 0, MEDIUM: 1, LOW: 2 }[a.priority] - { HIGH: 0, MEDIUM: 1, LOW: 2 }[b.priority])).slice(0, 3).map((item) => <Link className="pg-cockpit-row" to={`/pg/${item.id}`} key={item.id}><span><strong>{item.stakeholder.name}</strong><small>{item.account.name} · {tv(item.salesPlay)}</small></span><Badge tone="pg-yellow">{tv(item.priority)}</Badge></Link>)}</div></Section>
+    </Section>
+    <Section eyebrow={t('cockpit.pipelineSnapshot')} title={t('cockpit.allOpportunities')}>
+      <PipelineTable opportunities={dataset.opportunities} dataset={dataset} />
+    </Section>
+  </>;
+}
+
+function PipelineTable({ opportunities, dataset, opportunitiesV2 = [], fxEurUsd = 1.16 }: { opportunities: Opportunity[]; dataset: typeof sourceDataset; opportunitiesV2?: OpportunityV2[]; fxEurUsd?: number }) {
+  const { lang, t, tv } = useI18n();
+  const formatEur = (amount: number, currency: 'EUR' | 'USD') => new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-US', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 }).format(currency === 'USD' ? amount / fxEurUsd : amount);
+  return <div className="table-wrap"><table><thead><tr><th>{t('pg.table.account')}</th><th>{t('pg.table.person')}</th><th>{t('opportunity.stageId')}</th><th>{t('opportunities.amountEur')}</th><th>{t('pipeline.value')}</th><th>3 WHYS</th><th>{tv('Confidence')}</th><th>{t('pg.table.action')}</th></tr></thead><tbody>{opportunities.map((op) => {
+    const opportunityV2 = opportunitiesV2.find((item) => item.id === op.id);
+    const stage = opportunityV2 ? stageDisplayLabel(opportunityV2.stageId, t) : tv(op.stage);
+    const amount = opportunityV2?.amount === null || opportunityV2?.amount === undefined
+      ? '—'
+      : formatEur(opportunityV2.amount, opportunityV2.currency);
+    return <tr key={op.id}><td><Link to={`/accounts/${op.accountId}`}>{dataset.accounts.find((item) => item.id === op.accountId)?.name || accountById(op.accountId)?.name}</Link></td><td><Link to={`/opportunities/${op.id}`}>{op.name}</Link></td><td><Badge>{stage}</Badge><Inconsistent op={op} /></td><td>{amount}</td><td>{tv(op.potentialValue)}</td><td><Traffic op={op} /></td><td>{tv(op.confidence)}</td><td>{op.nextAction}</td></tr>;
+  })}</tbody></table></div>;
+}
+
+function AccountsPage({ dataset }: { dataset: typeof sourceDataset }) {
+  const { t } = useI18n();
+  return <><PageHeader eyebrow={`${t('accounts.title').toUpperCase()} / PORTFOLIO`} title={t('accounts.title')} subtitle={t('accounts.subtitle')} /><div className="account-grid">{dataset.accounts.map((account) => <Link className="account-card" to={`/accounts/${account.id}`} key={account.id}><div className="account-avatar">{account.name.slice(0, 1)}</div><div><div className="eyebrow">{account.sector}</div><h2>{account.name}</h2><p>{account.overview}</p><div className="card-stats"><span>{opportunitiesForAccount(account.id).length} {t('accounts.opportunities').toLowerCase()}</span><span>{dataset.stakeholders.filter((item) => item.accountId === account.id).length} {t('nav.stakeholders').toLowerCase()}</span><span>{signalsForAccount(account.id).length} {t('nav.signals').toLowerCase()}</span></div></div><span className="arrow">→</span></Link>)}</div></>;
+}
+
+function AccountDetail({ dataset, setOverride }: { dataset: typeof sourceDataset; setOverride: (id: string, path: string, value: unknown) => void }) {
+  const { t, tv } = useI18n();
+  const { id = '' } = useParams(); const [params] = useSearchParams(); const account = dataset.accounts.find((item) => item.id === id); const [tab, setTab] = useState(params.get('tab') || 'Company');
+  if (!account) return <NotFound />;
+  const territory = territoryWithOverlay(account.id, account.territory);
+  const tabLabels: Record<string, string> = { Company: t('account.company'), 'Strategic Initiatives': t('account.strategicInitiatives'), Signals: t('account.accountSignals'), Stakeholders: t('account.stakeholderMap'), 'Use Cases': t('account.useCases'), Whitespace: t('account.whitespace'), Technology: t('account.technologyProfile'), 'Power Chart': t('accounts.powerChart'), Competition: t('account.competitiveIntelligence'), Partners: t('account.partners'), Opportunities: t('accounts.opportunities') };
+  const tabs = Object.keys(tabLabels);
+  const accountStakeholders = dataset.stakeholders.filter((item) => item.accountId === account.id);
+  const accountOpps = dataset.opportunities.filter((item) => item.accountId === account.id);
+  const accountSignals = dataset.signals.filter((item) => item.accountId === account.id);
+  const engagedCount = accountStakeholders.filter((item) => ['Engaged', 'Champion'].includes(item.relationshipStatus)).length;
+  const traffic = { red: accountOpps.filter((item) => threeWhysStatus(item).tone === 'red').length, yellow: accountOpps.filter((item) => threeWhysStatus(item).tone === 'yellow').length, green: accountOpps.filter((item) => threeWhysStatus(item).tone === 'green').length };
+  return <><PageHeader eyebrow={`${t('account.planEyebrow')} / ${tv(account.sector).toUpperCase()}`} title={account.name} subtitle={`${account.headquarters} · ${account.employees} ${t('account.employees').toLowerCase()} · ${account.geographicFootprint}`} action={<Link className="button secondary" to="/accounts">← {t('common.allAccounts')}</Link>} /><div className="account-summary-strip"><button onClick={() => setTab('Strategic Initiatives')}><span>{t('accounts.initiatives').toUpperCase()}</span><strong>{account.initiatives.length}</strong></button><button onClick={() => setTab('Opportunities')}><span>{t('accounts.opportunities').toUpperCase()}</span><strong>{accountOpps.length}</strong></button><button onClick={() => setTab('Stakeholders')}><span>{t('accounts.engaged').toUpperCase()}</span><strong>{engagedCount}</strong></button><button onClick={() => setTab('Signals')}><span>{t('accounts.signals').toUpperCase()}</span><strong>{accountSignals.length}</strong></button><button onClick={() => setTab('Opportunities')}><span>3 WHYS</span><strong className="summary-lights">🔴 {traffic.red} 🟡 {traffic.yellow} 🟢 {traffic.green}</strong></button></div>
+    <div className="tab-bar">{tabs.map((item) => <button className={tab === item ? 'selected' : ''} onClick={() => setTab(item)} key={item}>{tabLabels[item]}</button>)}</div>
+    {tab === 'Company' && <Section title="Plan territorial" eyebrow={account.name}><div className="detail-grid">
+      <div className="detail-item"><span>Tier</span><strong>{territory.tier || '—'}</strong></div>
+      <div className="detail-item"><span>Potencial</span><strong>{territory.potentialEur == null ? '—' : new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(territory.potentialEur)}</strong></div>
+      <div className="detail-item"><span>Esfuerzo</span><strong>{territory.effortPct == null ? '—' : `${territory.effortPct}%`}</strong></div>
+      <div className="detail-item"><span>Segmento</span><strong>{territory.segment || '—'}</strong></div>
+      <div className="detail-item"><span>Prioridad</span><strong>{territory.priority ?? '—'}</strong></div>
+    </div></Section>}
+    {tab === 'Company' && <><Section title={t('account.companyProfile')} eyebrow={t('account.overview')}><p className="lead">{account.overview}</p><div className="detail-grid">{[[t('account.revenue'), account.revenue], [t('account.employees'), account.employees], [t('account.headquarters'), account.headquarters], [t('account.geographicFootprint'), account.geographicFootprint], [t('account.financialPerformance'), account.financialPerformance], [t('account.businessUnits'), account.businessUnits.join(', ')], [t('account.productsServices'), account.productsServices.join(', ')], [t('account.growthPriorities'), account.growthPriorities.join(', ')], [t('account.costRestructuring'), account.costRestructuringInitiatives.join(', ')], [t('account.mnaActivity'), account.mnaActivity.join(', ')]].map(([label, value]) => <div className="detail-item" key={label}><span>{label}</span><strong>{value}</strong></div>)}</div></Section><Section title={t('account.companyEvidence')} eyebrow={t('account.sourceRegister')}><EvidenceList evidence={account.companyEvidence} /></Section></>}
+    {tab === 'Strategic Initiatives' && <Section title={t('account.strategicInitiatives')} eyebrow={t('account.priorities')}><div className="initiative-list">{account.initiatives.map((initiative) => <InitiativeChain account={account} initiative={initiative} opportunities={dataset.opportunities} stakeholders={accountStakeholders} key={initiative.id} />)}</div></Section>}
+    {tab === 'Signals' && <Section title={t('account.accountSignals')} eyebrow={t('account.signalMonitor')}><div className="signal-list">{dataset.signals.filter((item) => item.accountId === account.id).map((signal) => <article className="signal-card" key={signal.id}><div className="card-top"><Badge tone={`category-${signal.category}`}>{tv(signal.category)}</Badge><span>{signal.date} · {signal.source}</span></div><h3>{signal.signal}</h3><div className="three-col"><div><span>{t('account.businessRelevance')}</span><p>{signal.businessRelevance}</p></div><div><span>{t('account.cognitionRelevance')}</span><p>{signal.cognitionRelevance}</p></div><div><span>{t('account.threeWhysImpact')}</span><p>{signal.threeWhysImpact}</p><p>{signal.salesAction}</p></div></div>{signal.url && <a href={signal.url} target="_blank" rel="noreferrer">{t('account.sourceLink')}</a>}</article>)}</div></Section>}
+    {tab === 'Stakeholders' && <Section title={t('account.stakeholderMap')} eyebrow={t('account.relationshipCoverage')}><StakeholderTable stakeholders={accountStakeholders} setOverride={setOverride} /></Section>}
+    {tab === 'Use Cases' && <Section title={t('account.useCases')} eyebrow={t('account.valueHypotheses')}><div className="usecase-grid">{account.useCases.map((item) => <article className="card" key={item.id}><div className="card-top"><Badge>{tv(item.category || 'UNKNOWN')}</Badge><Badge tone={`relevance-${(item.relevance || 'NOT RELEVANT').split(' ')[0].toLowerCase()}`}>{tv(item.relevance || 'NOT RELEVANT')}</Badge></div><h3>{item.name}</h3><div className="three-col"><div><span>{t('pg.businessPain').toUpperCase()}</span><p>{item.businessProblem || item.whyAnything}</p></div><div><span>{t('common.targetStakeholders').toUpperCase()}</span><p>{(item.targetStakeholderIds || []).map((stakeholderId) => dataset.stakeholders.find((person) => person.id === stakeholderId)?.name || stakeholderId).join(', ') || tv('UNKNOWN')}</p></div><div><span>{t('opportunities.whyCognition')}</span><p>{item.whyCognition}</p></div></div><div className="outcome"><span>{t('opportunities.businessOutcome').toUpperCase()}</span>{item.businessOutcome}</div></article>)}</div></Section>}
+    {tab === 'Whitespace' && <Section title={t('account.whitespace')} eyebrow={t('account.expansionMap')}><div className="table-wrap"><table><thead><tr><th>{t('account.area')}</th><th>{t('account.currentRelationship')}</th><th>{t('account.existingUseCases')}</th><th>{t('account.untappedAreas')}</th><th>{t('account.potentialOpportunity')}</th></tr></thead><tbody>{account.whitespace.map((item) => <tr key={item.area}><td><strong>{item.area}</strong></td><td>{item.currentRelationship}</td><td>{item.existingUseCases}</td><td>{item.untappedAreas}</td><td>{item.potentialOpportunity}</td></tr>)}</tbody></table></div></Section>}
+    {tab === 'Technology' && <Section title={t('account.technologyProfile')} eyebrow={t('account.currentEnvironment')}><div className="detail-grid">{Object.entries(account.technology || {}).map(([key, value]) => { const fallbackLabel = key.replace(/[A-Z]/g, (letter) => ` ${letter}`).toUpperCase(); const translationKey = `account.tech.${key}` as keyof typeof en; const label = translationKey in en ? t(translationKey) : fallbackLabel; return <div className="detail-item" key={key}><span>{label}</span><strong>{value || tv('UNKNOWN')}</strong></div>; })}{!account.technology && <div className="muted detail-item">{t('account.technologyProfile')} {tv('UNKNOWN')}</div>}</div></Section>}
+    {tab === 'Power Chart' && <PowerChart key={account.id} accountId={account.id} />}
+    {tab === 'Partners' && <AccountPartnersTab partners={registeredAccounts.find(({ account: item }) => item.id === account.id)?.partners || []} />}
+    {tab === 'Competition' && <Section title={t('account.competitiveIntelligence')} eyebrow={t('account.dealLandscape')}><div className="table-wrap"><table><thead><tr><th>{t('account.currentTechnology')}</th><th>{t('account.potentialCompetitor')}</th><th>{t('account.evidence')}</th><th>{t('account.category')}</th><th>{t('account.differentiation')}</th><th>{t('account.discoveryQuestion')}</th></tr></thead><tbody>{(account.competitiveIntel || []).map((item, index) => <tr key={index}><td>{item.currentTechnology}</td><td>{item.potentialCompetitor}</td><td>{item.evidence}</td><td><Badge tone={`category-${item.category}`}>{tv(item.category)}</Badge></td><td>{item.differentiation}</td><td>{item.discoveryQuestion}</td></tr>)}{!account.competitiveIntel?.length && <tr><td colSpan={6}>{tv('UNKNOWN')}</td></tr>}</tbody></table></div></Section>}
+    {tab === 'Opportunities' && <Section title={t('accounts.opportunities')} eyebrow={t('common.pipeline')}><div className="opportunity-list">{dataset.opportunities.filter((item) => item.accountId === account.id).map((op) => <Link to={`/opportunities/${op.id}`} className="opportunity-row" key={op.id}><div><Badge>{tv(op.stage)}</Badge><h3>{op.name}</h3><p>{tv(op.useCase)}</p></div><div><Traffic op={op} /><strong>{tv(op.potentialValue)}</strong></div><span>→</span></Link>)}</div></Section>}
+  </>;
+}
+
+function StakeholderTable({ stakeholders, setOverride }: { stakeholders: Stakeholder[]; setOverride: (id: string, path: string, value: unknown) => void }) {
+  const { t, tv } = useI18n();
+  const display = (value: string) => value.trim() || '—';
+  return <div className="table-wrap"><table><thead><tr><th>{t('stakeholder.person')}</th><th>{t('stakeholder.function')}</th><th>{t('stakeholder.relationship')}</th><th>{t('stakeholder.buyingRole')}</th><th>{t('stakeholder.priorities')}</th><th></th></tr></thead><tbody>{stakeholders.map((person) => <tr key={person.id}><td><strong>{person.name}</strong><small>{display(person.title)}</small></td><td>{display(person.functionArea)}</td><td><select value={person.relationshipStatus} onChange={(e) => setOverride(person.id, 'relationshipStatus', e.target.value)}>{['No contact', 'Identified', 'Contacted', 'Engaged', 'Champion'].map((x) => <option key={x} value={x}>{tv(x)}</option>)}</select></td><td><select value={person.buyingRole} onChange={(e) => setOverride(person.id, 'buyingRole', e.target.value)}>{['Economic Buyer', 'Champion', 'Coach', 'Influencer', 'Technical evaluator', 'Blocker', 'Unknown'].map((x) => <option key={x} value={x}>{tv(x)}</option>)}</select></td><td>{display(person.strategicPriorities)}</td><td><details><summary>{t('stakeholder.details')}</summary><div className="details-popover"><p><b>{t('common.responsibilities')}:</b> {display(person.responsibilities)}</p><p><b>{t('common.technologyPriorities')}:</b> {display(person.technologyPriorities)}</p><p><b>{t('common.potentialPain')}:</b> {display(person.potentialPain)}</p><p><b>{t('common.recentActivity')}:</b> {display(person.recentActivity)}</p><p><b>{t('common.cognitionRelevance')}:</b> {display(person.cognitionRelevance)}</p><EvidenceList evidence={[...person.publicStatements, ...person.sources]} /></div></details></td></tr>)}</tbody></table></div>;
+}
+
+function OpportunitiesPage({ dataset, opportunitiesV2, fxEurUsd }: { dataset: typeof sourceDataset; opportunitiesV2: OpportunityV2[]; fxEurUsd: number }) {
+  const { t, tv } = useI18n();
+  const [accountFilter, setAccountFilter] = useState('');
+  const [stageFilter, setStageFilter] = useState('');
+  const ids = new Set(dataset.opportunities.filter((op) => (!accountFilter || op.accountId === accountFilter) && (!stageFilter || opportunitiesV2.find((item) => item.id === op.id)?.stageId === stageFilter)).map((op) => op.id));
+  const rows = dataset.opportunities.filter((op) => ids.has(op.id));
+  const money = (opportunity?: OpportunityV2) => opportunity?.amount == null ? '—' : `${new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(opportunity.currency === 'USD' ? opportunity.amount / fxEurUsd : opportunity.amount)} €`;
+  const quarter = (date: string | null | undefined) => {
+    if (!date) return '—';
+    const month = new Date(`${date}T00:00:00`).getMonth() + 1;
+    return `Q${Math.floor(((month - fiscalConfig.fyStartMonth + 12) % 12) / 3) + 1}`;
+  };
+  return <><PageHeader eyebrow={`OPPORTUNITIES / ${t('nav.pipeline')}`} title={t('opportunities.title')} subtitle={t('opportunities.subtitle')} action={<div className="context-actions"><Link className="button secondary" to="/pipeline">{t('opportunities.pipelineLink')}</Link><Link className="button secondary" to="/tasks">{t('opportunities.tasksLink')}</Link></div>} /><div className="pipeline-kpis"><div><span>{t('opportunities.identified')}</span><strong>{rows.filter((x) => x.stage === 'Identified').length}</strong></div><div><span>{t('opportunities.inDiscovery')}</span><strong>{rows.filter((x) => x.stage === 'Discovery').length}</strong></div><div><span>{t('opportunities.qualifiedPlus')}</span><strong>{rows.filter((x) => ['Qualified', 'Proposal', 'Negotiation'].includes(x.stage)).length}</strong></div><div><span>{t('opportunities.greenWhys')}</span><strong>{rows.filter(isFullyQualified).length}</strong></div></div><Section title={t('opportunities.pipelineRegister')} eyebrow={t('opportunities.activeDeals')}><div className="filters"><label>{t('nav.accounts')}<select value={accountFilter} onChange={(event) => setAccountFilter(event.target.value)}><option value="">{t('common.all')}</option>{dataset.accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}</select></label><label>{t('common.stage')}<select value={stageFilter} onChange={(event) => setStageFilter(event.target.value)}><option value="">{t('common.all')}</option>{stagesConfig.map((stage) => <option key={stage.id} value={stage.id}>{stage.label}</option>)}</select></label></div><div className="table-wrap"><table><thead><tr><th>{t('nav.accounts')}</th><th>{t('common.opportunity')}</th><th>{t('common.potentialValue')}</th><th>{t('opportunity.closeDate')}</th><th>{t('common.stage')}</th><th>Forecast</th><th>{t('opportunity.origin')}</th></tr></thead><tbody>{rows.map((op) => { const v2 = opportunitiesV2.find((item) => item.id === op.id); return <tr key={op.id}><td>{dataset.accounts.find((account) => account.id === op.accountId)?.name}</td><td><Link to={`/opportunities/${op.id}`}>{op.name}</Link></td><td>{money(v2)}</td><td>{quarter(v2?.closeDate)}</td><td>{v2 ? stageDisplayLabel(v2.stageId, t) : tv(op.stage)}</td><td>{v2?.forecastCategory || '—'}</td><td>{v2?.origin.pgId || v2?.origin.hypothesisId ? '◈ PG' : '—'}</td></tr> })}</tbody></table></div></Section></>;
+}
+
+function OpportunityDetail({ dataset, opportunitiesV2, upsertOpportunityV2, setOverride, meetingNotes, saveMeetingNote, tasks, addTask, toggleTask, hypotheses, fxEurUsd }: { dataset: typeof sourceDataset; opportunitiesV2: OpportunityV2[]; upsertOpportunityV2: (opportunity: OpportunityV2) => void; setOverride: (id: string, path: string, value: unknown) => void; meetingNotes: MeetingNote[]; saveMeetingNote: (note: MeetingNote) => void; tasks: Task[]; addTask: (task: Task) => void; toggleTask: (id: string) => void; hypotheses: Hypothesis[]; fxEurUsd: number }) {
+  const { t, tv } = useI18n();
+  const { id = '' } = useParams(); const raw = dataset.opportunities.find((item) => item.id === id); const commercialOpportunity = opportunitiesV2.find((item) => item.id === id); const [params, setParams] = useSearchParams(); const requested = params.get('tab') || ''; const tab = tabs.includes(requested) ? requested : 'Overview';
+  if (!raw || !commercialOpportunity) return <NotFound />; const op = raw; const account = dataset.accounts.find((item) => item.id === op.accountId)!; const people = op.stakeholderIds.map((sid) => dataset.stakeholders.find((item) => item.id === sid)).filter(Boolean) as Stakeholder[];
+  const selectTab = (next: string) => setParams({ tab: next }, { replace: true });
+  const tabLabels: Record<string, string> = { Overview: t('common.overview'), '3 WHYS': '3 WHYS', MEDDPICC: 'MEDDPICC', Stakeholders: t('nav.stakeholders'), Activity: t('intelligence.activity'), 'Next Actions': t('nav.tasks'), 'Meeting Prep': t('nav.meetingPrep'), 'Post-Meeting Update': t('nav.postMeeting'), 'People and roles': t('opportunity.peopleRoles'), Engagement: t('opportunity.engagement'), 'Stage gates': t('opportunity.stageGates'), 'Business case': t('opportunity.businessCase'), 'Technical validation': t('opportunity.technicalValidation'), 'Decision plan': t('opportunity.decisionPlan'), Origin: t('opportunity.origin') };
+  return <><PageHeader eyebrow={`${t('common.opportunity')} / ${tv(op.stage).toUpperCase()}`} title={op.name} subtitle={`${account.name} · ${op.businessUnit} · ${op.useCase}`} action={<Link className="button secondary" to="/opportunities">← {t('common.pipeline')}</Link>} /><div className="op-header-strip"><Badge>{tv(op.stage)}</Badge><Traffic op={op} /><Inconsistent op={op} /><span className="confidence">{t('common.confidence')}: {tv(op.confidence)}</span></div><div className="tab-bar opportunity-tabs">{tabs.map((item) => <button className={tab === item ? 'selected' : ''} onClick={() => selectTab(item)} key={item}>{tabLabels[item]}</button>)}</div>
+    {tab === 'Overview' && <OpportunityOverview op={op} commercialOpportunity={commercialOpportunity} upsertOpportunityV2={upsertOpportunityV2} people={people} setOverride={setOverride} dataset={dataset} />}
+    {tab === '3 WHYS' && <ThreeWhysPanel op={op} setOverride={setOverride} />}
+    {tab === 'MEDDPICC' && <MeddpiccPanel op={op} setOverride={setOverride} />}
+    {tab === 'Stakeholders' && <OpportunityStakeholders op={op} people={people} dataset={dataset} setOverride={setOverride} />}
+    {tab === 'Activity' && <OpportunityActivity op={op} meetingNotes={meetingNotes} tasks={tasks} dataset={dataset} toggleTask={toggleTask} />}
+    {tab === 'Next Actions' && <OpportunityNextActions op={op} tasks={tasks} setOverride={setOverride} addTask={addTask} dataset={dataset} />}
+    {tab === 'Meeting Prep' && <MeetingPrep op={op} account={account} people={people} dataset={dataset} />}
+    {tab === 'Post-Meeting Update' && <PostMeeting op={op} meetingNotes={meetingNotes} saveMeetingNote={saveMeetingNote} setOverride={setOverride} />}
+    {tab === 'People and roles' && <OpportunityPeopleTab opportunity={commercialOpportunity} dataset={dataset} save={upsertOpportunityV2} />}
+    {tab === 'Engagement' && <OpportunityEngagementTab opportunity={commercialOpportunity} save={upsertOpportunityV2} />}
+    {tab === 'Stage gates' && <OpportunityStageGatesTab opportunity={commercialOpportunity} save={upsertOpportunityV2} setLegacyStage={(stage) => setOverride(op.id, 'stage', stage)} />}
+    {tab === 'Business case' && <OpportunityBusinessCaseTab opportunity={commercialOpportunity} save={upsertOpportunityV2} fxEurUsd={fxEurUsd} />}
+    {tab === 'Technical validation' && <OpportunityTechnicalValidationTab opportunity={commercialOpportunity} save={upsertOpportunityV2} />}
+    {tab === 'Decision plan' && <OpportunityDecisionPlanTab opportunity={commercialOpportunity} save={upsertOpportunityV2} partners={registeredAccounts.find(({ account: item }) => item.id === op.accountId)?.partners || []} />}
+    {tab === 'Origin' && <OpportunityOriginTab opportunity={commercialOpportunity} dataset={dataset} hypotheses={hypotheses} />}
+  </>;
+}
+
+function OpportunityOverview({ op, commercialOpportunity, upsertOpportunityV2, people, setOverride, dataset }: { op: Opportunity; commercialOpportunity: OpportunityV2; upsertOpportunityV2: (opportunity: OpportunityV2) => void; people: Stakeholder[]; setOverride: (id: string, path: string, value: unknown) => void; dataset: typeof sourceDataset }) {
+  const { t, tv } = useI18n();
+  const initiative = dataset.accounts.find((x) => x.id === op.accountId)?.initiatives.find((x) => x.id === op.initiativeId);
+  const champion = op.championId ? dataset.stakeholders.find((person) => person.id === op.championId) : undefined;
+  return <>
+    <Section title={t('opportunities.opportunityMap')} eyebrow={t('opportunities.fromStrategy')}><div className="opportunity-map"><Link to={`/accounts/${op.accountId}?tab=Strategic%20Initiatives`}>{initiative?.name || tv('UNKNOWN')}</Link><b>→</b><span>{op.threeWhys.whyAnything.problem || tv('UNKNOWN')}</span><Link to={`/opportunities/${op.id}?tab=3%20WHYS`}><Traffic op={op} /></Link><span>{op.useCase || tv('UNKNOWN')}</span><Link to={`/stakeholders/${people[0]?.id || ''}`}>{people[0]?.name || tv('UNKNOWN')}</Link><span>{t('common.champion')}: {champion?.name || tv('UNKNOWN')}</span><Badge>{tv(op.stage)}</Badge><Link to="/pipeline">{t('common.pipeline')} →</Link></div></Section>
+    <Section title={t('common.dealOverview')} eyebrow={t('common.commercialContext')}><div className="detail-grid"><div className="detail-item"><span>{t('common.businessUnit')}</span><strong>{tv(op.businessUnit)}</strong></div><div className="detail-item"><span>{t('common.useCase')}</span><strong>{tv(op.useCase)}</strong></div><div className="detail-item"><span>{t('common.potentialValue')}</span><strong>{tv(op.potentialValue)}</strong></div><div className="detail-item"><span>{t('common.initiative')}</span><strong>{initiative?.name || t('common.notLinked')}</strong></div><div className="detail-item"><span>{t('common.competition')}</span><strong>{tv(op.competition)}</strong></div><div className="detail-item"><span>{t('common.confidence')}</span><strong>{tv(op.confidence)}</strong></div></div><div className="edit-grid"><label>{t('common.stage')}<select value={op.stage} onChange={(e) => setOverride(op.id, 'stage', e.target.value)}>{['Identified', 'Discovery', 'Qualified', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'].map((x) => <option key={x} value={x}>{tv(x)}</option>)}</select></label><label>{t('common.nextAction')}<Editable value={op.nextAction} onChange={(value) => setOverride(op.id, 'nextAction', value)} /></label></div></Section>
+    <OpportunityCommercialFields opportunity={commercialOpportunity} onSave={upsertOpportunityV2} />
+    <Section title={t('common.buyingCommittee')} eyebrow={t('nav.stakeholders')}>{people.length ? <div className="people-grid">{people.map((person) => <div className="person-card" key={person.id}><div className="account-avatar">{person.name.slice(0, 1)}</div><div><Link to={`/stakeholders/${person.id}`}><strong>{person.name}</strong></Link><span>{person.title} · {person.functionArea}</span><Badge>{tv(person.powerRole || person.buyingRole)}</Badge><small>{tv(person.relationshipStatus)}</small></div></div>)}</div> : <div className="muted">{t('common.noStakeholdersLinked')}</div>}</Section>
+    <Section title={t('common.dealEvidence')} eyebrow={t('account.sourceRegister')}><EvidenceList evidence={op.evidence} /></Section>
+  </>;
+}
+
+function ThreeWhysPanel({ op, setOverride }: { op: Opportunity; setOverride: (id: string, path: string, value: unknown) => void }) {
+  const { lang, t, tv } = useI18n();
+  const status = threeWhysStatus(op); const rowLabels = { situation: 'Situation', problem: 'Problem', implication: 'Implication', whyNow: 'Why Now', whyCognition: 'Why Cognition' } as const;
+  const translatedRowLabels = { situation: t('opportunities.situation'), problem: t('opportunities.problem'), implication: t('opportunities.implication'), whyNow: t('opportunities.whyNow'), whyCognition: t('opportunities.whyCognition') } as const;
+  const questions = lang === 'es' ? discoveryQuestionTemplates(lang) : op.threeWhys.discoveryQuestions;
+  const rowEmoji = (value: ValidationStatus) => ['Confirmed', 'Validated'].includes(value) ? '🟢' : value === 'Unknown' ? '⚪' : '🟡';
+  const unvalidated = validationKeys().filter((key) => !['Confirmed', 'Validated'].includes(op.threeWhys.validation[key].status));
+  return <div className="three-whys"><div className="executive-summary"><div><div className="eyebrow">{t('opportunities.executiveSummary')}</div><h2>{t('opportunities.whyExists')}</h2><div className="summary-lines"><p><b>{t('opportunities.whyAnything')}</b> {tv(op.threeWhys.whyAnything.situation)} → {tv(op.threeWhys.whyAnything.problem)} → {tv(op.threeWhys.whyAnything.implication)}</p><p><b>{t('opportunities.whyNow')}</b> {tv(op.threeWhys.whyNow.urgency)}</p><p><b>{t('opportunities.whyCognition')}</b> {tv(op.threeWhys.whyCognition.businessOutcome)}</p></div></div><div className={`big-status ${status.tone}`}>{status.emoji}<strong>{tv(status.label)}</strong><span>{t('opportunities.validationStatus')}</span></div></div>
+    <Section title={t('opportunities.whyAnything')} eyebrow={t('opportunities.currentReality')}><Flow title={t('opportunities.situation')} text={tv(op.threeWhys.whyAnything.situation)} /><div className="flow-arrow">↓</div><Flow title={t('opportunities.problem')} text={tv(op.threeWhys.whyAnything.problem)} /><div className="flow-arrow">↓</div><Flow title={t('opportunities.implication')} text={tv(op.threeWhys.whyAnything.implication)} /></Section>
+    <Section title={t('opportunities.whyNow')} eyebrow={t('opportunities.caseForAction')}><div className="three-col flow-panels"><Flow title={t('opportunities.trigger')} text={tv(op.threeWhys.whyNow.trigger)} /><Flow title={t('opportunities.timing')} text={tv(op.threeWhys.whyNow.timing)} /><Flow title={t('opportunities.urgency')} text={tv(op.threeWhys.whyNow.urgency)} /></div></Section>
+    <Section title={t('opportunities.whyCognition')} eyebrow={t('opportunities.valueHypothesis')}><div className="three-col flow-panels"><Flow title={t('opportunities.customerPain')} text={tv(op.threeWhys.whyCognition.customerPain)} /><Flow title={t('opportunities.cognitionCapability')} text={tv(op.threeWhys.whyCognition.cognitionCapability)} /><Flow title={t('opportunities.businessOutcome')} text={tv(op.threeWhys.whyCognition.businessOutcome)} /></div></Section>
+    <Section title={t('opportunities.validation')} eyebrow={t('opportunities.disciplineHypothesis')}><div className="table-wrap validation-table"><table><thead><tr><th>{t('opportunities.element')}</th><th>{t('opportunities.status')}</th><th>{t('opportunities.evidence')}</th><th>{t('opportunities.source')}</th><th>{t('opportunities.lastUpdated')}</th></tr></thead><tbody>{validationKeys().map((key) => <tr key={key}><td><strong>{translatedRowLabels[key]}</strong></td><td><span className="validation-emoji">{rowEmoji(op.threeWhys.validation[key].status)}</span><select value={op.threeWhys.validation[key].status} onChange={(e) => setOverride(op.id, `threeWhys.validation.${key}.status`, e.target.value)}>{statusOptions.map((x) => <option key={x} value={x}>{tv(x)}</option>)}</select></td><td><Editable value={tv(op.threeWhys.validation[key].evidence)} multiline onChange={(value) => setOverride(op.id, `threeWhys.validation.${key}.evidence`, value)} /></td><td><Editable value={tv(op.threeWhys.validation[key].source || '')} onChange={(value) => setOverride(op.id, `threeWhys.validation.${key}.source`, value)} placeholder={tv('UNKNOWN')} /></td><td><Editable value={tv(op.threeWhys.validation[key].lastUpdated || '')} onChange={(value) => setOverride(op.id, `threeWhys.validation.${key}.lastUpdated`, value)} placeholder={tv('UNKNOWN')} /></td></tr>)}</tbody></table></div><div className="validation-needed"><span>{t('opportunities.whatMustValidate')}</span>{unvalidated.length ? unvalidated.map((key) => <Badge tone="warning" key={key}>{translatedRowLabels[key]}</Badge>) : <Badge tone="traffic-green">{t('opportunities.nothingOutstanding')}</Badge>}</div></Section>
+    <Section title={t('opportunities.discoveryQuestions')} eyebrow={t('opportunities.whatLearnNext')}><div className="ai-block"><span className="ai-block-label">{t('ai.hypothesis')}</span><div className="question-grid">{validationKeys().map((key) => <div key={key}><h3>{translatedRowLabels[key]}</h3><ul>{questions[key].map((question) => <li key={question}>{question}</li>)}</ul></div>)}</div></div></Section>
+  </div>;
+}
+
+function Flow({ title, text }: { title: string; text: string }) { return <div className="flow-card"><span>{title}</span><p>{text}</p></div>; }
+
+function MeddpiccPanel({ op, setOverride }: { op: Opportunity; setOverride: (id: string, path: string, value: unknown) => void }) {
+  const { t, tv } = useI18n();
+  const fields: [keyof Opportunity['meddpicc'], string][] = [['metrics', t('meddpicc.metrics')], ['economicBuyer', t('meddpicc.economicBuyer')], ['decisionCriteria', t('meddpicc.decisionCriteria')], ['decisionProcess', t('meddpicc.decisionProcess')], ['paperProcess', t('meddpicc.paperProcess')], ['identifyPain', t('meddpicc.identifyPain')], ['champion', t('meddpicc.champion')], ['competition', t('meddpicc.competition')]];
+  const painDiffers = Boolean((op as Opportunity & { painDiffers?: boolean }).painDiffers);
+  const pain = op.threeWhys.whyAnything;
+  return <Section title={t('meddpicc.title')} eyebrow={t('meddpicc.qualificationFramework')}><div className="mapping-strip"><span>{t('opportunities.whyAnything')} → {t('meddpicc.identifyPain')}</span><span>{t('opportunities.implication')} → {t('meddpicc.metrics')}</span><span>{t('opportunities.whyNow')} → {t('meddpicc.decisionProcess')} / {t('meddpicc.decisionCriteria')}</span><span>{t('stakeholder.stakeholders')} → {t('meddpicc.economicBuyer')} / {t('meddpicc.champion')}</span><span>{t('opportunities.whyCognition')} → {t('meddpicc.decisionCriteria')} / {t('meddpicc.competition')}</span></div><div className="linked-box"><span>{t('meddpicc.linkedPain')}</span><strong>{tv(pain.situation)} → {tv(pain.problem)} → {tv(pain.implication)}</strong></div>{painDiffers && <div className="warning-banner">⚠ {t('meddpicc.inconsistentPain')}</div>}<label className="check-label"><input type="checkbox" checked={painDiffers} onChange={(e) => setOverride(op.id, 'painDiffers', e.target.checked)} /> {t('meddpicc.painDiffers')}</label><div className="meddpicc-grid">{fields.map(([key, label]) => <label key={key}>{label}<textarea value={tv(op.meddpicc[key])} onChange={(e) => setOverride(op.id, `meddpicc.${key}`, e.target.value)} /></label>)}</div></Section>;
+}
+
+function MeetingPrep({ op, account, people, dataset }: { op: Opportunity; account: Account; people: Stakeholder[]; dataset: typeof sourceDataset }) {
+  const { t, tv } = useI18n();
+  const missing = (Object.entries(op.meddpicc) as [string, string][]).filter(([, value]) => !value || /TBD|UNKNOWN/i.test(value)).map(([key]) => key);
+  const unknown = validationKeys().filter((key) => !['Confirmed', 'Validated'].includes(op.threeWhys.validation[key].status));
+  return <div className="print-brief"><PageHeader eyebrow={`MEETING PREP / ${t('meeting.readOnly')}`} title={t('meeting.title')} action={<button className="button secondary" onClick={() => window.print()}>{t('meeting.print')}</button>} /><Section title={t('validation.agenda')} eyebrow={t('meeting.headline')}><div className="headline-list">{unknown.length ? unknown.map((x) => <Badge tone="traffic-red" key={x}>{t(`opportunities.${x}` as never)}</Badge>) : <Badge tone="traffic-green">{t('common.allRowsValidated')}</Badge>}</div></Section><Section title={t('common.accountContext')} eyebrow={t('meeting.context')}><p>{account.overview}</p><h3>{t('meeting.strategicPriorities')}</h3><ul>{account.strategicPriorities.map((x) => <li key={x}>{x}</li>)}</ul></Section><Section title={t('common.stakeholderContext')} eyebrow={t('meeting.whoInRoom')}><div className="people-grid">{people.map((person) => <div className="person-card" key={person.id}><strong>{person.name}</strong><span>{person.title} · {person.functionArea}</span><Badge>{tv(person.buyingRole)}</Badge></div>)}</div></Section><Section title={t('common.initiative')} eyebrow={t('meeting.linkedMotion')}><p>{account.initiatives.find((x) => x.id === op.initiativeId)?.businessObjective || t('common.noStrategicInitiative')}</p></Section><Section title={t('common.existingOpportunities')} eyebrow={t('meeting.portfolio')}><ul>{dataset.opportunities.filter((x) => x.accountId === account.id).map((x) => <li key={x.id}>{x.name} — {tv(x.stage)}</li>)}</ul></Section><Section title={t('common.threeWhysSummary')} eyebrow={t('opportunities.valueHypothesis')}><div className="three-col"><Flow title={t('opportunities.whyAnything')} text={tv(op.threeWhys.whyAnything.problem)} /><Flow title={t('opportunities.whyNow')} text={tv(op.threeWhys.whyNow.urgency)} /><Flow title={t('opportunities.whyCognition')} text={tv(op.threeWhys.whyCognition.businessOutcome)} /></div></Section><Section title={t('common.meddpiccGaps')} eyebrow={t('meddpicc.qualificationFramework')}><div className="headline-list">{missing.length ? missing.map((x) => <Badge tone="warning" key={x}>{x}</Badge>) : t('common.noGaps')}</div></Section><Section title={t('common.likelyObjections')} eyebrow={t('meeting.regulatedEnterprise')}><ul>{['Security and data residency risk', 'Regulatory compliance and auditability', 'Integration effort with existing systems', 'Change management and adoption', 'Build versus buy economics'].map((x) => <li key={x}>{x}</li>)}</ul><p><b>{t('common.desiredOutcome')}</b> {t('opportunities.statusHypothesis')}.</p><p><b>{t('common.recommendedNextStep')}</b> {op.nextAction}</p></Section></div>;
+}
+
+function PostMeeting({ op, meetingNotes, saveMeetingNote, setOverride }: { op: Opportunity; meetingNotes: MeetingNote[]; saveMeetingNote: (note: MeetingNote) => void; setOverride: (id: string, path: string, value: unknown) => void }) {
+  const { t } = useI18n();
+  const [form, setForm] = useState({ date: new Date().toISOString().slice(0, 10), rawNotes: '', whatWeLearned: '', whatChanged: '', whatWasValidated: '', whatWasDisproved: '', whatRemainsUnknown: '', nextAction: '' });
+  const update = (key: keyof typeof form, value: string) => setForm((current) => ({ ...current, [key]: value }));
+  const notes = meetingNotes.filter((note) => note.opportunityId === op.id);
+  return <Section title={t('postMeeting.title')} eyebrow={t('postMeeting.captureLearning')}><form onSubmit={(e) => { e.preventDefault(); saveMeetingNote({ ...form, id: `note-${Date.now()}`, accountId: op.accountId, opportunityId: op.id }); if (form.nextAction) setOverride(op.id, 'nextAction', form.nextAction); setForm((current) => ({ ...current, rawNotes: '', whatWeLearned: '', whatChanged: '', whatWasValidated: '', whatWasDisproved: '', whatRemainsUnknown: '', nextAction: '' })); }}><div className="edit-grid"><label>{t('postMeeting.date')}<input type="date" value={form.date} onChange={(e) => update('date', e.target.value)} /></label><label>{t('postMeeting.rawNotes')}<textarea value={form.rawNotes} onChange={(e) => update('rawNotes', e.target.value)} /></label></div><div className="meddpicc-grid notes-grid">{[['whatWeLearned', 'postMeeting.whatLearned'], ['whatChanged', 'postMeeting.whatChanged'], ['whatWasValidated', 'postMeeting.whatValidated'], ['whatWasDisproved', 'postMeeting.whatDisproved'], ['whatRemainsUnknown', 'postMeeting.whatUnknown'], ['nextAction', 'postMeeting.nextAction']].map(([key, label]) => <label key={key}>{t(label as never)}<textarea value={form[key as keyof typeof form]} onChange={(e) => update(key as keyof typeof form, e.target.value)} /></label>)}</div><button className="button primary" type="submit">{t('postMeeting.save')}</button></form><div className="notes-history">{notes.map((note) => <article className="note-card" key={note.id}><div className="card-top"><Badge>{note.date}</Badge><span>{note.nextAction}</span></div><p>{note.rawNotes}</p><div className="three-col"><div><span>{t('common.learned')}</span><p>{note.whatWeLearned}</p></div><div><span>{t('common.validated')}</span><p>{note.whatWasValidated}</p></div><div><span>{t('intelligence.unknown')}</span><p>{note.whatRemainsUnknown}</p></div></div></article>)}</div></Section>;
+}
+
+function SignalsPage({ dataset }: { dataset: typeof sourceDataset }) {
+  const { t, tv } = useI18n();
+  const [account, setAccount] = useState('all'); const [type, setType] = useState('all'); const types = [...new Set(dataset.signals.map((x) => x.type))]; const signals = dataset.signals.filter((x) => (account === 'all' || x.accountId === account) && (type === 'all' || x.type === type));
+  return <><PageHeader eyebrow={t('signals.monitor')} title={t('signals.title')} subtitle={t('signals.subtitle')} /><div className="filters"><label>{t('signals.account')}<select value={account} onChange={(e) => setAccount(e.target.value)}><option value="all">{t('signals.allAccounts')}</option>{dataset.accounts.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}</select></label><label>{t('signals.type')}<select value={type} onChange={(e) => setType(e.target.value)}><option value="all">{t('signals.allTypes')}</option>{types.map((x) => <option value={x} key={x}>{tv(x)}</option>)}</select></label></div><div className="signal-list">{signals.map((signal) => <article className="signal-card" key={signal.id}><div className="card-top"><Badge tone={`category-${signal.category}`}>{tv(signal.category)}</Badge><span>{accountById(signal.accountId)?.name} · {signal.date} · {signal.source}</span></div><h3>{signal.signal}</h3><div className="three-col"><div><span>{t('signals.businessRelevance')}</span><p>{signal.businessRelevance}</p></div><div><span>{t('signals.cognitionRelevance')}</span><p>{signal.cognitionRelevance}</p></div><div><span>{t('signals.impactWhys')}</span><p>{signal.threeWhysImpact}</p></div></div><div className="action-block"><span>{t('signals.salesAction')}</span><p>{signal.salesAction}</p></div>{signal.url && <a href={signal.url} target="_blank" rel="noreferrer">{t('common.sourceLink')}</a>}</article>)}</div></>;
+}
+
+function StakeholdersPage({ dataset, setOverride }: { dataset: typeof sourceDataset; setOverride: (id: string, path: string, value: unknown) => void }) {
+  const { t, tv } = useI18n();
+  const [account, setAccount] = useState('all'); const people = dataset.stakeholders.filter((x) => account === 'all' || x.accountId === account); const isSingle = (accountId: string) => dataset.stakeholders.filter((x) => x.accountId === accountId && ['Engaged', 'Champion'].includes(x.relationshipStatus)).length <= 1;
+  return <><PageHeader eyebrow={t('stakeholders.coverage')} title={t('stakeholders.title')} subtitle={t('stakeholders.subtitle')} /><div className="filters"><label>{t('stakeholders.account')}<select value={account} onChange={(e) => setAccount(e.target.value)}><option value="all">{t('stakeholders.allAccounts')}</option>{dataset.accounts.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}</select></label></div>{people.map((person) => <div className={`stakeholder-expanded ${isSingle(person.accountId) ? 'single-threaded' : ''}`} key={person.id}><div className="stakeholder-summary"><div className="account-avatar">{person.name.slice(0, 1)}</div><div><h3>{person.name}</h3><p>{person.title} · {person.functionArea} · {accountById(person.accountId)?.name}</p></div><Badge>{tv(person.relationshipStatus)}</Badge><Badge>{tv(person.buyingRole)}</Badge>{isSingle(person.accountId) && <Badge tone="warning">{t('stakeholders.singleThreadedAccount')}</Badge>}</div><StakeholderTable stakeholders={[person]} setOverride={setOverride} /></div>)}</>;
+}
+
+function WeeklyReview({ dataset }: { dataset: typeof sourceDataset }) {
+  const { t, tv } = useI18n();
+  const today = Date.now(); const days30 = 30 * 86400000; const accounts = dataset.accounts; const green = dataset.opportunities.filter(isFullyQualified); const red = dataset.opportunities.filter((x) => threeWhysStatus(x).tone === 'red'); const single = accounts.filter((a) => singleThreaded(a.id, dataset.stakeholders)); const nonValidated = dataset.opportunities.reduce((sum, op) => sum + validationKeys().filter((key) => !['Confirmed', 'Validated'].includes(op.threeWhys.validation[key].status)).length, 0); const exec = dataset.stakeholders.filter((x) => ['Board / CEO', 'Executive Committee'].includes(x.level || '') && ['Engaged', 'Champion'].includes(x.relationshipStatus));
+  const summary = <Section title={t('common.executiveSummary')} eyebrow={t('common.leadershipView')}><div className="summary-grid"><div><h3>{t('common.newPipeline')}</h3><p>{dataset.opportunities.filter((x) => x.stage === 'Identified').length} {t('common.opportunitiesIdentified')}</p></div><div><h3>{t('common.validatedPain')}</h3><p>{dataset.opportunities.filter((x) => ['Confirmed', 'Validated'].includes(x.threeWhys.validation.problem.status)).map((x) => x.name).join(', ') || t('common.noneYet')}</p></div><div><h3>{t('common.remainingHypotheses')}</h3><p>{nonValidated} {t('common.validationRowsEvidence')}</p></div><div><h3>{t('common.singleThreadedAccounts')}</h3><p>{single.map((x) => x.name).join(', ') || t('common.none')}</p></div><div><h3>{t('common.executiveEngagement')}</h3><p>{exec.map((x) => x.name).join(', ') || t('common.noneYet')}</p></div><div><h3>{t('common.weakWhyAnything')}</h3><p>{dataset.opportunities.filter((x) => weakWhys(x).whyAnything === 'weak').map((x) => x.name).join(', ') || t('common.none')}</p></div><div><h3>{t('common.weakWhyNowCognition')}</h3><p>{dataset.opportunities.filter((x) => weakWhys(x).whyNow === 'weak' || weakWhys(x).whyCognition === 'weak').map((x) => x.name).join(', ') || t('common.none')}</p></div><div><h3>{t('common.nextWeekPriorities')}</h3><p>{dataset.cockpitActions.slice(0, 5).map((x) => x.recommendedAction).join(' · ')}</p></div></div></Section>;
+  return <><PageHeader eyebrow={t('common.weeklyOperatingRhythm')} title={t('common.weeklyAccountReview')} subtitle={t('common.weeklySubtitle')} />{summary}<div className="review-list">{accounts.map((account) => { const accountOpps = dataset.opportunities.filter((x) => x.accountId === account.id); const accountPeople = dataset.stakeholders.filter((x) => x.accountId === account.id); const newSignals = dataset.signals.filter((x) => x.accountId === account.id && today - new Date(x.date).getTime() <= days30); const gaps = accountOpps.reduce((sum, op) => sum + Object.values(op.meddpicc).filter((x) => !x || /TBD|UNKNOWN/i.test(x)).length, 0); return <article className="review-card" key={account.id}><div className="review-heading"><div className="account-avatar">{account.name.slice(0, 1)}</div><div><h2>{account.name}</h2><p>{account.overview}</p></div><Link to={`/accounts/${account.id}`}>{t('common.openAccount')}</Link></div><div className="review-metrics"><div><span>{t('common.initiatives')}</span><strong>{account.initiatives.length}</strong></div><div><span>{t('common.newSignals')}</span><strong>{newSignals.length}</strong></div><div><span>{t('common.engagedStakeholders')}</span><strong>{accountPeople.filter((x) => ['Engaged', 'Champion'].includes(x.relationshipStatus)).length}</strong></div><div><span>{t('common.opportunities')}</span><strong>{accountOpps.length}</strong></div><div><span>{t('common.meddpiccGaps')}</span><strong>{gaps}</strong></div></div><div className="review-bottom"><div><span>{t('common.threeWhysValidation')}</span>{accountOpps.map((x) => <div key={x.id}><Link to={`/opportunities/${x.id}`}>{x.name}</Link> <Traffic op={x} /></div>)}</div><div><span>{t('common.risks')}</span><p>{accountPeople.filter((x) => x.buyingRole === 'Economic Buyer').length ? t('common.economicBuyerIdentified') : t('common.noEconomicBuyer')} · {accountOpps.some((x) => !isFullyQualified(x)) ? t('common.stageValidationReview') : t('common.noStageInconsistency')}</p></div><div><span>{t('common.whitespace')}</span><p>{account.whitespace.map((x) => x.area).join(', ')}</p></div><div><span>{t('common.nextActions')}</span>{accountOpps.map((x) => <p key={x.id}>{x.nextAction}</p>)}</div></div></article>; })}</div></>;
+}
+
+function NotFound() { const { t } = useI18n(); return <div className="empty-state"><h1>{t('notFound.title')}</h1><Link to="/">{t('notFound.back')}</Link></div>; }
+
+export default function App() {
+  const { t } = useI18n();
+  const { overrides, setOverride: setBaseOverride, meetingNotes, saveMeetingNote, tasks: storedTasks, addTask, toggleTask, deleteTask, pgEdits, pgCustom, customOpportunities, opportunitiesV2, upsertOpportunityV2, compPlan, setCompPlan, upsertPg, addPg, signalMeta, upsertSignalMeta, hypotheses, upsertHypothesis, reset: resetBase } = useOverrides();
+  const chartPeopleByAccount = useAllAccountPeople();
+  const tasks = useMemo(
+    () => storedTasks.map((t) => (t.stakeholderId ? { ...t, stakeholderId: LEGACY_ID_ALIAS[t.stakeholderId] ?? t.stakeholderId } : t)),
+    [storedTasks],
+  );
+  const setOverride = useCallback((entityId: string, path: string, value: unknown) => {
+    const accountId = Object.keys(chartPeopleByAccount).find((id) => chartPeopleByAccount[id].some((person) => person.id === entityId));
+    const patch = accountId ? appOverrideToChartPatch(path, value) : null;
+    if (accountId && patch) updateAccountPerson(accountId, entityId, patch);
+    else setBaseOverride(entityId, path, value);
+  }, [chartPeopleByAccount, setBaseOverride]);
+  const reset = useCallback(() => { resetBase(); resetAllAccounts(); }, [resetBase]);
+  const [commandOpen, setCommandOpen] = useState(false); const [toast, setToast] = useState('');
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setCommandOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleShortcut);
+    return () => window.removeEventListener('keydown', handleShortcut);
+  }, []);
+  useEffect(() => {
+    const storedToast = sessionStorage.getItem('cognition-pipeline-sync-toast');
+    if (storedToast) {
+      setToast(storedToast === 'server.syncConflict' ? t('server.syncConflict') : storedToast);
+      sessionStorage.removeItem('cognition-pipeline-sync-toast');
+    }
+    const handleServerToast = (event: Event) => {
+      const message = (event as CustomEvent<string>).detail;
+      setToast(message === 'server.syncConflict' ? t('server.syncConflict') : message);
+    };
+    window.addEventListener('cognition-pipeline:toast', handleServerToast);
+    return () => window.removeEventListener('cognition-pipeline:toast', handleServerToast);
+  }, [t]);
+  useEffect(() => {
+    const blurNumberInputOnWheel = (event: WheelEvent) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement && target.type === 'number' && document.activeElement === target) {
+        target.blur();
+      }
+    };
+    document.addEventListener('wheel', blurNumberInputOnWheel, true);
+    return () => document.removeEventListener('wheel', blurNumberInputOnWheel, true);
+  }, []);
+  const dataset = useMemo(() => {
+    const merged = mergeDataset(registryDataset, overrides, pgEdits, pgCustom, customOpportunities);
+    const existing = new Set(merged.opportunities.map((opportunity) => opportunity.id));
+    return unifyAccountStakeholders({
+      ...merged,
+      opportunities: [...merged.opportunities, ...opportunitiesV2.filter((opportunity) => !existing.has(opportunity.id))],
+      signals: merged.signals.map((signal) => ({ ...signal, ...signalMeta[signal.id] })),
+    }, chartPeopleByAccount);
+  }, [overrides, pgEdits, pgCustom, customOpportunities, chartPeopleByAccount, opportunitiesV2, signalMeta]);
+  const exportData = () => { const blob = new Blob([JSON.stringify({ ...dataset, meetingNotes, tasks, pgEdits, pgCustom, customOpportunities }, null, 2)], { type: 'application/json' }); const href = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = href; link.download = `cognition-pipeline-export-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(href); };
+  return <Layout dataset={dataset} reset={reset} exportData={exportData} openCommand={() => setCommandOpen(true)}><Routes>
+    <Route path="/login" element={<LoginPage />} />
+    <Route path="/" element={<TodayPage dataset={dataset} opportunities={opportunitiesV2} compPlan={compPlan} tasks={tasks} addTask={addTask} hypotheses={hypotheses} />} />
+    <Route path="/prp" element={<PrpPage opportunities={opportunitiesV2} compPlan={compPlan} setCompPlan={setCompPlan} onToast={setToast} />} />
+    <Route path="/territory" element={<TerritoryPage dataset={dataset} opportunitiesV2={opportunitiesV2} fxEurUsd={compPlan?.fxEurUsd || 1.16} compPlan={compPlan} hypotheses={hypotheses} meetingNotes={meetingNotes} />} />
+    <Route path="/import" element={<ImportPage accounts={dataset.accounts} peopleByAccount={chartPeopleByAccount} opportunities={opportunitiesV2} upsertOpportunityV2={upsertOpportunityV2} onToast={setToast} />} />
+    <Route path="/accounts" element={<AccountsPage dataset={dataset} />} />
+    <Route path="/accounts/:id" element={<AccountDetail dataset={dataset} setOverride={setOverride} />} />
+    <Route path="/initiatives" element={<InitiativesPage dataset={dataset} />} />
+    <Route path="/power-charts" element={<PowerChartsPage dataset={dataset} />} />
+    <Route path="/stakeholders" element={<StakeholdersPage dataset={dataset} setOverride={setOverride} />} />
+    <Route path="/stakeholders/:id" element={<StakeholderProfilePage dataset={dataset} setOverride={setOverride} addTask={addTask} onToast={setToast} />} />
+    <Route path="/use-cases" element={<UseCasesPage dataset={dataset} />} />
+    <Route path="/pg" element={<PgPage dataset={dataset} upsertPg={upsertPg} addPg={addPg} addTask={addTask} onToast={setToast} hypotheses={hypotheses} upsertHypothesis={upsertHypothesis} upsertSignalMeta={upsertSignalMeta} upsertOpportunityV2={upsertOpportunityV2} opportunitiesV2={opportunitiesV2} compPlan={compPlan} />} />
+    <Route path="/pg/:id" element={<PgPage dataset={dataset} upsertPg={upsertPg} addPg={addPg} addTask={addTask} onToast={setToast} hypotheses={hypotheses} upsertHypothesis={upsertHypothesis} upsertSignalMeta={upsertSignalMeta} upsertOpportunityV2={upsertOpportunityV2} opportunitiesV2={opportunitiesV2} compPlan={compPlan} />} />
+    <Route path="/opportunities" element={<OpportunitiesPage dataset={dataset} opportunitiesV2={opportunitiesV2} fxEurUsd={compPlan?.fxEurUsd || 1.16} />} />
+    <Route path="/opportunities/:id" element={<OpportunityDetail dataset={dataset} opportunitiesV2={opportunitiesV2} upsertOpportunityV2={upsertOpportunityV2} setOverride={setOverride} meetingNotes={meetingNotes} saveMeetingNote={saveMeetingNote} tasks={tasks} addTask={addTask} toggleTask={toggleTask} hypotheses={hypotheses} fxEurUsd={compPlan?.fxEurUsd || 1.16} />} />
+    <Route path="/signals" element={<SignalsPage dataset={dataset} />} />
+    <Route path="/pipeline" element={<PipelinePage dataset={dataset} />} />
+    <Route path="/tasks" element={<TasksPage dataset={dataset} tasks={tasks} addTask={addTask} toggleTask={toggleTask} deleteTask={deleteTask} />} />
+    <Route path="/weekly-review" element={<WeeklyReview dataset={dataset} />} />
+    <Route path="/cross-account" element={<CrossAccountPage dataset={dataset} />} />
+    <Route path="*" element={<NotFound />} />
+  </Routes>{commandOpen && <CommandBar dataset={dataset} onClose={() => setCommandOpen(false)} />}{toast && <Toast message={toast} onClose={() => setToast('')} />}</Layout>;
+}

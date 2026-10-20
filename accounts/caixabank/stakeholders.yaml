@@ -1,0 +1,88 @@
+# Fuente de verdad de stakeholders de CAIXABANK.
+account: caixabank
+updated: '2026-10-12'
+schema: stakeholders/v1
+stakeholders:
+  - id: cabk-gortazar
+    name: Gonzalo Gortázar Rotaeche
+    title: CEO, CaixaBank
+    level: C Level
+    unit: CEO
+    business_unit: CEO
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 3
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: Group CEO since 2014; owner of the 2025-2027 Strategic Plan.
+    priorities: Business growth, transformation & investment (>€5bn tech), sustainability; ROTE >15%.
+    notes: FY2025 results Jan 2026.
+  - id: cabk-vicens
+    name: Mariona Vicens Cuyás
+    title: >-
+      Head of Digital Transformation and Advanced Analytics; Management Committee member; Director of CaixaBank Tech;
+      Chairwoman of CaixaBank Payments & Consumer
+    level: C Level
+    unit: Chief Digital Officer / AI-Data leadership
+    business_unit: Chief Digital Officer / AI-Data leadership
+    sales_play: Agentic Readiness
+    role: EB
+    attitude: unknown
+    influence: 3
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: Digital transformation and advanced analytics for the group; board-level oversight of CaixaBank Tech.
+    priorities: Digital transformation, advanced analytics/AI adoption.
+    notes: UNKNOWN — VALIDATION REQUIRED
+  - id: cabk-sanchez
+    name: Raúl Sánchez
+    title: Director of Emerging Technologies, CTO Office (formerly CTO Cloud)
+    level: 3rd
+    unit: CTO / Cloud / Platform Engineering
+    business_unit: CTO / Cloud / Platform Engineering
+    sales_play: Agentic Readiness
+    role: Influencer
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: >-
+      Emerging technologies for a resilient, secure, agile and sustainable banking architecture; previously cloud
+      landing zones.
+    priorities: Architecture resilience and agility.
+    notes: Role change to Emerging Technologies (2025).
+  - id: cabk-corominas
+    name: Pere Corominas Abad
+    title: CIO, CaixaBank Payments & Consumer
+    level: 2nd
+    unit: CIO (business unit)
+    business_unit: CIO (business unit)
+    sales_play: Agentic Readiness
+    role: None
+    attitude: unknown
+    influence: 2
+    status: No contact
+    owner: ''
+    last_touch: null
+    reports_to: null
+    reports_to_confidence: hypothesis
+    influences: []
+    source: research
+    responsibilities: Technology for the payments and consumer finance subsidiary.
+    notes: In role since 2024 (LinkedIn).

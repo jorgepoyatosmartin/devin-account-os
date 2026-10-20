@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "pipeline-os-api"
+version = "0.1.0"
+description = "Local-first Cognition Pipeline OS API"
+authors = []
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "0.115.12"
+uvicorn = "0.34.2"
+httpx = "0.28.1"
+pyjwt = "2.10.1"
+bcrypt = "4.3.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.3.5"
+respx = "0.22.0"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"

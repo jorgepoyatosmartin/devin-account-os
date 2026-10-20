@@ -1,0 +1,13 @@
+id: caixabank
+name: CaixaBank
+sector: Banking
+headquarters: Valencia (registered) / Barcelona & Madrid, Spain
+country: Spain
+businessUnits:
+  - Retail Banking (Spain)
+  - Business Banking / CIB
+  - BPI (Portugal)
+  - CaixaBank Payments & Consumer
+  - imagin (digital bank)
+  - CaixaBank Tech (technology subsidiary)
+  - VidaCaixa (insurance)

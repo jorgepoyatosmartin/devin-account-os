@@ -1,0 +1,224 @@
+{
+  "_note": "Synthetic numbers only. Never put the user's real quota/comp plan in this public repo.",
+  "plan": {
+    "fiscalYear": 2027,
+    "currency": "EUR",
+    "quotaByQuarter": [
+      25000,
+      50000,
+      75000,
+      100000
+    ],
+    "tiers": [
+      {
+        "fromPct": 0,
+        "toPct": 100,
+        "rate": 0.175
+      },
+      {
+        "fromPct": 100,
+        "toPct": 125,
+        "rate": 0.21875
+      },
+      {
+        "fromPct": 125,
+        "toPct": 150,
+        "rate": 0.2625
+      },
+      {
+        "fromPct": 150,
+        "toPct": 175,
+        "rate": 0.3
+      },
+      {
+        "fromPct": 175,
+        "toPct": null,
+        "rate": 0.3
+      }
+    ],
+    "renewalRate": 0.0175,
+    "taxFactor": 0.54,
+    "fxEurUsd": 1.16,
+    "netTarget": 100000,
+    "personalTargetQuarterSplit": [
+      0.05,
+      0.25,
+      0.3,
+      0.4
+    ],
+    "coverageMultiple": 4,
+    "avgDealSize": 100000
+  },
+  "stageProbabilities": {
+    "1-disco-scheduled": 0.05,
+    "2-engage": 0.1,
+    "3-qualify": 0.2,
+    "4-evaluate": 0.4,
+    "6-validate": 0.6,
+    "7-negotiate": 0.8
+  },
+  "opportunities": [
+    {
+      "id": "o1",
+      "status": "won",
+      "amount": 100000,
+      "currency": "EUR",
+      "closeDate": "2027-02-15",
+      "stage": "closed-won",
+      "forecastCategory": "Closed",
+      "countsForQuota": true,
+      "commissionType": "new"
+    },
+    {
+      "id": "o2",
+      "status": "open",
+      "amount": 116000,
+      "currency": "USD",
+      "closeDate": "2027-05-10",
+      "stage": "7-negotiate",
+      "forecastCategory": "Commit",
+      "countsForQuota": true,
+      "commissionType": "new"
+    },
+    {
+      "id": "o3",
+      "status": "open",
+      "amount": 200000,
+      "currency": "EUR",
+      "closeDate": "2027-09-30",
+      "stage": "3-qualify",
+      "forecastCategory": "Pipeline",
+      "countsForQuota": true,
+      "commissionType": "new"
+    },
+    {
+      "id": "o4",
+      "status": "open",
+      "amount": 50000,
+      "currency": "EUR",
+      "closeDate": "2027-11-15",
+      "stage": "4-evaluate",
+      "forecastCategory": "Upside",
+      "countsForQuota": true,
+      "commissionType": "new"
+    },
+    {
+      "id": "o5",
+      "status": "lost",
+      "amount": 80000,
+      "currency": "EUR",
+      "closeDate": "2027-03-01",
+      "stage": "closed-lost",
+      "forecastCategory": "Closed",
+      "countsForQuota": true,
+      "commissionType": "new"
+    },
+    {
+      "id": "o6",
+      "status": "open",
+      "amount": null,
+      "currency": "EUR",
+      "closeDate": "2027-06-30",
+      "stage": "2-engage",
+      "forecastCategory": "Pipeline",
+      "countsForQuota": true,
+      "commissionType": "new"
+    },
+    {
+      "id": "o7",
+      "status": "won",
+      "amount": 82000,
+      "currency": "EUR",
+      "closeDate": "2027-03-20",
+      "stage": "closed-won",
+      "forecastCategory": "Closed",
+      "countsForQuota": false,
+      "commissionType": "renewal"
+    },
+    {
+      "id": "o8",
+      "status": "open",
+      "amount": 40000,
+      "currency": "EUR",
+      "closeDate": "2028-02-01",
+      "stage": "3-qualify",
+      "forecastCategory": "Pipeline",
+      "countsForQuota": true,
+      "commissionType": "new"
+    }
+  ],
+  "expected": {
+    "today": "2027-04-01",
+    "annualQuota": 250000,
+    "closedWonQuota": 100000,
+    "renewalClosed": 82000,
+    "gapToQuota": 150000,
+    "grossCommissionNeeded": 183750.19,
+    "personalTargetSales": 741406.87,
+    "gapToPersonal": 641406.87,
+    "pipelineTotal": 350000,
+    "pipelineWeighted": 140000.0,
+    "forecastCommit": 200000,
+    "forecastBestCase": 250000,
+    "pipelineRequiredQuota": 600000,
+    "pipelineGapQuota": 250000,
+    "pipelineRequiredPersonal": 2565627.47,
+    "pipelineGapPersonal": 2215627.47,
+    "weeksRemaining": 39.2857,
+    "weeklyPipelinePacePersonal": 56397.79,
+    "oppsMissingAmount": [
+      "o6"
+    ],
+    "oppsOutsideFiscalYear": [
+      "o8"
+    ],
+    "commissionGrossClosed": 18935.0,
+    "commissionNetClosed": 10224.9,
+    "commissionGrossCommit": 36435.0,
+    "funnelNeeded": {
+      "WON": 7,
+      "BVA_TV": 14,
+      "TFW": 28,
+      "NBM": 56,
+      "DM": 187
+    },
+    "quarters": [
+      {
+        "q": 1,
+        "quota": 25000,
+        "closedWonQuota": 100000,
+        "personalTarget": 37070.34
+      },
+      {
+        "q": 2,
+        "quota": 50000,
+        "closedWonQuota": 0,
+        "personalTarget": 185351.72,
+        "pipelineTotal": 100000
+      },
+      {
+        "q": 3,
+        "quota": 75000,
+        "closedWonQuota": 0,
+        "personalTarget": 222422.06,
+        "pipelineTotal": 200000
+      },
+      {
+        "q": 4,
+        "quota": 100000,
+        "closedWonQuota": 0,
+        "personalTarget": 296562.75,
+        "pipelineTotal": 50000
+      }
+    ],
+    "compGrossAt": {
+      "200000": 35000,
+      "250000": 43750,
+      "300000": 54687.5,
+      "500000": 111328.125
+    },
+    "salesNeededForNetNoRenewal": {
+      "100000": 746190.2
+    }
+  }
+}

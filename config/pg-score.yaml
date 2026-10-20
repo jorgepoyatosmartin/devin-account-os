@@ -1,0 +1,8 @@
+inputMin: 1
+inputMax: 5
+weights:
+  fit: 25
+  signals: 25
+  access: 20
+  economic: 20
+  urgency: 10

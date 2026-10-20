@@ -1,0 +1,31 @@
+products:
+  - id: devin-cloud
+    useCases:
+      - end-to-end tickets
+      - language/version migrations
+      - refactors & tech debt
+      - on-prem→cloud modernization
+      - data warehouse/ETL migrations
+      - CI/CD
+  - id: devin-desktop
+    useCases:
+      - end-to-end tickets
+      - test coverage
+      - browser QA
+      - documentation
+      - refactors & tech debt
+  - id: devin-cli
+    useCases:
+      - vulnerability remediation
+      - incident RCA/MTTR
+      - language/version migrations
+      - refactors & tech debt
+      - data warehouse/ETL migrations
+      - CI/CD
+  - id: devin-review
+    useCases:
+      - vulnerability remediation
+      - incident RCA/MTTR
+      - test coverage
+      - browser QA
+      - documentation
