@@ -11,6 +11,50 @@ apps/power-chart/       Power Chart interactivo (React Flow) que lee/escribe sta
 docs/                   visión, decisiones
 ```
 
+## App (Cognition Pipeline OS)
+
+Full-stack: frontend React 18 + Vite + TypeScript (raíz del repo, rutas hash `#/` (Hoy), `#/prp`, `#/territory`, `#/pg`, `#/opportunities`, `#/import`, `#/accounts`, `#/power-charts`) y backend FastAPI + SQLite en [`server/`](server/) (login, sync de estado, Lusha, OpenAI). El backend es opcional: sin `VITE_API_URL` la app funciona solo en local con los datos de `src/data/*.json` y `accounts/*/` y guarda las ediciones en `localStorage`.
+
+### Requisitos
+
+- Node.js 20+ y npm
+- Python 3.11 y [Poetry](https://python-poetry.org/) (solo para el backend)
+
+### Frontend
+
+```sh
+npm ci
+npm run dev          # http://localhost:5173
+npm test             # Vitest
+npx tsc --noEmit -p tsconfig.json && npx oxlint src
+npm run build        # genera dist/
+```
+
+### Backend
+
+```sh
+cd server
+poetry install
+cp .env.example .env                                   # rellenar valores (no commitear)
+echo -n 'tu-password' | poetry run python scripts/hash_password.py   # -> APP_PASSWORD_HASH
+set -a && . ./.env && set +a
+poetry run uvicorn app.main:app --reload --port 8000
+poetry run pytest -q                                   # tests con mocks, sin llamadas externas
+```
+
+Variables (ver [`server/.env.example`](server/.env.example)): `APP_USERNAME`, `APP_PASSWORD_HASH`, `APP_JWT_SECRET` (obligatorias); `APP_CORS_ORIGINS` (orígenes del frontend, separados por comas); `DATA_DIR` (SQLite persistente); `LUSHA_API_KEY`, `LUSHA_DAILY_CAP`, `OPENAI_API_KEY`, `OPENAI_MODEL` (opcionales).
+
+Frontend conectado al backend: `cp .env.example .env.local`, poner `VITE_API_URL=http://localhost:8000` y `npm run dev`.
+
+### Despliegue
+
+- **Frontend estático**: `npm run build` y publicar `dist/` en cualquier hosting estático (Devin Apps, Netlify, Vercel, S3…). Al usar rutas hash no hace falta configurar rewrites. Sin `VITE_API_URL` es una build local-only; con `VITE_API_URL=https://tu-api.example npm run build` activa login y sync.
+- **Backend**: cualquier host con Python 3.11 (p. ej. Fly.io) ejecutando `uvicorn app.main:app --host 0.0.0.0 --port 8000` desde `server/`, con un volumen montado en `DATA_DIR` y las variables anteriores como secretos de la plataforma. Añadir el dominio del frontend a `APP_CORS_ORIGINS`.
+
+### Seguridad
+
+El repo es público: no commitear `.env`, credenciales, claves privadas ni datos reales de contactos, cuota o comisiones (el plan de comisiones vive solo en el `localStorage` del navegador).
+
 ## Skills
 
 | Skill | Qué hace | Escribe en |
